@@ -161,6 +161,7 @@ public class VisionService : IVisionService
 
     private float _confThreshold = 0.25f;
     private string _currentLensStr = "10x";
+    private string _currentProvider = "CPU";
 
     public bool IsRunning => _isRunning;
     public event EventHandler<VisionEventArgs>? OnFrameProcessed;
@@ -174,8 +175,8 @@ public class VisionService : IVisionService
         _analysisService = analysisService;
         _inferenceService = inferenceService;
 
-        // Initialize AI Model using the explicit desktop path
-        _inferenceService.InitializeModel(@"c:\Users\h4n\Desktop\app-new12-2\best.onnx");
+        // Initialize Dual AI Models dynamically based on default lens
+        ReloadModelForLens();
     }
 
     public void StartCamera(int cameraIndex, string currentLensStr, string cameraApi)
@@ -238,19 +239,37 @@ public class VisionService : IVisionService
     }
 
     public void SetThreshold(float threshold) => _confThreshold = threshold;
-    public void SetLens(string lensStr) => _currentLensStr = lensStr;
+
+    public void SetLens(string lensStr)
+    {
+        if (_currentLensStr != lensStr)
+        {
+            _currentLensStr = lensStr;
+            ReloadModelForLens(); // Hotswap ONNX model
+        }
+    }
 
     public void SetHardwareProvider(string provider)
     {
+        _currentProvider = provider;
+        ReloadModelForLens(); // Reload current model into new hardware (GPU/CPU)
+    }
+
+    private void ReloadModelForLens()
+    {
+        string modelFileName = _currentLensStr == "4x" ? "yolov8n_4x.onnx" : "yolov8n_10x.onnx";
+        string modelPath = System.IO.Path.Combine(@"c:\Users\h4n\Desktop\app-new12-2\DropDetect\fileonnx", modelFileName);
+
         lock (_lockObj)
         {
             try
             {
-                _inferenceService.InitializeModel(@"c:\Users\h4n\Desktop\app-new12-2\best.onnx", provider);
+                _inferenceService.InitializeModel(modelPath, _currentProvider);
+                Console.WriteLine($"[VisionService] Successfully loaded AI Model: {modelFileName} via {_currentProvider}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to hot-swap hardware provider: {ex.Message}");
+                Console.WriteLine($"[VisionService] Failed to load AI Model {modelFileName}: {ex.Message}");
             }
         }
     }
