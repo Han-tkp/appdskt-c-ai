@@ -26,7 +26,8 @@ public class CalibrationService : ICalibrationService
 
     public CalibrationService()
     {
-        _calibrationDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data", "calibration");
+        string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        _calibrationDir = Path.Combine(appDataPath, "DropDetect", "calibration");
         EnsureCalibrationFilesExist();
     }
 

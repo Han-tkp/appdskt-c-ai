@@ -258,7 +258,7 @@ public class VisionService : IVisionService
     private void ReloadModelForLens()
     {
         string modelFileName = _currentLensStr == "4x" ? "yolov8n_4x.onnx" : "yolov8n_10x.onnx";
-        string modelPath = System.IO.Path.Combine(@"c:\Users\h4n\Desktop\app-new12-2\DropDetect\fileonnx", modelFileName);
+        string modelPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fileonnx", modelFileName);
 
         lock (_lockObj)
         {
@@ -497,7 +497,15 @@ public class VisionService : IVisionService
             catch (Exception ex)
             {
                 string logMsg = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Camera Loop Error: {ex.Message}\n{ex.StackTrace}\n";
-                System.IO.File.AppendAllText("analyze_debug.log", logMsg);
+                try
+                {
+                    string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    string logDir = System.IO.Path.Combine(appDataPath, "DropDetect");
+                    if (!System.IO.Directory.Exists(logDir)) System.IO.Directory.CreateDirectory(logDir);
+                    string logFile = System.IO.Path.Combine(logDir, "analyze_debug.log");
+                    System.IO.File.AppendAllText(logFile, logMsg);
+                }
+                catch { /* Failsafe, do nothing if logging fails */ }
                 Console.WriteLine($"Camera Loop Error: {ex.Message}");
             }
         }
