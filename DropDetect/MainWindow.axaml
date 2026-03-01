@@ -170,6 +170,14 @@
                         </StackPanel>
                     </Border>
                     
+                    <Border Background="{DynamicResource ThemeBorderBrush}" CornerRadius="8" Padding="15">
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="🎨 Theme &amp; Appearance" Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontWeight="SemiBold" FontSize="14"/>
+                            <TextBlock Text="Color Theme:" Foreground="{DynamicResource ThemeTextPrimaryBrush}"/>
+                            <ComboBox ItemsSource="{Binding AvailableThemes}" SelectedItem="{Binding SelectedTheme}" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Border>
+                    
                     <Button Content="Close" Command="{Binding CloseSettingsCommand}" Background="{DynamicResource ThemeAccentRedBrush}" Foreground="{DynamicResource ThemeActionTextBrush}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontWeight="Bold" Margin="0,15,0,0"/>
                 </StackPanel>
             </Border>
