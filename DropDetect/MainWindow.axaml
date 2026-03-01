@@ -72,9 +72,19 @@
                     <TabItem Header="📊 Report" Foreground="#CDD6F4" FontSize="16">
                         <StackPanel Spacing="8" Margin="5,15,5,0">
                             
-                            <!-- Data Entry -->
-                            <TextBlock Text="Slide Name / Location:" Foreground="#CDD6F4" Margin="0,10,0,0" FontWeight="SemiBold"/>
-                            <ComboBox ItemsSource="{Binding AvailableSlides}" SelectedItem="{Binding CurrentLocationName}" HorizontalAlignment="Stretch" PlaceholderText="Select Slide..."/>
+                            <!-- Slide Workflow Tracker -->
+                            <TextBlock Text="Slide Workflow Tracker:" Foreground="#CDD6F4" Margin="0,10,0,0" FontWeight="SemiBold"/>
+                            <ListBox ItemsSource="{Binding SlideList}" SelectedItem="{Binding SelectedSlide}" Background="#181825" CornerRadius="8" Margin="0,5,0,10" MinHeight="140">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:SlideItemViewModel">
+                                        <Grid ColumnDefinitions="*,Auto,Auto" Margin="2">
+                                            <TextBlock Grid.Column="0" Text="{Binding SlideName}" Foreground="#CDD6F4" VerticalAlignment="Center" FontWeight="Bold"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding StatusText}" Foreground="{Binding StatusColor}" VerticalAlignment="Center" Margin="10,0"/>
+                                            <Button Grid.Column="2" Content="🔄" Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).RetakeSlideCommand}" CommandParameter="{Binding}" Background="Transparent" Foreground="#F38BA8" Padding="5,-5" IsVisible="{Binding IsAnalyzed}" ToolTip.Tip="Retake this slide"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
                             <TextBlock Text="Target Sample Size:" Foreground="#CDD6F4" Margin="0,5,0,0"/>
                             <NumericUpDown Value="{Binding TargetSampleSize}" Minimum="1" Maximum="10000" Increment="50" FormatString="0" HorizontalAlignment="Stretch"/>

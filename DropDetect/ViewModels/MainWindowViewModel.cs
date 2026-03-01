@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
@@ -97,10 +98,10 @@ public partial class MainWindowViewModel : ObservableObject
     private string _loadingMessage = "Loading...";
 
     [ObservableProperty]
-    private ObservableCollection<string> _availableSlides = new() { "Slide 1", "Slide 2", "Slide 3" };
+    private ObservableCollection<SlideItemViewModel> _slideList = new();
 
     [ObservableProperty]
-    private string _currentLocationName = "Slide 1";
+    private SlideItemViewModel? _selectedSlide;
 
     [ObservableProperty]
     private int _targetSampleSize = 200;
@@ -128,6 +129,12 @@ public partial class MainWindowViewModel : ObservableObject
         _excelExportService = excelExportService;
         _analysisService = analysisService;
         _visionService.OnFrameProcessed += OnFrameProcessed;
+
+        for (int i = 1; i <= 3; i++)
+        {
+            SlideList.Add(new SlideItemViewModel { SlideName = $"Slide {i}" });
+        }
+        if (SlideList.Count > 0) SelectedSlide = SlideList[0];
 
         _telemetryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
         _telemetryTimer.Tick += UpdateTelemetry;
@@ -245,6 +252,26 @@ public partial class MainWindowViewModel : ObservableObject
     private bool CanAnalyze() => IsCameraRunning;
 
     [RelayCommand]
+    private void RetakeSlide(SlideItemViewModel slide)
+    {
+        if (slide == null) return;
+
+        slide.CapturedDroplets.Clear();
+        slide.DropletsCaptured = 0;
+        slide.IsAnalyzed = false;
+        slide.StatusText = "⏳ Pending";
+
+        var existingReport = ReportData.FirstOrDefault(r => r.LocationName == slide.SlideName);
+        if (existingReport != null)
+        {
+            ReportData.Remove(existingReport);
+            ReportItemCount = ReportData.Count;
+        }
+
+        StatusText = $"{slide.SlideName} cleared. Ready to retake.";
+    }
+
+    [RelayCommand]
     private void AddToReport()
     {
         var rawSessionDroplets = _visionService.GetSessionDroplets();
@@ -254,22 +281,31 @@ public partial class MainWindowViewModel : ObservableObject
             StatusText = "No valid analysis to add. Please scan the slide first.";
             return;
         }
-        if (string.IsNullOrWhiteSpace(CurrentLocationName))
+        if (SelectedSlide == null || string.IsNullOrWhiteSpace(SelectedSlide.SlideName))
         {
-            StatusText = "Please enter a Location Name before adding.";
+            StatusText = "Please select a Slide before adding.";
             return;
         }
 
-        // Apply Phase 9: Statistical Downsampling
         var downsampled = _analysisService.DownsampleDroplets(rawSessionDroplets, TargetSampleSize);
 
-        // Calculate statistical VMD/SPAN distribution precisely on the downsampled count
         var finalResult = _analysisService.CalculateStatistics(downsampled);
         finalResult.TotalAccumulatedCount = rawSessionDroplets.Count;
 
+        SelectedSlide.CapturedDroplets = new System.Collections.Generic.List<double>(downsampled);
+        SelectedSlide.DropletsCaptured = downsampled.Count;
+        SelectedSlide.IsAnalyzed = true;
+        SelectedSlide.StatusText = $"✅ Analyzed ({downsampled.Count})";
+
+        var existingReport = ReportData.FirstOrDefault(r => r.LocationName == SelectedSlide.SlideName);
+        if (existingReport != null)
+        {
+            ReportData.Remove(existingReport);
+        }
+
         var item = new AnalysisReportItem
         {
-            LocationName = CurrentLocationName,
+            LocationName = SelectedSlide.SlideName,
             Timestamp = DateTime.Now,
             Result = finalResult
         };
@@ -277,16 +313,20 @@ public partial class MainWindowViewModel : ObservableObject
         ReportData.Add(item);
         ReportItemCount = ReportData.Count;
 
-        // Reset Tracker for the next slide
         _visionService.ClearSession();
         AccumulatedCount = 0;
 
-        StatusText = $"Added {CurrentLocationName} to Report ({finalResult.Count} drops sampled from {rawSessionDroplets.Count} total).";
+        StatusText = $"Added {SelectedSlide.SlideName} to Report ({finalResult.Count} drops sampled).";
 
-        // Phase 10: Auto-Save Snapshot functionality
         if (!string.IsNullOrWhiteSpace(OutputDirectory))
         {
             SaveSnapshot();
+        }
+
+        int currentIndex = SlideList.IndexOf(SelectedSlide);
+        if (currentIndex >= 0 && currentIndex < SlideList.Count - 1)
+        {
+            SelectedSlide = SlideList[currentIndex + 1];
         }
     }
 
@@ -343,7 +383,7 @@ public partial class MainWindowViewModel : ObservableObject
         try
         {
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string locName = string.IsNullOrWhiteSpace(CurrentLocationName) ? "Snapshot" : CurrentLocationName;
+            string locName = SelectedSlide == null || string.IsNullOrWhiteSpace(SelectedSlide.SlideName) ? "Snapshot" : SelectedSlide.SlideName;
 
             if (raw != null)
             {
