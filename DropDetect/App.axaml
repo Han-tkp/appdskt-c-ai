@@ -7,4 +7,48 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                
+                <!-- Dark Theme (Catppuccin Mocha Inspired) -->
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="ThemeBackgroundBrush">#1E1E2E</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemePanelBrush">#282A36</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeSubPanelBrush">#181825</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeBorderBrush">#313244</SolidColorBrush>
+                    
+                    <SolidColorBrush x:Key="ThemeTextPrimaryBrush">#CDD6F4</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeTextSecondaryBrush">#A6ADC8</SolidColorBrush>
+                    
+                    <SolidColorBrush x:Key="ThemeAccentBlueBrush">#89B4FA</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeAccentGreenBrush">#A6E3A1</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeAccentRedBrush">#F38BA8</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeAccentYellowBrush">#F9E2AF</SolidColorBrush>
+                    
+                    <SolidColorBrush x:Key="ThemeActionTextBrush">#11111B</SolidColorBrush>
+                </ResourceDictionary>
+
+                <!-- Light Theme -->
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="ThemeBackgroundBrush">#F0F2F5</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemePanelBrush">#FFFFFF</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeSubPanelBrush">#E4E7ED</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeBorderBrush">#D0D5DD</SolidColorBrush>
+                    
+                    <SolidColorBrush x:Key="ThemeTextPrimaryBrush">#1C2025</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeTextSecondaryBrush">#4B5563</SolidColorBrush>
+                    
+                    <SolidColorBrush x:Key="ThemeAccentBlueBrush">#0052CC</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeAccentGreenBrush">#00875A</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeAccentRedBrush">#DE350B</SolidColorBrush>
+                    <SolidColorBrush x:Key="ThemeAccentYellowBrush">#FF991F</SolidColorBrush>
+
+                    <SolidColorBrush x:Key="ThemeActionTextBrush">#FFFFFF</SolidColorBrush>
+                </ResourceDictionary>
+
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

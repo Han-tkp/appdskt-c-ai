@@ -12,6 +12,7 @@ using DropDetect.Services;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using Avalonia.Styling;
 
 namespace DropDetect.ViewModels;
 
@@ -55,6 +56,25 @@ public partial class MainWindowViewModel : ObservableObject
 
     [ObservableProperty]
     private string _selectedCameraApi = "Auto";
+
+    [ObservableProperty]
+    private ObservableCollection<string> _availableThemes = new() { "System", "Dark", "Light" };
+
+    [ObservableProperty]
+    private string _selectedTheme = "System";
+
+    partial void OnSelectedThemeChanged(string value)
+    {
+        if (Application.Current != null)
+        {
+            Application.Current.RequestedThemeVariant = value switch
+            {
+                "Dark" => ThemeVariant.Dark,
+                "Light" => ThemeVariant.Light,
+                _ => ThemeVariant.Default
+            };
+        }
+    }
 
     [ObservableProperty]
     private float _confidenceThreshold = 0.25f;
