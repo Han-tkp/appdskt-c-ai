@@ -31,11 +31,13 @@ The Application features a clean desktop UI designed for laboratory environments
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Operating System**: Windows 10/11
 - **Framework**: [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-- **IDE**: Visual Studio 2022 or Visual Studio Code
+- **IDE**: Visual Studio 2022 (Windows/Mac) or Visual Studio Code
+- **AI Model**: YOLOv8 `.onnx` weights (Opset 12 recommended)
 
-### Installation
+### 🌍 Cross-Platform Build & Run
+
+Since DropDetect is built on Avalonia UI, it natively supports deployment across multiple operating systems. Ensure you have the `.NET 8.0 SDK` installed before running these commands.
 
 1. **Clone the repository**:
    ```bash
@@ -44,18 +46,44 @@ The Application features a clean desktop UI designed for laboratory environments
    ```
 
 2. **Restore Dependencies**:
-   Ensure you have all required NuGet packages installed.
    ```bash
    dotnet restore
    ```
 
-3. **Provide AI Brain (ONNX Model)**:
-   Place your custom-trained YOLOv8 `.onnx` weights into the designated project directory (or adjust the path within `VisionService.cs`).
+3. **Run or Publish by Operating System**:
 
-4. **Run the Application**:
+   #### 🪟 Windows (x64)
+   *Run directly in development:*
    ```bash
    dotnet run
    ```
+   *Publish as a standalone `.exe`:*
+   ```bash
+   dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
+   ```
+
+   #### 🐧 Linux (x64)
+   *Note: Ensure you have `libfontconfig1` and `libfreetype6` installed on your distro for UI rendering.*
+   ```bash
+   dotnet run
+   ```
+   *Publish as a standalone compiled binary:*
+   ```bash
+   dotnet publish -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true
+   ```
+
+   #### 🍎 macOS (Apple Silicon ARM64 & Intel x64)
+   *For M1/M2/M3 (ARM64):*
+   ```bash
+   dotnet publish -c Release -r osx-arm64 --self-contained
+   ```
+   *For Intel Macs (x64):*
+   ```bash
+   dotnet publish -c Release -r osx-x64 --self-contained
+   ```
+
+4. **Provide AI Brain (ONNX Model)**:
+   Place your custom-trained YOLOv8 `.onnx` weights into the designated project directory (or adjust the hardcoded path within `VisionService.cs`).
 
 ---
 
