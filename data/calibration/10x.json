@@ -1,0 +1,4 @@
+{
+    "pixel_to_micron_ratio": 1.0,
+    "description": "Ratio of 1 pixel in microns for 10x objective lens"
+}
