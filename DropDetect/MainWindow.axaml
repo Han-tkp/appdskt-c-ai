@@ -9,9 +9,25 @@
         Icon="avares://DropDetect/Assets/appaivbdc.ico"
         Title="DropDetect - WHO Standard Droplet Analysis"
         Background="{DynamicResource ThemeBackgroundBrush}"
-        WindowState="Maximized">
+        WindowState="Maximized"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1">
 
-    <Panel>
+    <Grid RowDefinitions="35, *">
+        <!-- Modern Custom Title Bar -->
+        <Border Grid.Row="0" Background="{DynamicResource ThemePanelBrush}" 
+                BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="0,0,0,1"
+                IsHitTestVisible="False">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10" Margin="15,0,0,0">
+                <Image Source="avares://DropDetect/Assets/appaivbdc.ico" Width="18" Height="18" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                <TextBlock Text="DropDetect - WHO Standard Droplet Analysis" 
+                           Foreground="{DynamicResource ThemeTextPrimaryBrush}" 
+                           FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <Panel Grid.Row="1">
         <Grid ColumnDefinitions="320, 5, *">
             <!-- Sidebar with Tabs -->
             <Border Grid.Column="0" Background="{DynamicResource ThemePanelBrush}" Padding="5">
@@ -182,5 +198,6 @@
                 </StackPanel>
             </Border>
         </Border>
-    </Panel>
+        </Panel>
+    </Grid>
 </Window>
