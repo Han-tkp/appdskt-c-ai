@@ -26,7 +26,7 @@ public partial class MainWindowViewModel : ObservableObject
     private WriteableBitmap? _cameraImage;
 
     [ObservableProperty]
-    private ObservableCollection<string> _availableLenses = new() { "4x", "10x", "40x" };
+    private ObservableCollection<string> _availableLenses = new() { "4x", "10x" };
 
     [ObservableProperty]
     private string _lensSelection = "10x";

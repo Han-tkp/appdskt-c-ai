@@ -53,20 +53,6 @@ public class CalibrationService : ICalibrationService
             var data10x = new CalibrationData { PixelToMicronRatio = 0.279263, Description = "Custom Calibrated: 10X Lens" };
             File.WriteAllText(path10x, JsonSerializer.Serialize(data10x, new JsonSerializerOptions { WriteIndented = true }));
         }
-
-        var path40x = Path.Combine(_calibrationDir, "40x.json");
-        if (!File.Exists(path40x))
-        {
-            var data40x = new CalibrationData { PixelToMicronRatio = 0.069815, Description = "Estimated 40X ratio based on 10x scaling" };
-            File.WriteAllText(path40x, JsonSerializer.Serialize(data40x, new JsonSerializerOptions { WriteIndented = true }));
-        }
-
-        var path100x = Path.Combine(_calibrationDir, "100x.json");
-        if (!File.Exists(path100x))
-        {
-            var data100x = new CalibrationData { PixelToMicronRatio = 0.027926, Description = "Estimated 100X ratio based on 10x scaling" };
-            File.WriteAllText(path100x, JsonSerializer.Serialize(data100x, new JsonSerializerOptions { WriteIndented = true }));
-        }
     }
 
     public double GetPixelToMicronRatio(string lensType)
