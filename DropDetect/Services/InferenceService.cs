@@ -26,54 +26,65 @@ public class InferenceService : IInferenceService
 {
     private InferenceSession? _session;
     private string? _inputName;
+    private readonly object _modelLock = new object();
+    private static readonly object _logLock = new object();
 
     public void InitializeModel(string modelPath, string hardwareProvider = "CPU")
     {
-        string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, modelPath);
-        if (!File.Exists(fullPath))
+        lock (_modelLock)
         {
-            // Fallback for debugging paths if ran from project dir
-            fullPath = modelPath;
-        }
-
-        if (!File.Exists(fullPath))
-        {
-            Console.WriteLine($"Error: Model file not found at {fullPath}");
-            return;
-        }
-
-        try
-        {
-            var options = new SessionOptions();
-
-            if (hardwareProvider.Contains("GPU") || hardwareProvider.Contains("DirectML"))
+            string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, modelPath);
+            if (!File.Exists(fullPath))
             {
-                try
+                // Fallback for debugging paths if ran from project dir
+                fullPath = modelPath;
+            }
+
+            if (!File.Exists(fullPath))
+            {
+                Console.WriteLine($"Error: Model file not found at {fullPath}");
+                return;
+            }
+
+            try
+            {
+                var options = new SessionOptions();
+
+                if (hardwareProvider.Contains("GPU") || hardwareProvider.Contains("DirectML"))
                 {
-                    options.AppendExecutionProvider_DML();
-                    Console.WriteLine("DirectML Execution Provider appended successfully.");
+                    try
+                    {
+                        int deviceId = 0;
+                        var match = System.Text.RegularExpressions.Regex.Match(hardwareProvider, @"DeviceId:\s*(\d+)");
+                        if (match.Success)
+                        {
+                            deviceId = int.Parse(match.Groups[1].Value);
+                        }
+                        options.AppendExecutionProvider_DML(deviceId);
+                        Console.WriteLine($"DirectML Execution Provider appended successfully (Device: {deviceId}).");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"DirectML initialization failed: {ex.Message}. Falling back to CPU.");
+                        options.AppendExecutionProvider_CPU();
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Console.WriteLine($"DirectML initialization failed: {ex.Message}. Falling back to CPU.");
                     options.AppendExecutionProvider_CPU();
                 }
-            }
-            else
-            {
-                options.AppendExecutionProvider_CPU();
-            }
 
-            _session?.Dispose();
-            _session = new InferenceSession(fullPath, options);
-            if (_session.InputMetadata.Count > 0)
-            {
-                _inputName = _session.InputMetadata.Keys.First();
+                _session?.Dispose();
+                _session = new InferenceSession(fullPath, options);
+                if (_session.InputMetadata.Count > 0)
+                {
+                    _inputName = _session.InputMetadata.Keys.First();
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error initializing ONNX Model: {ex.Message}");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error initializing ONNX Model: {ex.Message}");
+            }
         }
     }
 
@@ -81,11 +92,13 @@ public class InferenceService : IInferenceService
     {
         var result = new InferenceResult();
 
-        if (_session == null || _inputName == null || frame.Empty())
-            return result;
+        lock (_modelLock)
+        {
+            if (_session == null || _inputName == null || frame.Empty())
+                return result;
 
-        int modelWidth = 640;
-        int modelHeight = 640;
+            int modelWidth = 640;
+            int modelHeight = 640;
 
         // 1. Pre-process frame
         // YOLO requires RGB, 640x640, Float32 Tensor, NCHW order, normalized 0-1
@@ -138,7 +151,10 @@ public class InferenceService : IInferenceService
                 string dimStr = string.Join("x", dims.ToArray());
                 try
                 {
-                    System.IO.File.AppendAllText("analyze_debug.log", $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Tensor Output Shape: {dimStr}\n");
+                    lock (_logLock)
+                    {
+                        System.IO.File.AppendAllText("analyze_debug.log", $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Tensor Output Shape: {dimStr}\n");
+                    }
                 }
                 catch { }
 
@@ -177,15 +193,22 @@ public class InferenceService : IInferenceService
                 float nmsThreshold = 0.45f;
                 var filteredDetections = new List<DetectionInfo>();
                 allDetections = allDetections.OrderByDescending(d => d.Confidence).ToList();
+                bool[] isSuppressed = new bool[allDetections.Count];
 
-                while (allDetections.Count > 0)
+                for (int i = 0; i < allDetections.Count; i++)
                 {
-                    var currentBox = allDetections[0];
-                    filteredDetections.Add(currentBox);
-                    allDetections.RemoveAt(0);
+                    if (isSuppressed[i]) continue;
 
-                    // Discard remaining overlapping boxes
-                    allDetections.RemoveAll(box => CalculateIoU(currentBox, box) > nmsThreshold);
+                    var currentBox = allDetections[i];
+                    filteredDetections.Add(currentBox);
+
+                    for (int j = i + 1; j < allDetections.Count; j++)
+                    {
+                        if (!isSuppressed[j] && CalculateIoU(currentBox, allDetections[j]) > nmsThreshold)
+                        {
+                            isSuppressed[j] = true;
+                        }
+                    }
                 }
 
                 // Add filtered boxes to display
@@ -217,6 +240,7 @@ public class InferenceService : IInferenceService
             Console.WriteLine($"Inference execution error: {ex.Message}");
         }
 
+        } // End of _modelLock
         return result;
     }
 

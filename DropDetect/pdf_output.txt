@@ -1,0 +1,539 @@
+Found 6 PDFs in directory.
+
+--- Reading 14.วิภาพร.pdf ---
+Page 2: ด้าน คือ อุณหภูมิความร้อนปลายท่อ 600-800 ํC อัตราการไหลของน้ำยาเคมี >24 ลิตร/ชั่วโมง ค่าเฉลี่ย ขนาดละอองสารเคมี เรียกว่า Volume Median Diameter หรือ ค่า VMD = 10-30 µm และค่าการ กระจายตัวของเม็ดน้ำยา หรือ ค่า Span < 2  โดยกลุ่มตัวอย่างที่ศึกษา คือ เครื่องพ่นหมอกควันที่ใช้ใน
+Page 2: ควันในแต่ละเครื่อง โดยใช้เกณฑ์ทั้ง 4 ด้าน ได้แก่ อุณหภูมิ      ความร้อนปลายท่อ อัตราการไหลของ น้ำยาเคมี ขนาดละอองเม็ดน้ำยา (VMD) และการกระจายตัวของเม็ดน้ำยา (Span) พบว่า เครื่องพ่น หมอกควันที่ผ่านเกณฑ์ตามที่ WHO กำหนด ในแต่ด้านคิดเป็นร้อยละ 97.1 74.5 54.9 และ 100
+Page 6: ตารางที่ 3.2  ขนาดหัวควบคุมการไหลต่อปริมาณการไหลที่เหมาะสม   25
+Page 7: ภาพที่ 3.4  ขั้นตอนการเผาแผ่นสไลด์ Magnesium oxide Slide (MgO)  28
+Page 7: ภาพที่ 3.5  ลักษณะของแผ่น Magnesium oxide Slide (MgO)  28
+Page 7: ภาพที่ 3.8  การอ่านค่า VMD จากตารางวิเคราะห์ด้วย SPSS ที่ค่า 0.50  31
+Page 9: ไข้เลือดออกในพื้นที่เสี่ยง ของเขตรับผิดชอบสำนักงานป้องกันควบคุมโรคที่ 7 จังหวัดขอนแก่น                 1.3.2.3 เพื่อประเมินค่า Volume Median Diameter (VMD) ของเครื่องพ่นหมอกควัน ที่ใช้ในการควบคุมโรคไข้เลือดออกในพื้นที่เสี่ยง ของเขตรับผิดชอบสำนักงานป้องกันควบคุมโรคที่ 7
+Page 9: 2) การตรวจค่าอัตราการไหลของเม็ดน้ำยา                3) การตรวจวัดค่า VMD
+Page 10: ปกติ เครื่องเดินเรียบสม่ำเสมอ เกณฑ์มาตรฐานองค์ประกอบ 4 ด้าน คือ อุณหภูมิความร้อนปลายท่อ,  อัตราการไหลของน้ำยาเคมี (Flow rate), ขนาดละอองสารเคมี (Droplet size) และ ค่าการกระจาย ตัวของเม็ดยาเคมี (Span)
+Page 10: น้ำยาเคมี เป็นการวัดเพื่อทราบอัตราการไหลของน้ำยาเคมีปริมาตรกี่ลิตรต่อชั่วโมง โดยเครื่องพ่น หมอกควันที่ได้มาตรฐานไม่ต่ำกว่า 24 ลิตร/ชั่วโมง ซึ่งค่าอัตราการไหลของน้ำยาเคมีขึ้นอยู่กับขนาด ของหัวควบคุมการไหล โดยหัวควบคุมการไหลเบอร์ 0.8 – 1.4 มิลลิเมตร มีปริมาณการไหล
+Page 11: ตารางที่ 1.1 ขนาดหัวควบคุมการไหลต่อปริมาณการไหลที่เหมาะสม   ขนาดหัวควบคุมการไหล (มม.)
+Page 11: ตารางที่ 1.1 ขนาดหัวควบคุมการไหลต่อปริมาณการไหลที่เหมาะสม   ขนาดหัวควบคุมการไหล (มม.)  ปริมาณการไหล (ลิตร/ชั่วโมง)
+Page 11: ที่มา: WHO (2003) ซึ่งมีค่ามาตรฐานอัตราการไหลของน้ำยาเคมีเท่ากับ 20 – 30 ลิตร/ชม.              1.5.1.3 ขนาดละอองสารเคมี (Droplet size) หมายถึง การวัดขนาดละอองน้ำยาเคมี  องค์การอนามัยโลกได้กำหนดมาตรฐานการคำนวณหาค่าเฉลี่ยขนาดละอองสารเคมี เรียกว่า Volume
+Page 11: 1.5.1.3 ขนาดละอองสารเคมี (Droplet size) หมายถึง การวัดขนาดละอองน้ำยาเคมี  องค์การอนามัยโลกได้กำหนดมาตรฐานการคำนวณหาค่าเฉลี่ยขนาดละอองสารเคมี เรียกว่า Volume  Median Diameter หรือค่า VMD ซึ่งมีค่ามาตรฐานเท่ากับ < 30 µm
+Page 11: องค์การอนามัยโลกได้กำหนดมาตรฐานการคำนวณหาค่าเฉลี่ยขนาดละอองสารเคมี เรียกว่า Volume  Median Diameter หรือค่า VMD ซึ่งมีค่ามาตรฐานเท่ากับ < 30 µm              1.5.1.4 ค่าการกระจายตัวของเม็ดยาเคมี (Span) หมายถึง การกระจายตัวของขนาดเม็ด
+Page 11: Median Diameter หรือค่า VMD ซึ่งมีค่ามาตรฐานเท่ากับ < 30 µm              1.5.1.4 ค่าการกระจายตัวของเม็ดยาเคมี (Span) หมายถึง การกระจายตัวของขนาดเม็ด น้ำยาเคมีของเครื่องพ่นหมอกควัน
+Page 13: 7-10 วัน และ 1-3 วัน ตามลำดับ ดังนี้                 ระยะไข่ ลักษณะยาวรีคล้ายกระสวย วางไข่เป็นฟองเดี่ยวๆ ขนาดเล็กประมาณ 605±4.1  และ597±5.0 ไมโครเมตร สำหรับยุงลายบ้าน และยุงลายสวน (Bova et al., 2016) ตัวเต็มวัยจะ
+Page 13: หัวและอกรวมกัน) รูปร่างลักษณะคล้ายเครืองหมายจุลภาค ไม่กินอาหาร เคลื่อนไหวรวดเร็ว มีท่อ หายใจคู่หนึ่งที่ส่วนหัว เรียกว่า trumpets ใช้ระยะเวลาประมาณ 1-3 วัน (ภาพที่ 2.1 ค.)                                    ระยะตัวเต็มวัย ลักษณะสำคัญ คือ มีลำตัวและขามีลายหรือจุดลายดำสลับขาว ขนาด
+Page 13: หายใจคู่หนึ่งที่ส่วนหัว เรียกว่า trumpets ใช้ระยะเวลาประมาณ 1-3 วัน (ภาพที่ 2.1 ค.)                                    ระยะตัวเต็มวัย ลักษณะสำคัญ คือ มีลำตัวและขามีลายหรือจุดลายดำสลับขาว ขนาด ประมาณ-4-5 มม. การจำแนกชนิดของตัวเต็มวัยของยุงลายบ้านและยุงลายสวนสามารถจำแนกได้
+Page 14: องอาจ เจริญสุข และคณะ (2528) วิจัยความชุกชนของลูกน้ำยุงลายในโอ่งซีเมนต์ ขนาดใหญ่และถังคอนกรีตเก็บน้ำฝนในหมู่บ้านเป็ด บ้านแดงใหญ่ และบ้านทุม อำเภอเมือง จังหวัด ขอนแก่น พบลูกน้ำยุงลายชนิด A. aegypti และ A. albopictuss พบ Aedes House Index
+Page 14: Container Index และ Breteaue Index สูงกว่าเกณฑ์ที่กำหนดคือ HI ต้องไม่เกิน 10 และ BI ต้อง ไม่เกิน 50 และพบว่าโอ่งซีเมนต์ขนาดใหญ่ที่มีฝาปิดและไม่มีฝาปิด มีลูกน้ำยุงลายน้อยกว่าโอ่งน้ำใช้ ขนาดเล็กภายในบ้าน ภาชนะที่พบว่ามีลูกน้ำยุงลายมากคือโอ่งน้ำดื่มและที่รองขาตู้กับข้าว
+Page 14: ไม่เกิน 50 และพบว่าโอ่งซีเมนต์ขนาดใหญ่ที่มีฝาปิดและไม่มีฝาปิด มีลูกน้ำยุงลายน้อยกว่าโอ่งน้ำใช้ ขนาดเล็กภายในบ้าน ภาชนะที่พบว่ามีลูกน้ำยุงลายมากคือโอ่งน้ำดื่มและที่รองขาตู้กับข้าว  ก.
+Page 16: 2) สารนิโคติน (nicotine) เป็นสารกลุ่ม alkaloids ที่สกัดได้จากใบยาสูบ  Nicotiana tabacum L. มีกลไกการออกฤทธิ์ โดยมีลักษาณะของโมเลกุลคล้ายกับคล้ายกับสารสื่อ กระแสประสาท (neurotransmitter) ที่เรียกว่า อะซิติลโคลิน (acetylcholine) ออกกฤทธิ์ที่ระบบ
+Page 16: 3) สารไพริทริน (pyrethrin) เป็นสารที่สกัดได้จากดอกเบญจมาศ ที่อยู่ในสกุล  Chrysanthemum ชื่อวิทยาศาสตร์ว่า Chrysanthemum cinerariaefolium สารไพริทรินมี
+Page 19: ลำดับขั้นตอนการเกิดพิษของสารฆ่าแมลงต่อระบบประสาท (ภาพที่ 2.1) ขั้นตอน จะเริ่มจากการที่สารฆ่าแมลง ซึ่งโดยทั่วไปเป็นโมเลกุลของสารอินทรีย์ขนาดเล็กทำปฏิกิริยากับชีวสาร เป้าหมาย ซึ่งเป็นโมเลกุลขนาดใหญ่ เช่น เอนไซด์ สารสื่อประสาท (neurotransmitter) กรดนิว
+Page 20: แบ่งออกเป็น 2 วิธีหลักๆ คือ การพ่นหมอกควัน (Fogging) และการพ่นเคมีฝอยละออง (Ultra Low  Volume Sprayer: ULV) เป็นมาตรการหลักในการควบคุมแมลงพาหะนำโรค การพ่นสารเคมีกำจัด แมลงเป็นสิ่งจำเป็นอย่างยิ่งในการตัดวงจรการแพร่ระบาดของโรค ถ้าหากผู้ใช้หรือผู้ปฏิบัติงานมี
+Page 20: 2.4.1 เครื่องพ่นสารเคมีชนิดฝอยละเอียด (Cold fog generator) เป็นเครื่องพ่นที่ใช้พลังงาน แรงลมหรือแรงเหวี่ยงสลัดน้ำยาเคมีให้แตกตัวออกเป็นเม็ดเล็กๆ มีขนาดที่เล็กกว่า 50 µm และชนิด ของสารเคมีที่ใช้เป็นชนิดที่มีความเข้มขนสูง เพราะใช้ตัวทำละลายน้อย ใช้พ่นปริมาณน้อย แต่
+Page 21: ภาพที่ 2.3 ลักษณะของเครื่องพ่นฝอยละออง (Ultra Low Volume Sprayer: ULV)
+Page 21: 2.4.2 เครื่องพ่นเคมีชนิดหมอกควัน (Thermal fog generator) เป็นเครื่องพ่นที่ใช้ความ ร้อนช่วยในการแตกตัวของน้ำยาออกเป็นละอองเม็ดเล็กๆ ประมาณ 0.1-60 µm ขนาดของเม็ดน้ำยา ที่ผลิตออกมาขึ้นอยู่กับอุณหภูมิที่สูงหรือต่ำ และชนิดของสารตัวทำละลายที่จุดเดือด หรือจุดระเหิด
+Page 27: ทั้งหมด 3 องค์ประกอบ คือ อุณหภูมิความร้อนปลายท่อ ณ หัวจ่ายน้ำยา อัตรการไหลของน้ำยาเคมี  และค่าเฉลี่ยของเม็ดน้ำยา (VMD) พบเครื่องพ่นที่ได้มาตรฐาน คิดเป็นร้อยละ 84.0 53.3 และ 25.3  ตามลำดับ โดยมีเครื่องพ่นที่ผ่านการประเมินทั้ง 3 ด้านเพียงร้อยละ 25.3
+Page 27: องค์กรปกครองส่วนท้องถิ่น (อปท.) ทั้งหมด 67 แห่ง โดยทำการประเมินเครื่องพ่นหมอกควันทั้งหมด  3 องค์ประกอบ ได้แก่ ความร้อนปลายท่อ อัตราการไหลของน้ำยาเคมี และขนาดละองงน้ำยาเคมี เฉลี่ย (VMD) พบเครื่องพ่นที่นิยมให้ส่วนใหญ่เป็นยี่ห้อ Igeba รองลงมาเป็น Best fogger และ Swing
+Page 27: 3 องค์ประกอบ ได้แก่ ความร้อนปลายท่อ อัตราการไหลของน้ำยาเคมี และขนาดละองงน้ำยาเคมี เฉลี่ย (VMD) พบเครื่องพ่นที่นิยมให้ส่วนใหญ่เป็นยี่ห้อ Igeba รองลงมาเป็น Best fogger และ Swing  Fog คิดเป็นร้อยละ 63.30 20.20 และ 16.50 ตามลำดับ และจาการประเมินประสิทธิภาพของเครื่อง
+Page 27: Fog คิดเป็นร้อยละ 63.30 20.20 และ 16.50 ตามลำดับ และจาการประเมินประสิทธิภาพของเครื่อง พ่นหมอกควันทั้ง 3 องค์ประกอบ คือ ความร้อนปลายท่อ อัตราการไหลของน้ำยาเคมี และขนาดละ องงน้ำยาเคมีเฉลี่ย (VMD) เครื่องพ่นหมอกควันผ่านเกณฑ์มาตรฐานร้อยละ 79.75 60.76 และ 60.76
+Page 27: พ่นหมอกควันทั้ง 3 องค์ประกอบ คือ ความร้อนปลายท่อ อัตราการไหลของน้ำยาเคมี และขนาดละ องงน้ำยาเคมีเฉลี่ย (VMD) เครื่องพ่นหมอกควันผ่านเกณฑ์มาตรฐานร้อยละ 79.75 60.76 และ 60.76  ตามลำดับ นอกจากนี้ยังพบว่าเจ้าหน้าที่พ่นสารเคมีส่วนใหญ่เป็นลูกจ้างรายปี และยังไม่เคยได้รับ/
+Page 28: มาตรฐานเครื่องพ่นหมอกควัน ทั้งหมด 4 องค์ประกอบ คือ ความร้อนปลายท่อ อัตราการไหลของ น้ำยาเคมี ค่า VMD และค่าการกระจายตัวของเม็ดน้ำยา ในพื้นที่เสี่ยงของเขตรับผิดชอบสำนักงาน ป้องกันควบคุมโรคที่ 7 จังหวัดขอนแก่น โดยมีวิธีการดำเนินงาน ดังนี้
+Page 29: 3.2.2 กลุ่มตัวอย่าง               3.2.2.1 การกำหนดขนาดตัวอย่าง
+Page 29: การกำหนดขนาดตัวอย่างในการศึกษาครั้งนี้  กำหนดโดยการประมาณค่า สัดส่วนกรณีทราบค่าประชากร (จุฬาลักษณ์ โกมลตรี, 2012) โดยในสูตร ดังนี้
+Page 29: n   = 101.44                         ดังนั้น ขนาดตัวอย่างที่ให้ในการประเมินเครื่องพ่น เท่ากับ  102 เครื่อง                 3.2.2.2 วิธีการสุ่มตัวอย่าง
+Page 29: กาฬสินธุ์ มหาสารคาม และร้อยเอ็ด ขั้นตอนที่ 2 ทำการเลือกหน่วยตัวอย่างแบบ Probability  proportional to size (PPS) คือ สุ่มเลือกขนาดตัวอย่างง่าย (Simple Random Sampling)
+Page 30: ลงพื้นที่อำเภอเสี่ยงทั้งหมด 20 อำเภอ และขั้นตอนที่ 3 สุ่มเลือกเครื่องพ่นหมอกควันทั้งหมด 102  เครื่อง โดยมีกรอบขนาดตัวอย่าง (Sampling Frame) ตามจำนวนสัดส่วนของเครื่องหมอกควัน เก็บ ข้อมูลให้ครบตามจำนวนที่กำหนด แสดงดังตารางที่ 3.1
+Page 32: ปริมาตรกี่ลิตรต่อชั่วโมง โดยเครื่องพ่นหมอกควันที่ได้มาตรฐานไม่ต่ำกว่า 24 ลิตร/ชั่วโมง ซึ่งค่าอัตรา การไหลของน้ำยาเคมีขึ้นอยู่กับขนาดของหัวควบคุมการไหล โดยหัวควบคุมการไหลเบอร์ 0.8 – 1.4  มิลลิเมตร มีปริมาณการไหลโดยประมาณ 8-30 ลิตร/ชั่วโมง (ตารางที่ 1)
+Page 32: มิลลิเมตร มีปริมาณการไหลโดยประมาณ 8-30 ลิตร/ชั่วโมง (ตารางที่ 1)  ตารางที่ 3.2 ขนาดหัวควบคุมการไหลต่อปริมาณการไหลที่เหมาะสม   ขนาดหัวควบคุมการไหล (มม.)
+Page 32: ตารางที่ 3.2 ขนาดหัวควบคุมการไหลต่อปริมาณการไหลที่เหมาะสม   ขนาดหัวควบคุมการไหล (มม.)  ปริมาณการไหล (ลิตร/ชั่วโมง)
+Page 34: 3.3.1.3 ขนาดละอองสารเคมี (Droplet size)                    การวัดขนาดละอองน้ำยาเคมีองค์การอนามัยโลกได้กำหนดมาตรฐานการคำนวณหา
+Page 34: 3.3.1.3 ขนาดละอองสารเคมี (Droplet size)                    การวัดขนาดละอองน้ำยาเคมีองค์การอนามัยโลกได้กำหนดมาตรฐานการคำนวณหา ค่าเฉลี่ยขนาดละอองสารเคมี เรียกว่า Volume Median Diameter หรือค่า VMD ซึ่งมีค่ามาตรฐาน
+Page 34: การวัดขนาดละอองน้ำยาเคมีองค์การอนามัยโลกได้กำหนดมาตรฐานการคำนวณหา ค่าเฉลี่ยขนาดละอองสารเคมี เรียกว่า Volume Median Diameter หรือค่า VMD ซึ่งมีค่ามาตรฐาน เท่ากับ < 30 µm ปัจจุบัน ซึ่งขั้นตอนการวัดขนาดของเม็ดน้ำยาเคมีต้องให้เทคนิคการโฉบผ่านละออง
+Page 34: ค่าเฉลี่ยขนาดละอองสารเคมี เรียกว่า Volume Median Diameter หรือค่า VMD ซึ่งมีค่ามาตรฐาน เท่ากับ < 30 µm ปัจจุบัน ซึ่งขั้นตอนการวัดขนาดของเม็ดน้ำยาเคมีต้องให้เทคนิคการโฉบผ่านละออง เม็ดน้ำที่พ่นออกมาจากปลายท่อโดยให้แผ่นสไลด์ที่เคลือบด้วย Magnesium oxide เรียกว่า
+Page 34: เท่ากับ < 30 µm ปัจจุบัน ซึ่งขั้นตอนการวัดขนาดของเม็ดน้ำยาเคมีต้องให้เทคนิคการโฉบผ่านละออง เม็ดน้ำที่พ่นออกมาจากปลายท่อโดยให้แผ่นสไลด์ที่เคลือบด้วย Magnesium oxide เรียกว่า   Magnesium oxide Slide หรือ MgO
+Page 34: เม็ดน้ำที่พ่นออกมาจากปลายท่อโดยให้แผ่นสไลด์ที่เคลือบด้วย Magnesium oxide เรียกว่า   Magnesium oxide Slide หรือ MgO                     1) การเตรียมแผ่น Slide เก็บตัวอย่างเม็ดน้ำยา
+Page 34: 1) การเตรียมแผ่น Slide เก็บตัวอย่างเม็ดน้ำยา                        1. ทำความสะอาดแผ่น Slide ขนาด 2 x 5 เซนติเมตร                        2. ตัวลวด Magnesium ให้ยาวประมาณ 4 นิ้ว
+Page 34: 1. ทำความสะอาดแผ่น Slide ขนาด 2 x 5 เซนติเมตร                        2. ตัวลวด Magnesium ให้ยาวประมาณ 4 นิ้ว                        3. จุดไฟที่ลวด Magnesium ให้เกิดควันขึ้นจากนั้นนำไปรมใต้แผ่น Slide ไอของ
+Page 34: 2. ตัวลวด Magnesium ให้ยาวประมาณ 4 นิ้ว                        3. จุดไฟที่ลวด Magnesium ให้เกิดควันขึ้นจากนั้นนำไปรมใต้แผ่น Slide ไอของ ลวด Magnesium จะติดบนแผ่น Slide มีความยาวประมาณ 2 ตารางนิ้ว ซึ่งไอจากการเผาลวด
+Page 34: 3. จุดไฟที่ลวด Magnesium ให้เกิดควันขึ้นจากนั้นนำไปรมใต้แผ่น Slide ไอของ ลวด Magnesium จะติดบนแผ่น Slide มีความยาวประมาณ 2 ตารางนิ้ว ซึ่งไอจากการเผาลวด  Magnesium เรียกว่า Magnesium oxide Slide หรือ MgO เก็บใส่กล่องเก็บแผ่น Slide สามารถ
+Page 34: ลวด Magnesium จะติดบนแผ่น Slide มีความยาวประมาณ 2 ตารางนิ้ว ซึ่งไอจากการเผาลวด  Magnesium เรียกว่า Magnesium oxide Slide หรือ MgO เก็บใส่กล่องเก็บแผ่น Slide สามารถ นำไปใช้ในการเก็บตัวอย่างเม็ดน้ำยาต่อไป (ภาพที่ 3.1- ภาพที่ 3.5)
+Page 35: ภาพที่ 3.4 ขั้นตอนการเผาแผ่นสไลด์ Magnesium oxide Slide (MgO)  ก. ตัดลวด Magnesium ยาวประมาณ 4 นิ้ว
+Page 35: ภาพที่ 3.4 ขั้นตอนการเผาแผ่นสไลด์ Magnesium oxide Slide (MgO)  ก. ตัดลวด Magnesium ยาวประมาณ 4 นิ้ว                                  ข.-ค. ลักษณะเผาสไลด์ Magnesium oxide Slide
+Page 35: ก. ตัดลวด Magnesium ยาวประมาณ 4 นิ้ว                                  ข.-ค. ลักษณะเผาสไลด์ Magnesium oxide Slide
+Page 35: ภาพที่ 3.5 ลักษณะของแผ่น Magnesium oxide Slide (MgO)   ก.
+Page 36: 3.3.3.1 นำแผ่น Slide MgO ไปตรวจด้วยกล้องจุลทรรศน์ที่เตรียมไว้                 3.3.3.2 นับจำนวนเม็ดน้ำยา และวัดขนาดด้วยโปรแกรม Zen 3.1 (Blue edition)  จำนวน 201 เม็ด (ภาพที่ 3.7)
+Page 36: 3.3.3.3 บันทึกข้อมูลในโปรแกรม Excel เพื่อคำนวณหาค่าปริมาตรสะสมของน้ำยาเคมี                 3.3.3.4 วิเคราะห์ข้อมูลด้วยโปรแกรม SPSS ด้วย Probit analysis และอ่านค่า VMD ที่ ตาราง Confidence limits ที่ค่า 0.50 (ภาพที่ 3.8)
+Page 38: ภาพที่ 3.8 การอ่านค่า VMD จากตารางวิเคราะห์ด้วย SPSS ที่ค่า 0.50              3.3.4.4 ค่าการกระจายตัวของเม็ดยาเคมี (Span) หมายถึง การกระจายตัวของขนาดเม็ด
+Page 38: ภาพที่ 3.8 การอ่านค่า VMD จากตารางวิเคราะห์ด้วย SPSS ที่ค่า 0.50              3.3.4.4 ค่าการกระจายตัวของเม็ดยาเคมี (Span) หมายถึง การกระจายตัวของขนาดเม็ด น้ำยาเคมีของเครื่องพ่นหมอกควันสามารถใช้บอกความสม่ำเสมอในการผลิตละอองเม็ดน้ำยาของ
+Page 41: ผลการประเมินมาตรฐานของเครื่องพ่นหมอกควัน 4 องค์ประกอบ ได้แก่ อุณหภูมิความร้อนปลายท่อ  อัตราการไหลของน้ำยาเคมี ขนาดละอองเม็ดน้ำยา และการกระจายตัวของเม็ดน้ำเคมี พบว่า มีเครื่องพ่น หมอกควันที่ผ่านเกณฑ์ดังกล่าวตามที่ WHO กำหนด ในแต่ละองค์ประกอบคิดเป็นร้อยละ 97.1 74.5
+Page 42: 26 (25.5)  ขนาดละอองเม็ดน้ำยา (VMD 10-30 µm)  56 (54.9)
+Page 43: 5.1.2 เครื่องพ่นหมอกควันที่ผ่านเกณฑ์ 4 องค์ประกอบ ได้แก่ อุณหภูมิความร้อนปลายท่อ อัตราการ ไหลของน้ำยาเคมี ขนาดละอองเม็ดน้ำยา และการกระจายตัวของเม็ดน้ำยา พบเครื่องพ่นหมอกควันที่ผ่าน เกณฑ์ตามที่ WHO กำหนด ในแต่องค์ประกอบ คิดเป็นร้อยละ 97.1 74.5 54.9 และ 100 ตามลำดับ เมื่อ
+Page 44: องอาจ  เจริญสุข, สัจจะ เสถบุตร, กิตตินันท์ สิงห์กลาง, แตงไทย เยาวะ, สำเริง ภู่ระหงษ์ และปรียา สุวรรณคีรี.   2528. ความชุกชุมของลูกน้ำยุงลายในโอ่งซีเมนต์ขนาดใหญ่และถุงคอนกรีตเก็บน้ำฝน. วารสาร โรคติดต่อ. 11(3): 247-262.
+
+--- Reading 9241562439.pdf ---
+Page 3: Chapter 2 Millennium Health Goals: paths to the future 23
+Page 3: 23 International commitments at the Millennium Summit 25
+Page 3: 32 The Millennium Development Goals in practice 32
+Page 4: 50 A human rights approach 50
+Page 5: 146 Annex Table 2 Deaths by cause, sex and mortality stratum in WHO regions, estimates for 2002
+Page 5: 154 Annex Table 3 Burden of disease in DALYs by cause, sex and mortality stratum in WHO regions, estimates for 2002
+Page 5: 178 List of Member States by WHO region and mortality stratum 182
+Page 5: Table 2.1 Health-related Millennium Development Goals, targets and indicators 28
+Page 5: Table 7.1 Availability of death registration data – number of countries with recent usable data 117 Figures
+Page 6: Figure 3.3 Trends in the cost of ARV drugs and the number of people in therapy, Uganda, 1997–2002
+Page 6: Figure 7.1 Relationship between births accompanied by skilled attendants and number of health professionals, 33 developing and transition countries
+Page 6: 19 Box 2.1 Progress towards the Millennium Development Goals – the case of Uganda 29
+Page 6: 31 Box 2.4 Millennium Development Goals in eastern Europe 33
+Page 6: 96 Box 6.4 A low-cost road safety strategy: speed bumps in Ghana 99
+Page 6: 114 Box 7.6 The Observatory of Human Resources in Health Sector Reforms 115
+Page 8: I urge the global health community to set its sights on bold objectives. All countries of the world have pledged to reach the Millennium Development Goals set at the United Nations Summit in 2000. These include ambitious targets for nutrition, maternal and child health,
+Page 8: world have pledged to reach the Millennium Development Goals set at the United Nations Summit in 2000. These include ambitious targets for nutrition, maternal and child health, infectious disease control, and access to essential medicines. With this support we have a real
+Page 10: The World Health Report 2003 consists of seven chapters. Key ideas and thematic connections among the chapters are briefly described here. Detailed content is summarized at greater length in a subsequent section of this overview.
+Page 12: The World Health Report 2003 limited attention here. Similarly, the human impact on the natural environment and the health consequences of environmental change for human populations are given little direct atten-
+Page 13: a result of the Global Polio Eradication Initiative, one of the largest public health efforts in history, the number of children paralysed by this devastating disease every year has fallen from over 350 000 in 1988 to about 1900 in 2003; the number of countries in which the
+Page 13: history, the number of children paralysed by this devastating disease every year has fallen from over 350 000 in 1988 to about 1900 in 2003; the number of countries in which the disease is endemic has fallen from over 125 to seven. This chapter records the expected last
+Page 13: The successes to date are the result of a unique partnership forged between governments, international agencies, humanitarian organizations and the private sector. Through this part- nership, over 10 million volunteers immunized 575 million children against polio in nearly
+Page 13: require immunizing every child under five years of age (nearly 20% of a country’s popula- tion) over a period of 1–3 days, several times a year for a number of years in a row. In many countries, the scale and logistic complexity of these activities were even greater than those of
+Page 14: human or animal virus in its family. Transmission occurs mainly from person to person dur- ing face-to-face exposure to infected respiratory droplets expelled during coughing or sneez- ing. The overall case–fatality ratio, with the fate of most cases now known, approaches 11%
+Page 15: The consumption of cigarettes and other tobacco products and exposure to tobacco smoke are the world’s leading preventable cause of death, responsible for about 5 million deaths in
+Page 15: challenges described in earlier chapters. Without significant health systems strengthening, many countries will make little headway towards the Millennium Development Goals, the “3 by 5” target, and other health objectives. The chapter proposes an approach to scaling up
+Page 18: to this epidemiological transition. In many developed countries, this shift started approxi- mately 100 to 150 years ago. In a number of countries, such as Japan, the transition started later but proceeded much more quickly. In many developing countries, the transition started
+Page 19: countries. Over 60% of deaths in developed countries occur beyond age 70, compared with about 30% in developing countries. A key point is the comparatively high number of deaths in developing countries at younger adult ages (15–59 years). Just over 30% of all deaths in
+Page 19: World Number of deaths (000) 0–4
+Page 21: graphic, health and poverty indicators, sentinel demographic surveillance generates a large number of indicators from a sample of over 500 000 people, at a per capita recurrent cost of US$ 0.02 per year. These costs
+Page 26: child deaths. There has also been a modest decline in deaths from measles, although more than half a million children under 5 years of age still succumb to the disease every year (8). Malaria causes around a million child deaths per year, of which 90% are children under 5
+Page 26: years of age. In this age group the disease accounts for nearly 11% of all deaths (see Table 1.1). The overall number of child deaths in India has fallen from approximately 3.5 million in 1990 to approximately 2.3 million in 2002. This impressive decline is a result of a reduction
+Page 26: well as intensive immunization campaigns. A similar picture is emerging in China, where the number of child deaths has decreased by 30% since 1990, owing to a reduction in child mortality of 18% and a 6% decline in total
+Page 26: Rank Cause Numbers (000) % of all deaths
+Page 29: 15 The following section summarizes the risk of premature adult death in terms of the probabil- ity of death between 15 and 60 years of age – the proportion of 15-year-olds who will die
+Page 31: 10 Colon and rectum cancers 477
+Page 32: proportion of older people will be above 15% of the population, while in Colombia, Indonesia and Kenya the absolute numbers will increase by up to 400% over the next 25 years – up to eight times higher than
+Page 33: causes 850 000 deaths each year, or about two-thirds as many as lung cancer. Liver and colon/ rectum cancers are the third and fourth leading causes. More than half of all liver cancer deaths are estimated to occur in the Western Pacific Region. Among women, the leading
+Page 33: years (DALYs) and 33% of overall years lived with disability (YLDs). Be- hind these stark figures lies human suffering: more than 150 million people suffer from depression at any point in time; nearly 1 million com-
+Page 35: for all WHO Member States in 2002. To sum up, this chapter is a reminder that children are among the most vulnerable members of societies around the world. Despite considerable achievements, much still needs to be
+Page 35: versals in adult mortality in the 1990s in sub-Saharan Africa caused by HIV/AIDS and in parts of eastern Europe attributable to a number of noncommunicable diseases (particularly cardiovascular and alcohol-related diseases) and injuries.
+Page 37: Millennium Health Goals: paths to the future 23
+Page 38: Millennium Health Goals: paths to the future 25
+Page 38: 2 Millennium Health Goals: paths to the future
+Page 38: paths to the future The Millennium Development Goals (MDGs) adopted by the United Nations in 2000 pro- vide an opportunity for concerted action to improve global health. They place health at the
+Page 38: International commitments at the Millennium Summit In September 2000, representatives from 189 countries, including 147 heads of state, met at
+Page 38: In September 2000, representatives from 189 countries, including 147 heads of state, met at the Millennium Summit in New York to adopt the United Nations Millennium Declaration (1). The declaration set out the principles and values that should govern international rela-
+Page 38: meeting the special needs of Africa; and strengthening the United Nations. The Road Map (2) prepared following the Summit established goals and targets to be reached by 2015 in each of these seven areas. The goals in the area of development and poverty eradi-
+Page 38: by 2015 in each of these seven areas. The goals in the area of development and poverty eradi- cation are now widely referred to as the Millennium Development Goals. They represent commitments by governments worldwide to do more to reduce poverty and hunger and to
+Page 39: importance of the MDGs and provides a framework for building the partnerships that will be needed to achieve them. A few months later, in September 2002, the World Summit on Sustainable Development, held in Johannesburg, South Africa, took the process a step fur-
+Page 39: the overall sustainable development agenda (4). Both the World development report 2003 and the Human development report 2003 have further developed the concept of a compact, with a view to informing policy.
+Page 39: view to informing policy. The MDGs summarize some of the key commitments made at the major United Nations conferences of the 1990s. They also build on the international development targets prepared
+Page 39: Since the early 1990s, the concepts of poverty and development have evolved away from an exclusive emphasis on income towards a fuller notion of human well-being, as found in the United Nations Development Programme’s Human Development Index (HDI) and other
+Page 39: and of basic “conversion” factors that facilitate this achievement (such as social access to health care) (7). Human development refers to processes that enlarge people’s choices to en- able them to achieve capabilities (for example, the freedom to choose a healthy lifestyle) (8).
+Page 39: role of health in economic growth (9). The importance of health within a multidimensional model of sustainable human development is also a key message of the MDGs.
+Page 40: Millennium Health Goals: paths to the future 27
+Page 40: the MDGs will not be achieved at current rates of progress. The Human development report 2003 notes that “if global progress continues at the same pace as in the 1990s, only the Millennium Development Goals of halving income poverty and
+Page 40: The Human development report 2003 notes that “if global progress continues at the same pace as in the 1990s, only the Millennium Development Goals of halving income poverty and halving the proportion of people without access to safe water stand a realistic chance of being
+Page 41: The World Health Report 2003 Table 2.1 Health-related Millennium Development Goals, targets and indicators Goal: 1. Eradicate extreme poverty and hunger
+Page 41: Indicator: 4. Prevalence of underweight children under five years of age 5. Proportion of population below minimum level of dietary energy consumptiona
+Page 41: 5. Proportion of population below minimum level of dietary energy consumptiona Goal: 4. Reduce child mortality
+Page 41: 19. Condom use rate of the contraceptive prevalence rate 20. Number of children orphaned by HIV/AIDS Target: 8. Have halted by 2015 and begun to reverse the incidence of malaria and
+Page 41: Target: 11. By 2020 to have achieved a significant improvement in the lives of at least 100 million slum dwellers   Indicator: 31. Proportion of urban population with access to improved sanitation
+Page 42: Millennium Health Goals: paths to the future 29
+Page 42: of the disease. Progress is currently measured (for the purposes of tracking Goal 6) by Box 2.1 Progress towards the Millennium Development Goals – the case of Uganda Many sub-Saharan African countries are struggling to make
+Page 43: reductions in HIV prevalence among pregnant women aged 15–24 years (where in some African cities it is beginning to decline), by the number of HIV/AIDS orphans (which is forecast to double by 2010), and by increases in condom use in the 15–24-year age group.
+Page 43: are major variations in the provision of essential medicines: WHO estimates that 15% of the world’s population consumes 91% of the world’s production of pharmaceuticals (by value). Overall progress depends on what happens in the world’s largest countries, such as China
+Page 43: Despite progress in recent decades, globally more than 10 million chil- dren still die every year. The number of children and adolescents who died in 2002 was twice the total of adult deaths from AIDS, tuberculosis
+Page 44: Millennium Health Goals: paths to the future 31
+Page 45: large and ongoing debt burden acts as a significant counterweight to development assistance, and is a major constraint to increases in domestic funding for human development. More- over, out of 82 countries eligible for the Poverty Reduction and Growth Facility/HIPC/Pov-
+Page 45: reduce poverty rapidly. In summary, an overview of progress towards Goal 8 – even in the absence of robust indica- tors – presents a picture similar to that for Goals 1–7. Much greater efforts are required if the
+Page 46: Millennium Health Goals: paths to the future 33
+Page 46: and targets. Box 2.4 Millennium Development Goals in eastern Europe Eastern Europe is not usually the main focus of the debate about devel-
+Page 48: Millennium Health Goals: paths to the future 35
+Page 48: medicines are of acceptable quality will become the basis for increasing procurement volumes (18). A pilot system was started by WHO in collaboration with other
+Page 48: More than 250 product dossiers from different innovator and generic manufacturers have been assessed: an increasing number now meet the norms and standards required by WHO. These changes are
+Page 50: Millennium Health Goals: paths to the future 37
+Page 50: Millennium Campaign. The Millennium Project conducts research on, and analysis of, the strategies needed to achieve the MDGs. Over a period of three years, its 10 task forces will work on the operational priori-
+Page 50: ties, organizational means of implementation, and financing necessary to reach the goals. Preliminary work produced by the project has been used in preparing the Human develop- ment report 2003. A key role of the Millennium Project, as for the Commission on Macroeco-
+Page 50: Preliminary work produced by the project has been used in preparing the Human develop- ment report 2003. A key role of the Millennium Project, as for the Commission on Macroeco- nomics and Health, will be generating a clear set of messages and making them available to a
+Page 50: ernment accountability. More than 40 have been published so far. The Millennium Campaign aims to raise public awareness of, and political commitment to, the MDGs in both developed and developing countries.
+Page 52: Millennium Health Goals: paths to the future 39
+Page 52: References 1. United Nations Millennium Declaration. New York, NY, United Nations, 2000 (United Nations General Assembly resolution 55/2; http://www.un.org/millennium/declaration/ares552e.pdf, accessed 22 September
+Page 52: 1. United Nations Millennium Declaration. New York, NY, United Nations, 2000 (United Nations General Assembly resolution 55/2; http://www.un.org/millennium/declaration/ares552e.pdf, accessed 22 September 2003).
+Page 52: 2003). 2. Road map towards the implementation of the United Nations Millennium Declaration. New York, NY, United Nations, 2002 (United Nations General Assembly document A56/326).
+Page 52: 2. Road map towards the implementation of the United Nations Millennium Declaration. New York, NY, United Nations, 2002 (United Nations General Assembly document A56/326). 3. Report of the International Conference on Financing for Development, Monterrey, Mexico, 18–22 March 2002.
+Page 52: New York, NY, United Nations, 2002. 4. Report of the World Summit on Sustainable Development, Johannesburg, South Africa, 26 August–4 September 2002. New York, NY, United Nations, 2002.
+Page 52: operation and Development, 1996. 6. Human development report 1990: concept and measurement of human development. New York, NY, Oxford University Press for the United Nations Development Programme, 1990.
+Page 52: University Press for the United Nations Development Programme, 1990. 7. What is human development? New York, NY, United Nations Development Programme (http://hdr.undp.org/ hd/default.cfm, accessed 23 September 2003).
+Page 52: 10. United Nations Development Group. Financing the development goals: an analysis of Tanzania, Cameroon, Malawi, Uganda and Philippines. Summary Report prepared by United Nations Development Programme, 2002 (http://www.undg.org, accessed 24 September 2003).
+Page 52: pooled analysis. Lancet, 2000, 355:451–455. 13. Rechel B, Shapo L, McKee M. Appropriate health related Millennium Development Goals for the Europe and Central Asia Region: impacts and policy implications. Washington, DC, World Bank (in press).
+Page 52: Central Asia Region: impacts and policy implications. Washington, DC, World Bank (in press). 14. Gwatkin D. Who would gain most from efforts to reach the Millennium Development Goals for health? An inquiry into the possibility of progress that fails to reach the poor. Washington, DC, World Bank, 2002 (HNP
+Page 52: (http://www.iisd.ca/linkages/cairo.html, accessed 23 September 2003). 16. WHO’s contribution to achievement of the development goals of the United Nations Millennium Declaration. Geneva, World Health Organization, 2002 (World Health Assembly resolution WHA55.19; http://
+Page 52: 17. Economic, social and cultural rights: the right of everyone to the enjoyment of the highest attainable standard of physical and mental health. Geneva, United Nations Commission on Human Rights, 2003 (document E/CN.4/2003/58; http://www.unhchr.ch/Huridocda/Huridoca.nsf/0/9854302995c2c86fc1256cec005a18d7/
+Page 54: Acquired immunodeficiency syndrome (AIDS) is the leading infectious cause of adult death in the world. Untreated disease caused by the human immunodeficiency virus (HIV) has a case fatality rate that approaches 100%. Not since the bubonic plague of the 14th century has
+Page 54: Figure 3.1). In Australia, Europe, Japan and the United States of America, many people with advanced AIDS have resumed their normal lives. In poorer countries, however, and among the poor living in wealthy societies, HIV remains a death sentence. Over the past decade, the
+Page 54: weakened health systems fail to perform, especially for minorities and those living in poverty. HIV/AIDS thus raises urgent human rights issues, especially concerning the right to health care (see Table 3.1).
+Page 55: discovered a novel pathogen: a retrovirus tropic for the CD4 cells that orchestrate cell-medi- ated immunity and protect humans from a broad range of viral, mycobacterial, and fungal pathogens.
+Page 56: came infected with HIV, and almost 3 million people died of AIDS. Everywhere in the world, HIV is transmitted through a fairly limited number of mechanisms. HIV is a bloodborne retrovirus and is transmitted through sexual contact, contaminated
+Page 56: HIV epidemics. Here the disease is more closely tied to injecting drug use, which itself is linked to a rapid rise in indices of social inequality (3). Although the absolute number of AIDS cases in the former Soviet Union remains relatively small, the epidemic is expanding
+Page 56: seated epidemics of TB, including drug-resistant strains, will be further fanned by the rapid rise in HIV incidence already documented among Russian prisoners. Only aggressive Table 3.1 Coverage of adults in developing countries with
+Page 57: take a great toll on the social fabric of heavily burdened societies, above and beyond its terrible cost in immediate human suffering. To take two examples, AIDS has orphaned an estimated 14 million African children and will decimate the corps of teachers, health care
+Page 57: Year Number of people living with HIV/AIDS (millions) 45
+Page 58: in the world, and significant further growth is likely. Between 1995 and 2003, the number of newly reported HIV infections in western Europe doubled to almost 170 000, and in central and eastern Europe grew
+Page 61: Price of first-line regimen in US$ per year Number of people on treatment Figure 3.3 Trends in the cost of ARV drugs and the number of people on treatment,
+Page 61: Number of people on treatment Figure 3.3 Trends in the cost of ARV drugs and the number of people on treatment, Uganda, 1997–2002
+Page 62: 51 destructive role in people’s lives. Governments should take the lead in promoting a human rights model of AIDS prevention and care.
+Page 62: diagnosis and treatment, preferably through algorithms reflecting local epidemiology, of all STIs. Numerous studies have shown that improving care for STIs will diminish the risk of acquiring HIV (28–30).
+Page 63: living with HIV/AIDS in developing countries by the end of 2005. This ambitious “3 by 5” target, first proposed in 2001 (31), will present numerous challenges, but with united action it can be achieved. WHO’s HIV/AIDS team, in consultation with other
+Page 65: DC, American Public Health Association, 2000. 2. Workshop summary: scientific evidence on condom effectiveness for sexually transmitted disease (STD) prevention, 20 July 2001, Herndon, VA, USA. Atlanta, GA, US National Institutes of Health and the Centers
+Page 66: 20. MTCT plus: expanding HIV/AIDS care in resource-limited settings. Mailman School of Public Health, Columbia University (http://www.mtctplus.org/, accessed 25 September 2003). 21. Boletim Epidemiológico – AIDS . Ministry of Health, Government of Brazil, 2001 (http://www.aids.gov.br/
+Page 67: from over 350 000 in 1988 to as few as 1900 in 2003; the number of endemic countries has fallen from over 125 to seven. This chapter records the final phase of the campaign
+Page 68: tive began (1) (see Figure 4.1). This progress is the result of a unique partnership forged between governments, international agencies, humanitarian organizations and the private sector to take up three key challenges to reaching all children, everywhere: effective engage-
+Page 68: sector to take up three key challenges to reaching all children, everywhere: effective engage- ment of political leaders, adequate financing, and sufficient human resources. Through this partnership, over 10 million volunteers immunized 575 million children against polio in 93
+Page 68: other health interventions, a process that will be essential to achieving ambitious national and international health targets such as those adopted in the Millennium Development Goals (2). A new kind of partnership
+Page 68: there was limited experience with large-scale international health initiatives and with part- nerships. In the mid-1980s, however, as an increasing number of countries in South America – most notably, Brazil – successfully applied the Cuban model of mass campaigns and height-
+Page 69: was critical to the extremely rapid scaling-up of eradication activities in the mid-1990s, as the initiative began building on the early momentum in the Americas and the Western Pacific Region and extended its activities to all countries of all regions. By the end of the decade, over
+Page 69: tion Days (NIDs), as they require the immunization of every child under 5 years of age (nearly 20% of a country’s population) over a period of 1–3 days, several times a year for a number of years in a row. In many countries, the scale and logistic complexity of these activities were
+Page 71: Eighteen countries with no viral circulation have submitted reports and national documentation to the Regional Certification Committee (RCC), which has already reviewed 15 of these reports and provided appropri-
+Page 72: Indian states which had finally become polio-free in recent years, the number of infected districts more than doubled from 63 in 2001 to 159. Because of India’s long borders with Bangladesh and Nepal, the epi-
+Page 73: (see Figure 4.2). A particular strength of the polio initiative has been its strong partnership with a number of non-traditional donors of development aid, most notably Rotary Interna- tional (see Box 4.3). The country-level budgeting and resource management processes, com-
+Page 74: strategy were met through different approaches. The number of people required to implement NIDs is tremendous. As noted above, an esti- mated 10 million volunteers and health workers immunized 575 million children during
+Page 74: such polio eradication activities in 2001. Two key aspects of NIDs were critical to resolving the gap between existing, trained vaccinators in a country and the number needed for NIDs. First, because NIDs only require administering 2 OPV drops to a child and then recording
+Page 74: First, because NIDs only require administering 2 OPV drops to a child and then recording the number immunized, with 1–2 hours of training community volunteers could safely de- liver the service. Second, the time-limited nature of NIDs meant that volunteers were willing
+Page 75: and minimize the risk of polio being reintroduced in the future. The polio partner- ship’s Polio Eradication Strategic Plan 2004–2008 summarizes these challenges in its major objectives.
+Page 76: vaccine stockpiles, and routine immunization (11). The development of these policies will be even more complex than it was for smallpox, for a number of reasons. For example, the very low risk of vaccine-derived polioviruses regaining the capacity to cause outbreaks is now well
+Page 76: ity of these issues, ongoing research in this area will be complemented by broad consultation with governments and stakeholders through the World Health Assembly and other forums from 2004 onwards (11).
+Page 77: international, national and peripheral levels at the same time. This was only possible, how- ever, by deploying substantial numbers of technical and support staff in areas where the for- mal health systems were weakest; the number of these staff reached nearly 3000 by the year
+Page 77: ever, by deploying substantial numbers of technical and support staff in areas where the for- mal health systems were weakest; the number of these staff reached nearly 3000 by the year 2001, with 80% in just 15 countries.
+Page 78: 2. Report of the United Nations Secretary-General. Road map towards the implementation of the United Nations Millennium Declaration. New York, NY, United Nations, 2001 (United Nations General Assembly document A/56/326).
+Page 78: Poliomyelitis, Geneva, 24–25 April 2003. Geneva, World Health Organization, 2003 (WHO/V&B/03.13; http://www.who.int/vaccines-documents/DocsPDF03/www754.pdf, accessed 7 October 2003).
+Page 81: occurred independently in at least seven municipalities, with the first case recorded on 16 November 2002 in Foshan City and the largest number of cases concentrated in Guangzhou City. Analysis has uncovered no links among the various initial cases in the clusters. Some
+Page 81: doctor who had treated patients in Guangzhou City and was himself suffering from respira- tory symptoms spent a single night in a hotel in Hong Kong. Through presumed contact, the mechanism of which is not fully understood, he transmitted SARS to at least 16 other guests
+Page 83: in Hong Kong in 1997. Control efforts at that time required the slaughter and incineration of all chickens in the many live markets there; human-to-human transmission was never established.
+Page 84: real time, it sent an international team of partners to work with the Viet Nam authorities to better understand the disease, and by 12 March GOARN had accumulated the initial infor- mation necessary to issue the first global alert. It was through the continued instant sharing
+Page 85: On 5 July 2003, WHO announced that Taiwan, China, where the last known probable case of SARS had been isolated 20 days earlier, had broken the chains of human-to-human trans- mission. A recurrence of SARS cannot, however, be ruled out. Further research on many
+Page 86: ing imported cases, with the exception of Taiwan, China, either prevented any further trans- mission or kept the number of locally transmitted cases very low. Figure 5.2 shows the weekly onset of 5910 cases. A climate of increased awareness also helps to explain the speed with
+Page 86: 0 Number of cases
+Page 87: the risk of SARS transmission. In fact, passenger movement figures provided by Hong Kong International Airport show a rapid rebound from the lowest number of passengers, 14 670 (recorded just before 23 May when the travel recommendations were removed) to 54 195 on
+Page 88: trend is certain to continue (7). Not all of these emerging infections will transmit easily from person to person as does SARS. Some will emerge, cause illness in humans and then disap- pear, perhaps to recur at some time in the future. Others will emerge, cause human illness
+Page 89: References 1. Visit of WHO expert team to review the outbreak of atypical pneumonia in Guangdong Province, 24 March– 9 April 2003. Final report, 30 April 2003. Geneva, World Health Organization, 2003 (unpublished
+Page 89: 9 April 2003. Final report, 30 April 2003. Geneva, World Health Organization, 2003 (unpublished document). 2. Breiman RF et al. Role of China in the quest to define and control severe acute respiratory syndrome.
+Page 89: 3. Overview of epidemics and responses to the severe acute respiratory syndrome (SARS) in the People’s Republic of China. Beijing, Chinese Centre for Disease Control and Prevention, 2003 (unpublished document). 4. Alert, verification and public health management of SARS in the post-outbreak period. Geneva, World Health
+Page 91: top 10 risks worldwide are specific to noncommunicable diseases (1). These include raised blood pressure, tobacco use, alcohol consumption, cholesterol, and obesity or overweight. This is part of the well-documented epidemiological transition called the “double burden”
+Page 97: 91 compares poorly with the growing dominance of commercial and consumer groups who have placed treatment at the centre of health policy debates and funding priorities. Broader
+Page 97: promote the prevention of major risk factors for CVD and to track progress to agreed na- tional and global goals – perhaps modelled on the Millennium Development Goals (see Box 6.1). Since the determinants of CVD are multisectoral, advocacy and action, too, must extend
+Page 97: Tobacco control: strengthening national efforts The consumption of cigarettes and other tobacco products and exposure to tobacco smoke are the world’s leading preventable cause of death, responsible for about 5 million deaths a
+Page 97: in countries. The process of the FCTC’s creation also reveals the price paid for delay between vision and action. It has taken almost 10 years to bring the idea of such an instrument to fruition. During that time, more than 30 million people have died of tobacco-related ill-
+Page 98: Guiding tobacco control Total tobacco consumption is on the rise. The number of smokers in the world, estimated at 1.3 billion today, is expected to rise to 1.7 billion by 2025 if the global prevalence of tobacco
+Page 100: implementation of more effective tobacco control strategies. Many success stories are avail- able to guide countries; two are summarized in Box 6.2. Integrating tobacco control into health systems
+Page 100: interventions, tax increases have contributed to a 33% reduction in tobacco consumption. In addition, real government revenue from to- bacco taxes has more than doubled (15).
+Page 100: Health in 2003 and is currently awaiting the approval of the Govern- ment of Thailand. Per capita cigarette consumption has been decreasing since the mid-1990s as a result of Thailand’s comprehensive control
+Page 101: Figure 6.2 Projected tobacco-related mortality patterns Cumulative deaths (millions) 20
+Page 102: developing countries (29). In addition to the unacceptable human toll, the global economic cost of road crashes has been estimated at about US$ 518 billion annually, of which the developing country share is
+Page 102: account for approximately one-third of the acute patient load in many hospitals in low- income and middle-income countries, and between 30% and 86% of all trauma admissions (30); road traffic injuries constitute the majority of such admissions.
+Page 102: those in highly motorized countries – by as much as 200-fold in some cases (27). As the number of cars increases rapidly in developing countries, the roads are becoming signifi- cantly more dangerous; in the same way that the increased vehicle usage can be forecast, so
+Page 103: Proven cost-effective interventions in developed countries can be effective for low-income countries too. For maximum impact, all prevention strategies should be used in conjunction with effective law enforcement (32).
+Page 104: Injury Prevention, to be published by WHO in collaboration with the World Bank. This re- port will document comprehensively the determinants and magnitude of road traffic inju- ries and will propose science-based evidence and solutions. In May 2003, the United Nations
+Page 104: spots” where road crashes are most likely to happen. Additional successful efforts include speed control measures such as installing rumble strips and speed bumps (see Box 6.4), enforcing speed limits and severe laws on drinking and driving (32).
+Page 105: health indicate that this concern is justified. In Austria, France and Switzerland the number of deaths related to air pollution from traffic is twice the number of deaths from traffic acci- dents (23). In addition, gases that cause climate change – a quarter of which come from
+Page 105: transport (38); and constraints on the development of neighbourhood support networks. Box 6.4 A low-cost road safety strategy: speed bumps in Ghana Road traffic crashes are a serious problem in Ghana, where the fatality
+Page 105: well as increasing the time to collision, thereby preventing crashes. The use of speed bumps and rumble strips has been effective on Ghanaian roads. During the 16-month period between January 2000
+Page 106: Traffic injuries are also higher among the urban poor, as they tend to live in areas of higher traffic volume – with a greater proportion of vehicles exceeding speed limits (40, 41). In addition, there is a clear relationship between degree of social and economic deprivation and
+Page 106: risk of injury in children (42, 43). Reasons for these differences include the need for children of families without a car to cross a greater number of roads than children whose families own a car (44). These intra-urban inequalities provide a focus for policy action: reducing health
+Page 108: case study of Ghana and Mexico. Injury Control and Safety Promotion, 2003, 10:45–51. 37. McMichael AJ et al., eds. Climate change and human health: risks and responses. Geneva, World Health Organization, 2003.
+Page 108: people. Copenhagen, World Health Organization Regional Office for Europe, 2002 (http://www.euro.who.int/document/e75662.pdf, accessed 15 September 2003). 39. Road transport and health. London, British Medical Association, 1997.
+Page 114: United Nations system, nongovernmental organizations and donors met in Baghdad in August 2003 to determine immediate and medium-term priorities to enable the health sector to provide health services that are
+Page 114: in 2004 – from government and donor sources – will be in the order of US$ 0.8–1.6 billion (or US$ 33–66 per capita). Assuming a sustained and increasing income, the projections for the period 2004–2007 are in
+Page 115: workforce is grossly insufficient for the extensive delivery of priority interventions (16). Coun- tries facing such extreme personnel shortages urgently need a rapid increase in the numbers of health workers to perform key tasks, particularly the delivery of services at community
+Page 115: level in underserved areas. The number of health workers in a country is not the only determinant of access to primary health care. Figure 7.1 shows that the number of births at which skilled attendants are present
+Page 115: The number of health workers in a country is not the only determinant of access to primary health care. Figure 7.1 shows that the number of births at which skilled attendants are present is only partially related to the number of health professionals in a country.1 Guinea, Indone-
+Page 115: health care. Figure 7.1 shows that the number of births at which skilled attendants are present is only partially related to the number of health professionals in a country.1 Guinea, Indone- 1 The term “health professionals” is defined for the WHO database as including physicians, nurses, midwives,
+Page 116: 111 sia and Paraguay have similar workforce numbers but wide differences in the level of cover- age. This is caused by several factors, including the skill mix of health workers, their geo-
+Page 116: Figure 7.1 Relationship between births accompanied by skilled attendants and number of health professionals,a 33 developing and transition countries Nepal
+Page 117: medical officers” and mid-level professionals. These categories are health professionals who can assume many of the responsibilities previously reserved for those with a full medical degree (see Box 7.4). For example, many studies in developed countries show that nurse prac-
+Page 117: ing. For example, a comparison of 1000 consecutive caesarean sections conducted by técnicos de cirurgia with the same number conducted by obstetricians or gynaecologists indicated that there were no differences
+Page 120: Some actions can be taken immediately, others require more time and planning (see Box 7.5). In the most urgent circumstances, for example scaling up HIV/AIDS treatment, coun- tries can mobilize community resources, volunteers and traditional healers to collaborate in
+Page 120: from country experiences, whether very successful or less so (14). Policy-makers may suggest that any proposed new project or policy include a formal “human resources impact assess- ment” during its preparation; international agencies and donors could also be brought into
+Page 120: and short-term solutions. An example from the Region of the Americas is provided in Box 7.6. Box 7.6  The Observatory of Human Resources in Health Sector Reforms The Observatory is a cooperative initiative promoted by the Pan Ameri-
+Page 122: Table 7.1 Availability of death registration data – number of countries by WHO region Region
+Page 123: The Health InterNetwork (HIN), led by WHO, is an initiative of the United Nations Millennium Action Plan to meet the information needs of health professionals, researchers and policy-makers in developing countries.1
+Page 126: Much progress has been made in rationalizing the choice of priority interventions since the time of the standard “minimum package” of the early 1990s. New tools are now available. For example, the WHO-CHOICE project is a database on the health impact and costs of a large
+Page 126: example, the WHO-CHOICE project is a database on the health impact and costs of a large number of health interventions – preventive, promotive, curative and rehabilitative (49). Prioritizing cost-effective interventions is all the more important as new funds become avail-
+Page 129: pand coverage to the poor was the health insurance reform in Colombia in the mid-1990s. Between 1995 and 2001 the number of contributors to the mandatory health insurance system was expanded from 9.2 to 18.2 million people. At the same time, the system was
+Page 129: reformed so as to explicitly cross-subsidize the poor and unemployed. In 1995, 3 million people benefited from these cross-subsidies; by 2001 their number had grown to 11 million. Thus, millions of non-contributing individuals gained access to roughly the same package of
+Page 130: 125 the infrastructure and human resource gap (68). Scaling up was combined with prioritizing service delivery to rural areas and the poor and, as a result, considerable advance was made in
+Page 131: also generate and share information for accountability. This has been the case with Thai- land’s National Forums for Health Care Reform (71). When the right structures are in place, effective governance and vigorous community
+Page 131: example of consensus building with the community in what is usually a mainstream govern- ment activity. Initiated in 1988, the process is now substantially consumer driven, with the implementing agency accountable to its clients. Matching expenditure allocations to needs
+Page 132: 127 Realizing genuine community involvement requires overcoming numerous obstacles. Two issues are particularly constraining. First, communities, especially poor rural ones, may be
+Page 134: Fustukian S, eds. Health policy in a globalising world. Cambridge, Cambridge University Press, 2002:18–40. 14. Narasimhan V et al. The next frontier: responding to the global human resources crisis. Lancet (in press). 15. The health sector human resources crisis in Africa: an issues paper. Washington, DC, USAID, 2003.
+Page 134: 14. Narasimhan V et al. The next frontier: responding to the global human resources crisis. Lancet (in press). 15. The health sector human resources crisis in Africa: an issues paper. Washington, DC, USAID, 2003. 16. Kurowski C et al. Human resources for health: requirements and availability in the context of scaling up priority
+Page 134: 15. The health sector human resources crisis in Africa: an issues paper. Washington, DC, USAID, 2003. 16. Kurowski C et al. Human resources for health: requirements and availability in the context of scaling up priority interventions. Case studies from Tanzania and Chad. 2002 (Report to United Kingdom Department for
+Page 134: International Development). 17. Van Rensburg D, Van Rensburg N. South African health review 1999 briefing summary: distribution of human resources. Durban, Health Systems Trust, 1999 (http://www.hst.org.za/sahr/99/summary/bshuman.htm,
+Page 134: 17. Van Rensburg D, Van Rensburg N. South African health review 1999 briefing summary: distribution of human resources. Durban, Health Systems Trust, 1999 (http://www.hst.org.za/sahr/99/summary/bshuman.htm, accessed 3 October 2003).
+Page 134: accessed 3 October 2003). 18. Beaglehole R, Dal Poz MR. Public health workforce: challenges and policy issues. Human Resources for Health, 2003, 1:4.
+Page 134: 29. Dovlo D, Nyonator F. Migration of graduates of the University of Ghana Medical School: a preliminary rapid appraisal. Human Resources for Health Development Journal, 1999, 3:34–37. 30. Bundred PE, Levitt C. Medical migration: who are the real losers? Lancet, 2000, 356:245–246.
+Page 135: 32. Issakha D, Abdoulaye L, Cheikhou S. Motorcycles for nurses in rural health posts of Senegal. World Health Forum, 1995, 16:249–251. 33. Chomitz K. What do doctors want? Developing incentives for doctors to serve in Indonesia’s rural and remote
+Page 135: 40. Wagner EH et al. Improving chronic illness care: translating evidence into action. Health Affairs, 2001:64–78. 41. Van Lerberghe W, Adams O, Ferrinho P. Human resources impact assessment. Bulletin of the World Health Organization, 2002, 80:525.
+Page 135: frontier. Washington, DC, World Bank, 2002 (draft background paper, World Bank Policy and Sector Analysis Support Team-Africa Region Human Development (AFTHD)). 51. Gwatkin D. Who would gain most from efforts to reach the Millennium Development Goals for health? An
+Page 135: Analysis Support Team-Africa Region Human Development (AFTHD)). 51. Gwatkin D. Who would gain most from efforts to reach the Millennium Development Goals for health? An inquiry into the possibility of progress that fails to reach the poor. Washington, DC, World Bank, 2002 (HNP
+Page 135: Services Organisation and Policy, 2001, 17:297–317. 57. Sen A. Capability and well-being. In: Nussbaum M, Sen A, eds. The quality of life. Oxford, Oxford University Press, 1993:330–353.
+Page 136: México, DF, Secretaría de Salud, 2002. 71. Forum on Health Care Reform. Bangkok, Moh-Chao Ban Publishing House, 2000. 72. United Nations Development Programme. Human development report 2003. Oxford, Oxford University
+Page 136: 71. Forum on Health Care Reform. Bangkok, Moh-Chao Ban Publishing House, 2000. 72. United Nations Development Programme. Human development report 2003. Oxford, Oxford University Press, 2003 (http://www.undp.org/hdr2003/, accessed 3 october 2003).
+Page 138: 135 The tables in this technical annex present updated information on summary measures of population health, mortality and the burden of disease in WHO Member States and regions,
+Page 139: mortality. The matrix defined by the six WHO regions and the five mortality strata leads to 14 subregions, since not every mortality stratum is represented in every region. These subregions are defined on pages 184–185 and used in Tables 2 and 3 for presentation of
+Page 140: old age in full health (20, 21). DALYs for a disease or health condition are calculated as the sum of the years of life lost (YLL) through premature mortality in the population and the years lost through disability (YLD) for incident cases of the health condition. DALYs for 2002
+Page 140: (Annex Table 1) but includes an adjustment for time spent in poor health. It is most easily understood as the equivalent number of years in full health that a newborn can expect to live based on current rates of ill-health and mortality (22, 23).
+Page 140: self-reported health status data from different populations, even when identical survey in- struments and methods were used (24). These comparability problems are a result of unmeasured differences in expectations and norms for health, so that the meaning different
+Page 140: took a Multi-Country Survey Study (MCSS) in 2000–2001 in collaboration with Member States, using a standardized health status survey instrument together with new statistical methods for adjusting biases in self-reported health (25, 26).
+Page 141: The MCSS carried out 71 representative household surveys in 61 Member States in 2000 and 2001 using a new health status instrument based on the International Classification of Func- tioning, Disability and Health (27), which seeks information from a representative sample of
+Page 141: Director-General (30) stated that the methodology for the measurement of HALE was well advanced, and made a number of technical recommendations which have been followed with regard to the calculations reported in Annex Table 4. In particular, steps have been taken to
+Page 141: over who were resident in health institutions. Summation of condition-specific prevalences across all causes in the Global Burden of Dis- ease 2000 would result in overestimation of health state prevalences because of comorbidity
+Page 141: comorbidity for pairs of conditions. There was surprising consistency across the five surveys and the results were used for all Member States to adjust for dependent comorbidity in sum- mation of condition-specific prevalences (16).
+Page 142: (LE) lost, and 95% uncertainty intervals. LHE is calculated as LE – HALE and is the expected equivalent number of years of full health lost through living in health states other than full health. LHE expressed as a percentage of total LE represents the proportion of total life ex-
+Page 142: Annex Table 5 provides estimates for each of the 192 Member States. Although more and more countries collect health expenditure data, only a limited number have produced full national health accounts. Nationally and internationally available information that has been
+Page 143: roeconomic accounts have been imported from the National accounts of OECD countries 1990/ 2001, 2003 edition, volume II (41), table 1. Collaborative arrangements between WHO and the United Nations Statistics Division and the Economic Commission for Europe of the United
+Page 144: 141 National accounts of OECD countries: detailed tables 1990/2001, 2003 edition, volume II, table 12, row 51, supplies the information for 27 member countries. The IMF Government finance
+Page 144: OECD health data 2003 supplies GGHE entries for its member countries, with some gaps for the year 2001. In addition, the data for the year 2001 for Austria, Belgium, Iceland, Japan, Luxembourg, Republic of Korea and Turkey have been largely developed by WHO as they
+Page 145: The World Health Report 2003 but the document serves as an indicator that a reporting system exists in the 122 countries. A thorough search was conducted for the relevant national publications in those countries. In
+Page 145: Darussalam, for example, was accessed from national sources, but also from an International Medical Foundation of Japan data compendium (42). This source provided a means for dou- ble checking health budget data for seven countries.
+Page 146: excluding the populations of Kosovo and Metohia, were obtained from the Statistical year- book of Yugoslavia 2002, thus ensuring that the basis for the numerator and denominator are consistent.
+Page 147: from antenatal clinics. Bulletin of the World Health Organization, 2001, 79:596–607. 8. UNAIDS Reference Group on Estimates Modelling and Projections. Improved methods and assumptions for estimation and projection of HIV/AIDS epidemics. AIDS, 2002, 16:1–16.
+Page 147: Organization, 2001 (GPE Discussion Paper No. 12). 20. Murray CJL, Salomon JA, Mathers CD. A critical examination of summary measures of population health. Bulletin of the World Health Organization, 2000, 78:981–994.
+Page 147: Bulletin of the World Health Organization, 2000, 78:981–994. 21. Murray CJL et al. Health gaps: an overview and critical appraisal. In: Murray CJL et al, eds. Summary measures of population health: concepts, ethics, measurement and applications. Geneva, World Health
+Page 147: 24. Sadana R et al. Comparative analysis of more than 50 household surveys of health status. In: Murray CJL et al., eds. Summary measures of population health: concepts, ethics, measurement and applications. Geneva, World Health Organization, 2002 (http://www.who.int/pub/smph/en/index.html, accessed 10 October 2003).
+Page 148: accessed 10 October 2003). 29. Salomon JA et al. Health state valuations in summary measures of population health. In: Murray CJL, Evans D, eds. Health systems performance assessment: debate, new methods, new empiricism, and future directions.
+Page 148: 40. National accounts statistics: main aggregates and detailed tables, 2000. New York, NY, United Nations, 2002. 41. National accounts of OECD countries: detailed tables 1990/2001, 2003 edition, volume II. Paris, Organisation for Economic Co-operation and Development, 2003.
+Page 149: 17 Belgium  10 296
+Page 153: 111 Micronesia,      Federated States of
+Page 157: 547 Annex Table 2  Deaths by cause, sex and mortality stratum in WHO regions,a estimates for 2002 Figures computed by WHO to assure comparability;b they are not necessarily the official statistics of Member States, which may use alternative rigorous methods.
+Page 159: 13 Colon/rectum cancer   620
+Page 159: 0 Post-traumatic stress disorder   0
+Page 159: 93 Rheumatic heart disease   328
+Page 159: (000) Annex Table 2  Deaths by cause, sex and mortality stratum in WHO regions,a estimates for 2002 Figures computed by WHO to assure comparability;b they are not necessarily the official statistics of Member States, which may use alternative rigorous methods.
+Page 160: 447 Colon/rectum cancer   5
+Page 160: 3 Post-traumatic stress disorder   0
+Page 160: 3 448 Rheumatic heart disease   4
+Page 161: 2 Rheumatoid arthritis   25
+Page 161: 0 a See list of Member States by WHO region and mortality stratum. b See explanatory notes for sources and methods.
+Page 161: (000) Annex Table 2  Deaths by cause, sex and mortality stratum in WHO regions,a estimates for 2002 Figures computed by WHO to assure comparability;b they are not necessarily the official statistics of Member States, which may use alternative rigorous methods.
+Page 162: 20 Rheumatoid arthritis   0
+Page 163: (000) Annex Table 3  Burden of disease in DALYs by cause, sex and mortality stratum in WHO regions,a estimates for 2002 Figures computed by WHO to assure comparability;b they are not necessarily the official statistics of Member States, which may use alternative rigorous methods.
+Page 165: 123 Colon/rectum cancer 5 802
+Page 165: 232 Post-traumatic stress disorder 3 335
+Page 165: 901 Rheumatic heart disease 5 872
+Page 165: (000) Annex Table 3  Burden of disease in DALYs by cause, sex and mortality stratum in WHO regions,a estimates for 2002 Figures computed by WHO to assure comparability;b they are not necessarily the official statistics of Member States, which may use alternative rigorous methods.
+Page 166: 4 469 Colon/rectum cancer 58
+Page 166: 322 Post-traumatic stress disorder 84
+Page 166: 29 868 Rheumatic heart disease 101
+Page 167: 311 Rheumatoid arthritis 4 867
+Page 167: (000) Annex Table 3  Burden of disease in DALYs by cause, sex and mortality stratum in WHO regions,a estimates for 2002 Figures computed by WHO to assure comparability;b they are not necessarily the official statistics of Member States, which may use alternative rigorous methods.
+Page 168: 8 359 Rheumatoid arthritis 101
+Page 169: 17 Belgium 71.1
+Page 171: 111 Micronesia,      Federated States of
+Page 173: 17 Belgium 8.4
+Page 173: 17 Belgium 0
+Page 175: 111 Micronesia, Federated States of
+Page 175: 111 Micronesia, Federated States of
+Page 177: 17 Belgium 2016
+Page 178: 111 Micronesia, Federated States of
+Page 179: Index Page numbers in bold type indicate main discussions. “3 by 5” target for antiretroviral therapy  vii, xiii, 44, 52, 53, 105, 109
+Page 179: airports, screening measures  73, 75–77, 79, 81 alcohol consumption, risk factor for CVDs  85 alcohol and drug use disorders  19, 20
+Page 179: child mortality  9, 11 Observatory of Human Resources in Health Sector Reforms  115 see also Latin America; North America;
+Page 180: low-cost interventions  30 Millennium Development Goals  27 regional changes  9–11
+Page 180: household survey  138 Millennium Development Goals  27 mortality rates  5
+Page 180: population ageing  18 colon/rectum cancer, deaths  19 commercial interests  90, 91, 93
+Page 180: Congo, Republic, national immunization days (NIDs)  63 consumer groups  90, 91 coronary heart disease, risk factors  87
+Page 181: donor countries Millennium Development Goal 8  30–32, 38 support for polio eradication  60–62
+Page 181: life expectancy  4, 13, 18 Millennium Development Goals  33 morbidity and mortality rates  xii, 16, 20
+Page 182: and development  26–27 fundamental human right  xi inequities  ix
+Page 182: managerial staff  111, 114 minimum requirements  x–xi model for improvement  114
+Page 182: heart disease see cardiovascular disease; ischaemic heart disease High-Level Forum on Health, Nutrition and Population Related MDGs  37
+Page 182: history of the epidemic  44–46 human rights approach  50–51 local variations and subepidemics  47, 48, 51–52
+Page 182: household surveys  117, 138 human development, definition  26 human poverty, definition  26
+Page 182: human development, definition  26 human poverty, definition  26 human rights
+Page 182: human poverty, definition  26 human rights health  xi, 35
+Page 182: and HIV/AIDS  50–51 and Millennium Development Goals  35
+Page 183: Marginal Budgeting for Bottlenecks  122 Millennium Development Goals  27 polio  63, 66
+Page 183: regional differences  12 summary measures  135 life tables  117, 135–136, Annex Table 1
+Page 183: road traffic injury prevention  98 Millennium Campaign  37 Millennium Development Goals
+Page 183: Millennium Campaign  37 Millennium Development Goals core strategy  37
+Page 184: health-related  viii, xiii, 23–39, 33, 36, 105 and human rights  35 interdependent and interrelated  27, 37
+Page 184: worldwide commitment  37 Millennium Project  37 Millennium Summit (2000)  25
+Page 184: Millennium Project  37 Millennium Summit (2000)  25 ministries of health, responsibilities  126
+Page 184: obesity, risk factor for cardiovascular diseases (CVDs)  85 Observatory of Human Resources in Health Sector Reforms  115 oils, healthy  88
+Page 184: phytochemicals  87 pneumonia see lower respiratory tract conditions Poland
+Page 186: lack of health personnel  110 Millennium Development Goals  27 Sudan
+Page 186: access to health care  124 Consumer Foundation  125 health warnings on cigarette packets  94
+Page 186: HIV/AIDS prevention activities  48 National Forums for Health Care Reform  126 polio-free  63
+Page 186: global epidemic  xi, xiv, xv, 19, 91–95 rising consumption  92 taxation  87, 94
+Page 186: traffic noise  99 trauma response systems  99 travellers
+Page 186: HIV/AIDS prevention and care  49 Millennium Development Goals  29 Ukraine
+Page 186: General Assembly  98 Millennium Action Plan  118 Millennium Declaration  25
+Page 186: Millennium Action Plan  118 Millennium Declaration  25 Millennium Development Goals
+Page 186: Millennium Declaration  25 Millennium Development Goals      see Millennium Development Goals
+Page 186: Millennium Development Goals      see Millennium Development Goals Population Division  36, 135
+Page 187: United States Centers for Disease Control and Prevention (CDC)  60 United States Millennium Challenge Account  32 urban areas, adverse effects of traffic  99–100
+Page 187: Global Strategy on Diet, Physical Activity and Health  90 and Millennium Development Goals  35–38 new way of working  vii, xv, 128
+Page 187: World Report on Road Traffic Injury Prevention  98 World Summit on Sustainable Development, Johannesburg, South Africa (2002)  26
+
+--- Reading document.pdf ---
+Page 1: มากที่สุดคือ Igeba รองลงมาคือ Best foger และ Swing fog ร้อยละ 63.30, 20.20 และ 16.50 ตามลÎำดับ ตรวจวัด อุณหภูมิความร้อนปลายท่ออัตราการไหลของสารเคมีและขนาดเฉลี่ยของละอองนÎ้ำยา (VMD) ผ่านเกณฑ์มาตรฐาน  79.75, 60.76 และ 60.76 ตามลÎำดับ ประเมินประสิทธิภาพสารเคมีที่ใช้ในพื้นที่จÎำนวน 12 แห่ง (12 ยี่ห้อ) พบว่า
+Page 2: และวิธีการพ่นที่ถูกต้อง ส่วนเครื่องพ่นเคมีที่ใช้งานส่วนมากผ่านเกณฑ์มาตรฐานอุณหภูมิความร้อนปลายท่อ อัตราการ ไหลสารเคมี และขนาดละอองเม็ดนÎ้ำยาร้อยละ 60.90 สารเคมีที่ใช้หากผสมในอัตราส่วนที่ฉลากระบุและใช้อย่างถูกวิธี ยังสามารถใช้ควบคุมยุงในพื้นที่ได้ คนพ่นและเครื่องพ่นไม่ผ่านเกณฑ์มาตรฐานร้อยละ 29.1 อาจทÎำให้การควบคุมโรค
+Page 2: chemicals (71.43%). A preparation and selection material skill, techniques and skills to mixing chemicals before  spraying, ability to calculate properly a volume rate of fuel and chemicals of them were medium level. Mostly  containers to mix the chemicals were fuel gallons (78.6%) and through a cone filter before filling the tank spray-
+Page 2: with the standard (600-800 ºC). However, there are only three in five getting the standard  (10-30 microns) of volume median diameter (VMD) and also the standard of chemical liquid flow rate  (21 liter/hour) as 60.76 and 60.76 Quality of chemicals, 12 brands of chemicals were collected from
+Page 4: ความร้อนปลายท่อ (600-800 ºC) อัตราการไหลสารเคมี  (>21 ลิตร/ชั่วโมง) ขนาดละอองของสารเคมีหรือเม็ด นÎ้ำยา (Voume Median Dimetter 5-30 µm) ยังไม่มี
+Page 4: (>21 ลิตร/ชั่วโมง) ขนาดละอองของสารเคมีหรือเม็ด นÎ้ำยา (Voume Median Dimetter 5-30 µm) ยังไม่มี หน่วยงานที่ดÎำเนินการในเรื่องนี้ WHO กÎำหนดมาตรฐาน
+Page 4: เม็ดนÎ้ำยาที่มีคุณสมบัติลอยฟุ้งได้ดีในบรรยากาศควรมี ขนาด 5-27 ไมโครเมตร(11) จากการทดสอบประเมิน ประสิทธิภาพของสารเคมีชนิดต่างๆ และเครื่องพ่นควัน
+Page 5: พฤษภาคม-กันยายน 2556 การคÎำนวณขนาดตัวอย่าง
+Page 5: ใช้วิธีการจับฉลากได้จังหวัดหนองคาย มี อปท.  ทั้งหมด 67 แห่ง ขนาดตัวอย่างได้ 35แห่ง จากการคÎำนวณ กลุ่มตัวอย่างจากสูตร(13)
+Page 6: 2.3 การตรวจวัดขนาดเฉลี่ยของเม็ดนÎ้ำยาเคมี ของเครื่องพ่น (VMD) โดยติดเครื่องพ่นและปล่อยไว้จน
+Page 6: 2.3 การตรวจวัดขนาดเฉลี่ยของเม็ดนÎ้ำยาเคมี ของเครื่องพ่น (VMD) โดยติดเครื่องพ่นและปล่อยไว้จน เครื่องพ่นพร้อมทÎำงานนาน 3-5 นาที พ่นสารเคมีตาม
+Page 6: สไลด์ไปตรวจด้วยกล้องจุลทรรศน์ที่เตรียมไว้เพื่อเทียบ ขนาด นับจÎำนวนเม็ดนÎ้ำยาให้ได้ 201 เม็ดต่อสไลด์ แล้ว คÎำนวณหาขนาดเฉลี่ยเม็ดนÎ้ำยา (VMD) ตามตารางการ
+Page 6: ขนาด นับจÎำนวนเม็ดนÎ้ำยาให้ได้ 201 เม็ดต่อสไลด์ แล้ว คÎำนวณหาขนาดเฉลี่ยเม็ดนÎ้ำยา (VMD) ตามตารางการ คÎำนวณและโปรแกรมสÎำเร็จรูป Probit analysis Program
+Page 6: โดยปิดหน้าต่างและประตูให้มิดชิดแล้วพ่นตามเวลาที่ คÎำนวณไว้เพื่อให้ได้อัตราการออกฤทธิ์ต่อพื้นที่ตามขนาด ที่ฉลากกÎำหนดให้พ่นเวลาเช้าไม่เกิน 08.00 น. หลังจาก
+Page 9: การตรวจวัดอุณหภูมิความร้อน ณ จุดหัวหยดนÎ้ำยาตรงปลายท่อพบว่าส่วนมากเครื่องพ่นอยู่ในเกณฑ์มาตรฐาน  (600-800  ºC) คิดเป็นร้อยละ 79.75 การวัดอัตราการไหลของนÎ้ำยาสารเคมีร้อยละ 60.90 การวัดขนาดละอองนÎ้ำยา  (VMD 10-30 µm) ที่ระยะ 6 ฟุตได้มาตรฐานร้อยละ 60.90 มีเครื่องพ่นที่ผ่านเกณฑ์มาตรฐานครบทั้ง 3 ด้านร้อยละ
+Page 9: (600-800  ºC) คิดเป็นร้อยละ 79.75 การวัดอัตราการไหลของนÎ้ำยาสารเคมีร้อยละ 60.90 การวัดขนาดละอองนÎ้ำยา  (VMD 10-30 µm) ที่ระยะ 6 ฟุตได้มาตรฐานร้อยละ 60.90 มีเครื่องพ่นที่ผ่านเกณฑ์มาตรฐานครบทั้ง 3 ด้านร้อยละ  60.90 (ตารางที่ 5)
+Page 9: ตารางที่ 5  จÎำนวนและร้อยละของเครื่องพ่นที่ผ่านเกณฑ์การประเมินมาตรฐานด้านอุณหภูมิความร้อนปลายท่อ อัตรา การไหลสารเคมี และขนาดละอองเม็ดนÎ้ำยา (n = 79) เกณฑ์การประเมิน (ค่ามาตรฐาน)
+Page 9: 15 (18.99) ขนาดละอองเม็ดนÎ้ำยา (VMD 10-30 µm) 16 (20.25)
+Page 9: จากการสุ่มเก็บตัวอย่างสารเคมี จÎำนวน 12 ตัวอย่างหรือ 12 ยี่ห้อ ได้แก่ เดลต้าเมทริน ไซเปอร์เมทริน และ  ไซฟลูทริน พบว่าสารเคมีมีขนาดความเข้มข้นของสารออกฤทธิ์ที่บรรจุแตกต่างกันในการจÎำหน่าย แต่เมื่อผสมสารเคมี ตามอัตราส่วนที่ฉลากระบุพบว่ามีความเข้มข้นและปริมาณสารที่ออกฤทธิ์เท่ากัน จากผลการทดสอบพบว่าสารเคมีมี
+Page 10: เข้มข้นเกินขนาดหลายเท่าโดยเข้าใจว่าถ้าผสมน้อยยุงจะ ไม่ตายส่งผลให้มีการใช้สารเคมีเกินขนาดและทÎำให้ยุงใน พื้นที่ดื้อต่อสารเคมี  สอดคล้องกับการศึกษาในช่วง 5 ปี
+Page 11: ที่ใช้ไม่ผ่านเกณฑ์มาตรฐานครบทั้ง 3 ด้าน (ด้านอุณหภูมิ เครื่อง อัตราการไหล และขนาดเม็ดนÎ้ำยา) ส่งผลให้การ ควบคุมโรคไม่มีประสิทธิภาพ  และยังทÎำให้ยุงดื้อต่อสาร
+Page 13: ของสารเคมีกÎำจัดยุงลายโดยวิธีพ่นหมอกควันและ ฝอยละเอียดด้วยเครื่องพ่นขนาดเล็ก. วารสาร สÎำนักงานป้องกันควบคุมโรคที่ 6 ขอนแก่น 2549;
+Page 13: 17. Paeporn P, Supaphathom K, Srisawat R, Koma- lamisra N, Deesin V, Ya-umphan P, et al. Bio- chemical detection of pyrethroid resistance
+
+--- Reading sunisa_irem,+Journal+manager,+6.+thermal+fog.pdf ---
+
+--- Reading WHO_CDS_WHOPES_GCDPP_2003.5.pdf ---
+Page 4: 17 5.1 Optimum droplet size 17
+Page 4: 17 5.2 Droplet size parameters 19
+Page 5: 27 6.1.3 Droplet sizing 29
+Page 9: is a liquid insecticide dispersed into the air in the form of hundreds of mil- lions of tiny droplets less than 50 µm in diameter. It is only effective while the droplets remain airborne. Space sprays are applied mainly as thermal
+Page 9: lions of tiny droplets less than 50 µm in diameter. It is only effective while the droplets remain airborne. Space sprays are applied mainly as thermal fogs or cold fogs.
+Page 9: the vapour hits colder air and condenses to form a dense white cloud of fog. Most of the droplets are smaller than 20 µm. The droplet size is affected by the interaction between the formulation, the flow rate and
+Page 9: affected by the interaction between the formulation, the flow rate and the temperature at the nozzle (usually > 500 °C). The volume of spray mix- ture applied in vector control is usually 5–10 litres per hectare, with an
+Page 9: ture applied in vector control is usually 5–10 litres per hectare, with an absolute maximum of 50litres perhectare. The hot emission gas is obtained from engine exhaust, friction plate/engine exhaust or from a pulse jet
+Page 10: 2.2 Cold fog With cold fogs the droplets are formed by the mechanical breaking up of the spray mixture, either by passing it through high-pressure nozzles
+Page 12: tion plate” inside the insecticide tank, which preheats the insecticide and fuel oil mixture. This plate also serves as part of the pump that delivers WHO/CDS/WHOPES/GCDPP/2003.5
+Page 13: vapour and ignited, so that temperatures reach 426–648 °C. The diluted insecticide liquid is pumped via a simple flow delivery valve and injected into a cup in the fog head or directly into the nozzle. The insecticide
+Page 13: As the hot oil vapour is discharged through a relatively large nozzle into the cooler outside air, it condenses to form very small droplets of thick white fog. Delivery rates of up to 10 litres per minute can be achieved with
+Page 14: 3.2.2 Vehicle-mounted cold foggers A 5–20 hp 4-stroke gasoline engine is used to drive a high volume air blower, forcing air at a rate of approximately 6 m3 per minute at low
+Page 14: container may be pressurized to force the formulation to the nozzle, or positive-displacement pumps may be used. WHO/CDS/WHOPES/GCDPP/2003.5
+Page 16: tion to the centrifugal force producing droplets, air shear breaks the liquid into smaller droplets. WHO/CDS/WHOPES/GCDPP/2003.5
+Page 18: general considerations 5.1 Optimum droplet size Space treatments are only effective while the droplets remain airborne.
+Page 18: 5.1 Optimum droplet size Space treatments are only effective while the droplets remain airborne. Droplets will fall by gravity and some are deposited on horizontal surfaces
+Page 18: spraying. The speed at which droplets fall is determined by the mass of the droplet, e.g. a droplet of 20 µm diameter will fall at 0.012 minute per second,
+Page 18: The speed at which droplets fall is determined by the mass of the droplet, e.g. a droplet of 20 µm diameter will fall at 0.012 minute per second, taking 14 minutes to fall 10 metres in still air, whereas a 100 µm droplet
+Page 18: e.g. a droplet of 20 µm diameter will fall at 0.012 minute per second, taking 14 minutes to fall 10 metres in still air, whereas a 100 µm droplet falls at 0.279 minute per second and will take only 36 seconds to fall the
+Page 19: Droplets bigger than 30 µm in diameter are less effective as they do not remain airborne for sufficient time. Droplets smaller than 5 µm in diam-
+Page 19: Droplets bigger than 30 µm in diameter are less effective as they do not remain airborne for sufficient time. Droplets smaller than 5 µm in diam- eter do not readily come in contact with flying insects, as the movement
+Page 19: of the smallest droplets is affected by the air turbulence created by the insect’s flight. It is generally accepted that droplets should be generated at 10–30 µm so that, even with some evaporation and after some time,
+Page 19: insect’s flight. It is generally accepted that droplets should be generated at 10–30 µm so that, even with some evaporation and after some time, they remain in the correct range for optimal airborne suspension and
+Page 19: insect impact. Table 2. Density and fall of fog droplets when applied at the rate  of 1 litre per hectare (a theoretical model)
+Page 19: of 1 litre per hectare (a theoretical model)  Droplet size Time to fall
+Page 19: Droplet density (µm) 10 m
+Page 19: slightly larger droplets are thus desirable.  For a given volume of spray mixture, the smaller the droplet size the greater the number of droplets. If 1 ml of spray mixture is dispersed as
+Page 19: For a given volume of spray mixture, the smaller the droplet size the greater the number of droplets. If 1 ml of spray mixture is dispersed as 20 µm droplets (each containing 4.2 picolitres), there will be 239 million
+Page 19: greater the number of droplets. If 1 ml of spray mixture is dispersed as 20 µm droplets (each containing 4.2 picolitres), there will be 239 million droplets produced, whereas if the same volume is dispersed as 100 µm
+Page 19: 20 µm droplets (each containing 4.2 picolitres), there will be 239 million droplets produced, whereas if the same volume is dispersed as 100 µm droplets (534 picolitres) there will be 1.91 million droplets. The large
+Page 19: droplets produced, whereas if the same volume is dispersed as 100 µm droplets (534 picolitres) there will be 1.91 million droplets. The large number of droplets greatly increases the chances of contact being made
+Page 19: droplets (534 picolitres) there will be 1.91 million droplets. The large number of droplets greatly increases the chances of contact being made with a flying insect as the density per unit volume of air will be so much
+Page 19: number of droplets greatly increases the chances of contact being made with a flying insect as the density per unit volume of air will be so much greater (see Table 2).
+Page 19: greater (see Table 2). The optimum droplet size for space spraying against mosquitoes is 10–20 µm, for larger flies, e.g. tsetse flies, the optimum is 30 µm.
+Page 19: The optimum droplet size for space spraying against mosquitoes is 10–20 µm, for larger flies, e.g. tsetse flies, the optimum is 30 µm. 18
+Page 20: 5.2 Droplet size parameters Several parameters (Figure 5) are used to characterize the size of droplets,
+Page 20: 5.2 Droplet size parameters Several parameters (Figure 5) are used to characterize the size of droplets, which in turn is influenced by the nozzle design and operating criteria,
+Page 20: Span is determined from the diameter of the 90 percent value (V90) by volume minus the 10 percent value by volume (V10), divided by the VMD. The formula is:
+Page 20: V90 – V10 VMD The value of span gives an indication of the range of droplet sizes and is
+Page 20: VMD The value of span gives an indication of the range of droplet sizes and is ideally less than 2.
+Page 20: ideally less than 2. While the VMD, NMD and span indicate the quality of a fog, the critical factor is the maximization of the number of droplets in the optimal size range.
+Page 20: While the VMD, NMD and span indicate the quality of a fog, the critical factor is the maximization of the number of droplets in the optimal size range. 5.3 Flow rate
+Page 20: 5.3 Flow rate Most equipment used to apply space sprays will produce a range of droplet sizes. The VMD generally increases as flow rate increases. However, with
+Page 20: some machines an increase in flow rate can be compensated by increasing the air pressure. It is therefore essential to check the droplet spectrum at dif- ferent flow rates. Table 2 illustrates the need to ensure the correct droplet
+Page 20: the air pressure. It is therefore essential to check the droplet spectrum at dif- ferent flow rates. Table 2 illustrates the need to ensure the correct droplet spectrum as too few droplets will remain airborne if they are too large. If
+Page 20: ferent flow rates. Table 2 illustrates the need to ensure the correct droplet spectrum as too few droplets will remain airborne if they are too large. If WHO/CDS/WHOPES/GCDPP/2003.5
+Page 21: air for insufficient time. To maintain efficiency, a compromise is thus needed between droplet size and droplet numbers (governed by flow rate). 20
+Page 21: 17 Half the number Half the number
+Page 21: by volume 90%
+Page 21: by volume  V90
+Page 21: V10 VMD 1 2 3 4 5 6
+Page 21: 17 Half the volume Half the volume
+Page 21: Half the volume VMD V10
+Page 21: V90 Figure 5. Droplet size parameters; volume mean diameter (VMD), number median diameter (NMD) and span (the diagram of VMD
+Page 21: Figure 5. Droplet size parameters; volume mean diameter (VMD), number median diameter (NMD) and span (the diagram of VMD  and NMD was originally by Hans Dobson, University of Greenwich)
+Page 22: achieve a lethal dose. Ultra-low-volume spraying aims, largely for operational reasons, to min- imize the total volume of diluted insecticide applied (usually < 2 litres
+Page 22: Ultra-low-volume spraying aims, largely for operational reasons, to min- imize the total volume of diluted insecticide applied (usually < 2 litres per hectare).
+Page 22: 5.5 Wind speed Wind speed has a profound effect on droplet distribution and impinge- ment on insects. In most situations a wind speed of 1–4 metres per second
+Page 22: ment on insects. In most situations a wind speed of 1–4 metres per second (approximately 3.6–15 km/hour) is needed to drift the droplets down- wind from the line of travel. Spraying should not take place when wind
+Page 22: tive swathe width. An increase in the volume application rate may be needed to compensate for reduced droplet penetration into areas of vegetation. For practical purposes most manufacturers consider a 50-
+Page 28: tions and flight activity of the target species to 2–3 hours in the evening. Assuming that one machine can cover 60 hectares per hour (180 hectares in 3 hours of operation), six machines will be needed to complete this
+Page 30: tank and time how long it takes to spray the liquid. 6.1.3 Droplet sizing The collection of droplets on slides and their subsequent microscopic exam-
+Page 30: 6.1.3 Droplet sizing The collection of droplets on slides and their subsequent microscopic exam- ination has been widely used to assess the quality of space treatments (see
+Page 30: to measure droplets sampled within a section of the laser beam (spatial sampling). Alternatively the size of droplets passing the intersection of WHO/CDS/WHOPES/GCDPP/2003.5
+Page 31: This is an electronic method that is both fast and convenient (Figure 9). With this type of device droplets are measured by impingement via a very fine heated wire on a probe inserted into the stream of fog. As the
+Page 31: sample surface is extremely small, it is principally suitable for use relatively close to an aerosol nozzle, emitting a very large number of droplets, trav- elling at 5–10 m/s. The instrument is linked to a laptop computer and is
+Page 31: close to an aerosol nozzle, emitting a very large number of droplets, trav- elling at 5–10 m/s. The instrument is linked to a laptop computer and is portable and can therefore be used to check the droplet spectrum pro-
+Page 31: elling at 5–10 m/s. The instrument is linked to a laptop computer and is portable and can therefore be used to check the droplet spectrum pro- duced by cold foggers. Between readings the probe must be washed
+Page 31: carefully with a solvent, e.g. acetone. Hot-wire anemometry is not suit- able for use with thermal foggers. Droplet sizing is normally required after every 50–100 hours of machine operation or after a long period
+Page 31: VMD and NMD – are calculated, taking into account any spread factors. Magnesium oxide-coated slides are prepared by burning two strips of magnesium ribbon, each 10 cm in length, below a glass slide to ensure
+Page 31: Magnesium oxide-coated slides are prepared by burning two strips of magnesium ribbon, each 10 cm in length, below a glass slide to ensure that the central area is coated uniformly. This is done with the slide in con-
+Page 31: tact with a metal stand to prevent unequal heating and cracking of the glass. On impact with the magnesium oxide an insecticide droplet 30
+Page 32: (20–200 µm) forms a crater that is 1.15 times larger than the true droplet size (the droplet spreads slightly on impact with the magnesium oxide).
+Page 32: (20–200 µm) forms a crater that is 1.15 times larger than the true droplet size (the droplet spreads slightly on impact with the magnesium oxide). The reciprocal of the spread factor is used to convert the measurements
+Page 32: The reciprocal of the spread factor is used to convert the measurements of craters (or stains) to the true size. The spread factor of magnesium oxide is 0.86. However, with smaller insecticide droplets the spread factor
+Page 32: of craters (or stains) to the true size. The spread factor of magnesium oxide is 0.86. However, with smaller insecticide droplets the spread factor is reduced to 0.8 and 0.75 for those measuring 15–20 µm and 10–15 µm,
+Page 32: oxide is 0.86. However, with smaller insecticide droplets the spread factor is reduced to 0.8 and 0.75 for those measuring 15–20 µm and 10–15 µm, respectively. Magnesium oxide-coated slides are less satisfactory for
+Page 32: is reduced to 0.8 and 0.75 for those measuring 15–20 µm and 10–15 µm, respectively. Magnesium oxide-coated slides are less satisfactory for droplets smaller than 10 µm, hence the need to swing the slide through
+Page 32: respectively. Magnesium oxide-coated slides are less satisfactory for droplets smaller than 10 µm, hence the need to swing the slide through the spray to increase impact velocity. The addition of a coloured dye facil-
+Page 32: the spray to increase impact velocity. The addition of a coloured dye facil- itates observation of the droplets on the white surface. WHO/CDS/WHOPES/GCDPP/2003.5
+Page 32: 1 Mass Median Diameter:   15.66     microns Total droplets collected:         1885               Total time acquired:      4.12                 seconds
+Page 32: Mass Median Diameter:   15.66     microns Total droplets collected:         1885               Total time acquired:      4.12                 seconds VMD:   6.269   microns                                 Droplets over 32 microns:        3
+Page 32: Total droplets collected:         1885               Total time acquired:      4.12                 seconds VMD:   6.269   microns                                 Droplets over 32 microns:        3 SMD:   12.52   microns                                 Droplets over 48 microns:        0
+Page 32: VMD:   6.269   microns                                 Droplets over 32 microns:        3 SMD:   12.52   microns                                 Droplets over 48 microns:        0 Diameter (microns)
+Page 32: SMD:   12.52   microns                                 Droplets over 48 microns:        0 Diameter (microns) Droplet Count
+Page 33: of 1–2 metres from the nozzle. The slide wave technique is not efficient at sampling small droplets. Slides may be fitted to a rotary device to increase the speed at which the slide
+Page 33: samples the spray in order to improve sampling efficiency. Usually five separate samples are taken and at least 200 droplets are measured under a microscope. A suitable graticule is placed in the eye-
+Page 33: piece and calibrated with a stage micrometer for the magnification being used. The diameters of the craters produced by the droplets on the slide are measured by comparison with the graticule markings (Figure 10).
+Page 33: are measured by comparison with the graticule markings (Figure 10). Table 3 illustrates the calculations needed to determine the VMD and NMD of a spray using a magnesium oxide-coated slide with a spread
+Page 33: Table 3 illustrates the calculations needed to determine the VMD and NMD of a spray using a magnesium oxide-coated slide with a spread factor of 1.15. The ∑Ndm3 and ∑N, expressed as percentages, are plotted
+Page 33: factor of 1.15. The ∑Ndm3 and ∑N, expressed as percentages, are plotted against the true droplet sizes, on logarithmic probability graph paper, to obtain these parameters (where ∑is the sum, N is the number in the size
+Page 33: obtain these parameters (where ∑is the sum, N is the number in the size class, dm is the diameter of the droplets). In this specific example, the NMD and VMD are about 19 and 22 µm, respectively (Figure11).
+Page 33: class, dm is the diameter of the droplets). In this specific example, the NMD and VMD are about 19 and 22 µm, respectively (Figure11). 32
+Page 33: Z Figure 10. A graticule for measuring droplet size
+Page 34: 25.6 VMD NMD
+Page 34: Volume distribution Droplet size (µm) 0
+Page 34: 3 number class
+Page 34: 290 Table 3. An example of the size distribution of spray droplets deposited on a glass slide
+Page 34: deposited on a glass slide  Figure 11. Number and volume distribution of droplets  (data from Table 3)
+Page 36: • Close all doors and windows before spraying and keep them closed for 30 minutes after spraying to ensure maximum efficacy. • Spray operators should work backwards and away from the fog to min-
+Page 36: The size of an average dwelling (in m2) should be calculated and the volume of the diluted spray required according to the manufacturers label recommendations (note: some manufacturers’ label recommenda-
+Page 41: ticidal space spray for control of the dengue vector Aedes aegypti. Geneva, World Health Organization (document WHO/CDS/CPE/PVC/2001.1). Najera J, Zaim M (2002). Malaria vector control: decision making criteria
+Page 41: and procedures for judicious use of insecticides. Geneva, World Health Organization (document WHO/CDS/WHOPES/2002.5). WHO (1990). Equipment for vector control, 3rd ed.Geneva, World Health
+Page 43: ■Name, make and model of equipment: ■Serial number: 42
+
+--- Reading การประเมินมาตรฐานเครื่องพ่นก าจัดยุงพาหะน าโรคของหน่วยงานเครือข่ายในเขตสุขภาพที่ 4.pdf ---
+Page 1: ปีที่ 1 ฉบับที่ 2 กรกฎาคม – ธันวาคม 2563 วารสารมหาวิทยาลัยราชภัฏร้อยเอ็ด: วิทยาศาสตร์และเทคโนโลยี  Volume 1 No.2 July – December 2020 Journal of Roi Et Rajabhat University: Science and Technology
+Page 1: ในพื้นที่สุขภาพที่ 4 จังหวัดสระบุรี และการพ่นสารเคมี การใช้บ ารุงรักษาเครื่องพ่นต่อผลลัพท์ค่ามาตรฐานตามเกณฑ์ (อัตรา การไหล อุณหภูมิปลายท่อ และขนาดมาตรฐานละอองน้ ายา) ประชากรในการวิจัย คือ เครื่องพ่นสารเคมี และเจ้าหน้าที่ผู้ใช้ และดูแลรักษาเครื่องพนสารเคมีของหน่วยงานเครือข่ายในพื้นที่เขตสุขภาพที่ 4 จ านวน 12 อ าเภอ รวมเครื่องพ่นสารเคมี
+Page 1: มีความรู้เรื่องเครื่องพ่น การพ่น การบ ารุงรักษา และเจ้าหน้าที่ทุกคนที่เข้ารับการประเมินแก้ปัญหาด้วยตนเองในกรณีเครื่องขัดข้อง ขณะปฏิบัติการพ่น เครื่องพ่นหมอกควันจ านวน 113 เครื่อง มีอายุ 1 ปี ขึ้นไป ขนาดหัวพ่นเบอร์ 1.0 และ 1.2 ร้อยละ 23.9  และ 26.6 ตามล าดับ มีอัตราการไหลเฉลี่ย 19.20 ลิตร/ชั่วโมง อุณหภูมิปลายท่อเฉลี่ย 431.84 องศาเซลเซียส และมีขนาด
+Page 1: ขณะปฏิบัติการพ่น เครื่องพ่นหมอกควันจ านวน 113 เครื่อง มีอายุ 1 ปี ขึ้นไป ขนาดหัวพ่นเบอร์ 1.0 และ 1.2 ร้อยละ 23.9  และ 26.6 ตามล าดับ มีอัตราการไหลเฉลี่ย 19.20 ลิตร/ชั่วโมง อุณหภูมิปลายท่อเฉลี่ย 431.84 องศาเซลเซียส และมีขนาด ละอองน้ ายาพ่นสารเคมีเฉลี่ย 34.01 ไมครอน
+Page 1: และ 26.6 ตามล าดับ มีอัตราการไหลเฉลี่ย 19.20 ลิตร/ชั่วโมง อุณหภูมิปลายท่อเฉลี่ย 431.84 องศาเซลเซียส และมีขนาด ละอองน้ ายาพ่นสารเคมีเฉลี่ย 34.01 ไมครอน
+Page 1: percent, respectively, the average flow rate of 19.20 liters/hour, the average pipe end temperature of  431.84 degrees celsius, and the average aerosol standard size 34.01 micron.
+Page 2: ปีที่ 1 ฉบับที่ 2 กรกฎาคม – ธันวาคม 2563 วารสารมหาวิทยาลัยราชภัฏร้อยเอ็ด: วิทยาศาสตร์และเทคโนโลยี  Volume 1 No.2 July – December 2020 Journal of Roi Et Rajabhat University: Science and Technology
+Page 2: 2561) การพ่นสารเคมีเพื่อควบคุมก าจัดยุงพาหะน าโรค มีปัจจัยหลายอย่างที่มีผลต่อประสิทธิภาพ ได้แก่ คุณภาพสารเคมี  เทคนิคการพ่น คุณภาพเครื่องพ่นสารเคมี สิ่งแวดล้อม โดยเฉพาะคุณภาพเครื่องพ่น องค์การอนามัยโลกแนะน าขนาดเม็ดน้ ายาที่พ่น ควรมีเส้นผ่าศูนย์กลางระหว่าง 5-27 ไมครอน จึงจะมีประสิทธิภาพสูงสุดในการก าจัดแมลงบินเพราะจะลอยฟุ้งคลุมพื้นที่ได้นาน
+Page 2: เทคนิคการพ่น คุณภาพเครื่องพ่นสารเคมี สิ่งแวดล้อม โดยเฉพาะคุณภาพเครื่องพ่น องค์การอนามัยโลกแนะน าขนาดเม็ดน้ ายาที่พ่น ควรมีเส้นผ่าศูนย์กลางระหว่าง 5-27 ไมครอน จึงจะมีประสิทธิภาพสูงสุดในการก าจัดแมลงบินเพราะจะลอยฟุ้งคลุมพื้นที่ได้นาน และไปได้ไกลตามกระแสลมตามธรรมชาติ โดยขนาดขึ้นกับปริมาณความร้อนและอัตราการไหลของสารเคมี (ไสว โพธิมล และ
+Page 2: ควรมีเส้นผ่าศูนย์กลางระหว่าง 5-27 ไมครอน จึงจะมีประสิทธิภาพสูงสุดในการก าจัดแมลงบินเพราะจะลอยฟุ้งคลุมพื้นที่ได้นาน และไปได้ไกลตามกระแสลมตามธรรมชาติ โดยขนาดขึ้นกับปริมาณความร้อนและอัตราการไหลของสารเคมี (ไสว โพธิมล และ  ประเทือง ยมศรีเคน, 2558) เครื่องพ่นสารเคมีเป็นอุปกรณ์ที่มีความส าคัญและจ าเป็นส าหรับการควบคุมการระบาดของโรคติดต่อ
+Page 2: 2. ศึกษาความรู้ด้านการพ่นสารเคมีและการใช้ บ ารุงรักษาเครื่องพ่น ต่อผลลัพธ์ค่ามาตรฐานตามเกณฑ์ (อัตราการ ไหล อุณหภูมิปลายท่อ และขนาดมาตรฐานละอองน้ ายา)
+Page 3: ปีที่ 1 ฉบับที่ 2 กรกฎาคม – ธันวาคม 2563 วารสารมหาวิทยาลัยราชภัฏร้อยเอ็ด: วิทยาศาสตร์และเทคโนโลยี  Volume 1 No.2 July – December 2020 Journal of Roi Et Rajabhat University: Science and Technology
+Page 3: 3.2.3 การวัดขนาดละอองสารเคมี โดยนับละอองใต้กล้องจุลทรรศน์จากแผ่นสไลด์ที่เคลือบแมกนีเซียมไป โฉบสัมผัสละอองน้ ายา ในระยะห่างจากปลายกระบอกพ่นสารเคมี 2 เมตร โดยเก็บสไลด์ 3 แผ่น ต่อการทดลอง 1 ครั้ง โดยนับ
+Page 4: ปีที่ 1 ฉบับที่ 2 กรกฎาคม – ธันวาคม 2563 วารสารมหาวิทยาลัยราชภัฏร้อยเอ็ด: วิทยาศาสตร์และเทคโนโลยี  Volume 1 No.2 July – December 2020 Journal of Roi Et Rajabhat University: Science and Technology
+Page 5: ปีที่ 1 ฉบับที่ 2 กรกฎาคม – ธันวาคม 2563 วารสารมหาวิทยาลัยราชภัฏร้อยเอ็ด: วิทยาศาสตร์และเทคโนโลยี  Volume 1 No.2 July – December 2020 Journal of Roi Et Rajabhat University: Science and Technology
+Page 5: 25.66  ขนาดหัวพ่นเบอร์
+Page 6: ปีที่ 1 ฉบับที่ 2 กรกฎาคม – ธันวาคม 2563 วารสารมหาวิทยาลัยราชภัฏร้อยเอ็ด: วิทยาศาสตร์และเทคโนโลยี  Volume 1 No.2 July – December 2020 Journal of Roi Et Rajabhat University: Science and Technology
+Page 6: ข้อมูลเครื่องพ่นสารเคมีที่ได้รับประเมินประสิทธิภาพ จากตาราง 3-6 เครื่องพ่นหมอกควันจ านวน 113 เครื่อง มีอายุ   1 ปี ขึ้นไป ขนาดหัวพ่นเบอร์ 1.0 และ 1.2 ร้อยละ 23.9 และ 26.6 ตามล าดับ มีอัตราการไหลเฉลี่ย 19.20 ลิตร/ชั่วโมง  สอดคล้องกับการศึกษาของ กองแก้ว ปี 2561 การวัดอัตราการไหลของน้ ายาสารเคมีได้มาตรฐานร้อยละ 60.76 (กองแก้ว ยะอูป
+Page 6: (ไสว โพธิมล และ ประเทือง ยมศรีเคน, 2558) อุณหภูมิปลายท่อเฉลี่ยส่วนใหญ่มีอุณหภูมิต่ ากว่าเกณฑ์มาตรฐาน ร้อยละ  96.33 ค่าเฉลี่ย 431.84 องศาเซลเซียส และมีขนาดละอองน้ ายาพ่นสารเคมีเฉลี่ย 34.01 ไมครอน ผ่านเกณฑ์มาตรฐานร้อยละ  53.00 สอดคล้องกับการศึกษาของ ไสว ปี 2558 พบเครื่องพ่นส่วนใหญ่มีอุณหภูมิปลายท่อ น้อยกว่า 600 องศาเซลเซียส
+Page 6: 53.00 สอดคล้องกับการศึกษาของ ไสว ปี 2558 พบเครื่องพ่นส่วนใหญ่มีอุณหภูมิปลายท่อ น้อยกว่า 600 องศาเซลเซียส  ร้อยละ 66.10 และขนาดเม็ดน้ ายา ไม่เกิน 30 ไมครอน ร้อยละ 83.05 (ไสว โพธิมล และ ประเทือง ยมศรีเคน, 2558) แตกต่างกับ การศึกษาของ บุญเทียน ปี 2558 พบเครื่องพ่นส่วนใหญ่มีอุณหภูมิอยู่ในช่วง 600-800 องศาเซลเซียส และขนาดเม็ดน้ ายา
+Page 6: ร้อยละ 66.10 และขนาดเม็ดน้ ายา ไม่เกิน 30 ไมครอน ร้อยละ 83.05 (ไสว โพธิมล และ ประเทือง ยมศรีเคน, 2558) แตกต่างกับ การศึกษาของ บุญเทียน ปี 2558 พบเครื่องพ่นส่วนใหญ่มีอุณหภูมิอยู่ในช่วง 600-800 องศาเซลเซียส และขนาดเม็ดน้ ายา  ไม่ผ่านเกณฑ์มาตรฐานร้อยละ 74.7 (บุญเทียน อาสารินทร์ และคณะ, 2558)
+Page 6: ตารางที่ 4  ข้อมูลการประเมินเครื่องพ่นสารเคมี (อัตราการไหล อุณหภูมิ ณ จุดหยดน้ ายา และขนาดละอองสารเคมี)    ข้อมูล
+Page 7: ปีที่ 1 ฉบับที่ 2 กรกฎาคม – ธันวาคม 2563 วารสารมหาวิทยาลัยราชภัฏร้อยเอ็ด: วิทยาศาสตร์และเทคโนโลยี  Volume 1 No.2 July – December 2020 Journal of Roi Et Rajabhat University: Science and Technology
+Page 7: ตารางที่ 7  ขนาดละอองน้ ายาพ่นสารเคมี (ไมครอน) ของเครื่องพ่นสารเคมี จ าแนกตามจังหวัด (n=51)  ขนาดละอองน ายาพ่นสารเคมี (ไมครอน)
+Page 7: ตารางที่ 7  ขนาดละอองน้ ายาพ่นสารเคมี (ไมครอน) ของเครื่องพ่นสารเคมี จ าแนกตามจังหวัด (n=51)  ขนาดละอองน ายาพ่นสารเคมี (ไมครอน)  < 30
+Page 7: หน่วยงานยังมีผู้ก ากับ ดูแล ควบคุม การพ่นสารเคมีก าจัดยุงพาหะ อย่างไรก็ตามการให้ความส าคัญกับการบ ารุงรักษาเครื่องพ่น  เพื่อให้สามารถผลิตขนาดเม็ดน้ ายาได้ตามมาตรฐาน และใช้งานได้เต็มประสิทธิภาพ จะช่วยท าให้การการควบคุมยุงพาหะน าโรค  มีประสิทธิภาพดียิ่งขึ้น (บุญเทียน อาสารินทร์ และคณะ, 2558)
+Page 7: ขณะปฏิบัติงาน พบว่าส่วนใหญ่มีหน้ากาก และไม่มีอุปกรณ์ป้องกันเสียงส าหรับใส่ขณะปฏิบัติงาน    เครื่องพ่นหมอกควัน ที่รับการตรวจประเมินมาตรฐานทั้งสิ้น 113 เครื่อง มีอายุ 1 ปี ขึ้นไป ขนาดหัวพ่นเบอร์ 1.0  และ 1.2 ร้อยละ 23.9 และ 26.6 ตามล าดับ มีอัตราการไหลเฉลี่ย 19.20 ลิตร/ชั่วโมง อุณหภูมิปลายท่อเฉลี่ย 431.84 องศา
+Page 8: ปีที่ 1 ฉบับที่ 2 กรกฎาคม – ธันวาคม 2563 วารสารมหาวิทยาลัยราชภัฏร้อยเอ็ด: วิทยาศาสตร์และเทคโนโลยี  Volume 1 No.2 July – December 2020 Journal of Roi Et Rajabhat University: Science and Technology
+Page 8: เซลเซียส และขนาดละอองน้ ายาพ่นสารเคมีเฉลี่ย 34.01 ไมครอน อุณหภูมิที่วัดได้จากปลายท่อปล่อยสารเคมีขณะที่ยัง  ไม่ปล่อยสารเคมีสูงไม่เกิน 800 องศาเซลเซียส ร้อยละ 96.46 ซึ่งตรงตามมาตรฐาน สอดคล้องกับการศึกษาของ ไสว ปี 2558
+Page 8: ของสารเคมีติดตั้งอยู่ เครื่องพ่นหมอกควันที่วัดอัตราการไหลไม่ผ่านมาตรฐาน ร้อยละ 21.24 ส าหรับหัวควบคุมการไหลของ สารเคมีควรใช้คือหัวเบอร์ 1.0 รองลงมาคือเบอร์ 0.8 ไม่แนะน าให้ใช้หัวเบอร์ 1.2 หรือ 1.4 เพราะจะท าให้ขนาดเม็ดน้ ายามี ขนาดใหญ่ และสิ้นเปลืองสารเคมี นอกจากนี้อัตราการไหลของสารเคมีน ามาใช้ในการก าหนดเวลาที่ท าการพ่นในบ้านแต่ละ
+Page 8: สารเคมีควรใช้คือหัวเบอร์ 1.0 รองลงมาคือเบอร์ 0.8 ไม่แนะน าให้ใช้หัวเบอร์ 1.2 หรือ 1.4 เพราะจะท าให้ขนาดเม็ดน้ ายามี ขนาดใหญ่ และสิ้นเปลืองสารเคมี นอกจากนี้อัตราการไหลของสารเคมีน ามาใช้ในการก าหนดเวลาที่ท าการพ่นในบ้านแต่ละ หลัง หากเครื่องพ่นมีอัตราการไหลต่อนาทีสูงต้องลดเวลาพ่นในบ้านให้น้อยลง เพื่อให้สัมพันธ์กับปริมาณสารเคมีที่ใช้พ่นในบ้าน
+Page 8: ซึ่งบ้าน 1 หลังคาเรือน โดยเฉลี่ยจะมีพื้นที่ ประมาณ 100 - 150 ตารางเมตร ใช้สารเคมีพ่น 100-150 ซีซี เพื่อลดการใช้ สารเคมีเกินขนาด
+Page 9: ปีที่ 1 ฉบับที่ 2 กรกฎาคม – ธันวาคม 2563 วารสารมหาวิทยาลัยราชภัฏร้อยเอ็ด: วิทยาศาสตร์และเทคโนโลยี  Volume 1 No.2 July – December 2020 Journal of Roi Et Rajabhat University: Science and Technology

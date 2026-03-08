@@ -6,10 +6,34 @@
 
     <Application.Styles>
         <FluentTheme />
+        <Style Selector="Window">
+            <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        </Style>
+        <Style Selector="TextBlock">
+            <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        </Style>
+        <Style Selector="TabItem">
+            <Setter Property="FontFamily" Value="{DynamicResource AppFontFamily}"/>
+        </Style>
     </Application.Styles>
 
     <Application.Resources>
         <ResourceDictionary>
+            <FontFamily x:Key="GoogleSansFont">avares://Detectvbdc12.2/Assets/Fonts#Google Sans</FontFamily>
+            <FontFamily x:Key="THSarabunNewFont">avares://Detectvbdc12.2/Assets/Fonts#TH Sarabun New</FontFamily>
+
+            <!-- Current App Font system (DynamicResource) -->
+            <FontFamily x:Key="AppFontFamily">avares://Detectvbdc12.2/Assets/Fonts#Google Sans</FontFamily>
+
             <ResourceDictionary.ThemeDictionaries>
                 
                 <!-- Dark Theme (Catppuccin Mocha Inspired) -->

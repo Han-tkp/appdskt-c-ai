@@ -41,6 +41,53 @@
 
 ---
 
+## 🏗️ System Architecture (สถาปัตยกรรมระบบ)
+
+โครงสร้างสถาปัตยกรรมของโปรแกรมถูกออกแบบตามหลักการ **MVVM (Model-View-ViewModel)** และแยกส่วนการประมวลผลกล้อง/AI ออกจาก UI Thread อย่างชัดเจน เพื่อให้ UI ตอบสนองได้ลื่นไหลแม้จะมีการประมวลผลภาพอย่างหนักหน่วง
+
+* **AI Model & Dataset**: โมเดลปัญญาประดิษฐ์ Bounding Box `.onnx` (YOLOv8) ของระบบนี้ผ่านการเทรน (Training) อย่างเข้มข้นบน **Google Colab** โดยใช้ชุดข้อมูลภาพ (Dataset) การหยดสเปรย์และละอองน้ำคุณภาพสูงที่รวบรวมและจัดการผ่านแพลตฟอร์ม **Roboflow**
+
+### แผนภาพสถาปัตยกรรมระบบ (Architecture Diagram)
+
+```mermaid
+graph TD
+    %% Hardware Input
+    Camera((Microscope / USB Camera)) -->|Frames Video| Vision[VisionService <br/> OpenCV Camera Control]
+    
+    %% AI Engine & Processing
+    subgraph AI Engine (Inference Layer)
+        Vision -->|Image Mat| Inference[InferenceService <br/> ONNX Runtime]
+        Model[(YOLOv8 .onnx <br/> Trained: Google Colab <br/> Dataset: Roboflow)] -.->|Loads Weights| Inference
+        Inference -->|Raw Bounding Boxes| Analysis[AnalysisService <br/> Geometric Math]
+    end
+
+    %% Business Logic
+    subgraph Core Business Logic
+        Analysis -->|Pixel Data| Calibration[CalibrationService <br/> Pixel-to-Micron Ratio]
+        Calibration -->|Micron Data µm| Stats[Stat Calculation <br/> VMD Dv0.5, SPAN]
+    end
+
+    %% Presentation / UI
+    subgraph Presentation Layer (MVVM)
+        Stats -->|Data Binding| ViewModel[MainWindowViewModel <br/> Slide Tracking]
+        ViewModel <--> UI[Avalonia UI <br/> MainWindow / SettingsWindow]
+        Settings[(AppSettingsService <br/> %APPDATA% JSON)] <--> ViewModel
+    end
+    
+    %% Outputs
+    ViewModel -->|Add to Report| Excel[ExcelExportService]
+    Excel -->|ClosedXML| XLSX[Report.xlsx <br/> Dashboards & Data]
+    Vision -->|Take Snapshot| Images[Snapshot Image Files <br/> Raw & Analyzed]
+```
+
+### คำอธิบายองค์ประกอบหลัก:
+- **Presentation Layer**: ใช้ `Avalonia UI` ในการแสดงผลหน้าต่างและธีม ผูกข้อมูลเชิงลึกเข้ากับ `MainWindowViewModel` ที่คอยจัดการสถานะต่างๆ (เช่น จำนวนสไลด์, กราฟข้อมูลสถิติ)
+- **AI Engine**: โมเดล `.onnx` ที่เทรนบน Colab (ชุดข้อมูล Roboflow) จะถูกโหลดเข้า `InferenceService` เพื่อรันสดแบบ Real-time (รองรับทั้ง CPU และ DirectML GPU)
+- **Core Business Logic**: แปลงค่าพิกเซลของ Bounding Box มาเป็นไมครอน (µm) ผ่าน `CalibrationService` ตามกำลังขยายเลนส์ (4x, 10x) ก่อนคำนวณหาสถิติที่ WHO ต้องการ (VMD, SPAN)
+- **Output Data**: `ExcelExportService` สร้างตารางรายงานและ Dashboard ลงไฟล์ Excel อัตโนมัติ โดยไม่ไปกวนการแสดงผลของหน้าจอ (UI Thread)
+
+---
+
 ## 🚀 เริ่มต้นการใช้งาน (Getting Started)
 
 เนื่องจากโปรเจคนี้อิงกับ Avalonia UI จึงใช้เครื่องมือจาก .NET 8 ในการประกอบและกระจายซอร์สโค้ด

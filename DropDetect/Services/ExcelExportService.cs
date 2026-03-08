@@ -41,23 +41,53 @@ public class ExcelExportService : IExcelExportService
 
     private void CreateSummarySheet(XLWorkbook workbook, IEnumerable<AnalysisReportItem> reportItems)
     {
-        var ws = workbook.Worksheets.Add("สรุปผล (Summary)");
+        var ws = workbook.Worksheets.Add("Dashboard สรุปผล");
 
-        // Headers
-        ws.Cell(1, 1).Value = "Location Name (ชื่อสถานที่)";
-        ws.Cell(1, 2).Value = "Date (วันที่)";
-        ws.Cell(1, 3).Value = "Total Detected (เจอทั้งหมด)";
-        ws.Cell(1, 4).Value = "Sampled Count (นำมาสุ่มคำนวณ)";
-        ws.Cell(1, 5).Value = "VMD (Dv0.5) µm";
-        ws.Cell(1, 6).Value = "SPAN";
-        ws.Cell(1, 7).Value = "Evaluation (ผลการประเมิน)";
+        // --- Overall Summary Section ---
+        ws.Cell(1, 1).Value = "DropDetect - Laboratory Analysis Dashboard";
+        var titleRange = ws.Range(1, 1, 1, 7);
+        titleRange.Merge().Style.Font.SetBold().Font.SetFontSize(16).Font.SetFontColor(XLColor.White).Fill.SetBackgroundColor(XLColor.DarkBlue);
+        titleRange.Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+        int totalDrops = reportItems.Sum(x => x.Result.TotalAccumulatedCount);
+        int totalSampled = reportItems.Sum(x => x.Result.Count);
+
+        // Calculate Global VMD if applicable (Averaging the VMDs for a quick overall glance)
+        double avgVmd = reportItems.Any() ? reportItems.Average(x => x.Result.Dv05_VMD) : 0;
+        double avgSpan = reportItems.Any() ? reportItems.Average(x => x.Result.Span) : 0;
+
+        ws.Cell(3, 1).Value = "Total Slides Analyzed:";
+        ws.Cell(3, 2).Value = reportItems.Count();
+        ws.Cell(4, 1).Value = "Total Droplets Detected (All Slides):";
+        ws.Cell(4, 2).Value = totalDrops;
+        ws.Cell(5, 1).Value = "Total Droplets Sampled:";
+        ws.Cell(5, 2).Value = totalSampled;
+
+        ws.Cell(3, 4).Value = "Overall Average VMD (µm):";
+        ws.Cell(3, 5).Value = Math.Round(avgVmd, 2);
+        ws.Cell(4, 4).Value = "Overall Average SPAN:";
+        ws.Cell(4, 5).Value = Math.Round(avgSpan, 2);
+
+        var summaryBlock = ws.Range(3, 1, 5, 5);
+        summaryBlock.Style.Font.SetBold();
+
+        // --- Detailed Table Headers ---
+        int tableStartRow = 8;
+        ws.Cell(tableStartRow, 1).Value = "Location Name (ชื่อสถานที่)";
+        ws.Cell(tableStartRow, 2).Value = "Date (วันที่)";
+        ws.Cell(tableStartRow, 3).Value = "Total Detected (เจอทั้งหมด)";
+        ws.Cell(tableStartRow, 4).Value = "Sampled Count (จำนวนสุ่ม)";
+        ws.Cell(tableStartRow, 5).Value = "VMD (Dv0.5) µm";
+        ws.Cell(tableStartRow, 6).Value = "SPAN";
+        ws.Cell(tableStartRow, 7).Value = "Evaluation (ผลการประเมิน)";
 
         // Style Headers
-        var headerRange = ws.Range(1, 1, 1, 7);
+        var headerRange = ws.Range(tableStartRow, 1, tableStartRow, 7);
         headerRange.Style.Font.Bold = true;
         headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+        headerRange.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
 
-        int row = 2;
+        int row = tableStartRow + 1;
         foreach (var item in reportItems)
         {
             ws.Cell(row, 1).Value = item.LocationName;
@@ -72,26 +102,33 @@ public class ExcelExportService : IExcelExportService
             if (item.Result.IsPassed && item.Result.IsCountSufficient)
             {
                 ws.Cell(row, 7).Style.Font.FontColor = XLColor.Green;
+                ws.Cell(row, 7).Style.Font.Bold = true;
             }
             else
             {
                 ws.Cell(row, 7).Style.Font.FontColor = XLColor.Red;
+                ws.Cell(row, 7).Style.Font.Bold = true;
             }
+
+            var rowRange = ws.Range(row, 1, row, 7);
+            rowRange.Style.Border.SetBottomBorder(XLBorderStyleValues.Thin);
+            rowRange.Style.Border.SetBottomBorderColor(XLColor.LightGray);
 
             row++;
         }
 
         // Apply Data Bars Conditional Formatting for VMD and SPAN to act as visual charts
-        if (row > 2)
+        if (row > tableStartRow + 1)
         {
-            var vmdRange = ws.Range(2, 5, row - 1, 5);
+            var vmdRange = ws.Range(tableStartRow + 1, 5, row - 1, 5);
             vmdRange.AddConditionalFormat().DataBar(XLColor.PastelBlue).LowestValue().HighestValue();
 
-            var spanRange = ws.Range(2, 6, row - 1, 6);
+            var spanRange = ws.Range(tableStartRow + 1, 6, row - 1, 6);
             spanRange.AddConditionalFormat().DataBar(XLColor.PastelOrange).LowestValue().HighestValue();
         }
 
-        ws.Columns().AdjustToContents();
+        ws.Columns(1, 7).AdjustToContents();
+        ws.Column(1).Width = Math.Max(ws.Column(1).Width, 25); // Ensure Location Name has enough space
     }
 
     private void CreateDetailedSheet(XLWorkbook workbook, AnalysisReportItem item)

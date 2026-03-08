@@ -39,6 +39,7 @@ public partial class App : Application
     {
         // Core Services
         services.AddSingleton<ICalibrationService, CalibrationService>();
+        services.AddSingleton<IAppSettingsService, AppSettingsService>();
         services.AddSingleton<IAnalysisService, AnalysisService>();
         services.AddSingleton<IInferenceService, InferenceService>();
         services.AddSingleton<IVisionService, VisionService>();

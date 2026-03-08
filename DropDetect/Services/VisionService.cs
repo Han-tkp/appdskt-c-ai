@@ -18,12 +18,17 @@ public class VisionEventArgs : EventArgs
 public interface IVisionService : IDisposable
 {
     event EventHandler<VisionEventArgs>? OnFrameProcessed;
-    void StartCamera(int cameraIndex, string currentLensStr, string cameraApi);
+    bool IsRunning { get; }
+    void StartCamera(int cameraIndex, string currentLensStr, string cameraApi, string resolution);
     void StopCamera();
     void SetThreshold(float threshold);
     void SetLens(string lensStr);
     void SetHardwareProvider(string provider);
+    void SetLiveAnalysis(bool enabled);
     void RequestAnalysis();
+    void SetModelPaths(string model4x, string model10x);
+    void UnfreezeCamera();
+    void SetSnapshotFreezeDuration(int milliseconds);
     void ToggleIgnoreDroplet(double x, double y);
     System.Collections.Generic.List<double> GetSessionDroplets();
     void ClearSession();
@@ -163,6 +168,8 @@ public class VisionService : IVisionService
     private string _currentLensStr = "10x";
     private string _currentProvider = "CPU";
 
+    private static readonly object _logLock = new object();
+
     public bool IsRunning => _isRunning;
     public event EventHandler<VisionEventArgs>? OnFrameProcessed;
 
@@ -179,7 +186,7 @@ public class VisionService : IVisionService
         ReloadModelForLens();
     }
 
-    public void StartCamera(int cameraIndex, string currentLensStr, string cameraApi)
+    public void StartCamera(int cameraIndex, string currentLensStr, string cameraApi, string resolution)
     {
         if (_isRunning) StopCamera();
 
@@ -217,9 +224,23 @@ public class VisionService : IVisionService
             throw new Exception($"Failed to open camera index {cameraIndex}");
         }
 
-        // Removed forcing 1280x720 to prevent driver rejection (black screens).
-        // _capture.FrameWidth = 1280;
-        // _capture.FrameHeight = 720;
+        // Parse and apply standard microscope 4:3 resolutions
+        int width = 1280;
+        int height = 960;
+
+        if (!string.IsNullOrEmpty(resolution) && resolution.Contains("x"))
+        {
+            var parts = resolution.Split('x');
+            if (parts.Length == 2 && int.TryParse(parts[0], out int w) && int.TryParse(parts[1], out int h))
+            {
+                width = w;
+                height = h;
+            }
+        }
+
+        // Force OpenCV hardware capture resolution
+        _capture.Set(VideoCaptureProperties.FrameWidth, width);
+        _capture.Set(VideoCaptureProperties.FrameHeight, height);
 
         _isRunning = true;
         _cancellationTokenSource = new CancellationTokenSource();
@@ -255,9 +276,25 @@ public class VisionService : IVisionService
         ReloadModelForLens(); // Reload current model into new hardware (GPU/CPU)
     }
 
+    public void SetModelPaths(string model4x, string model10x)
+    {
+        _customModelFileName4x = model4x;
+        _customModelFileName10x = model10x;
+        ReloadModelForLens();
+    }
+
     private void ReloadModelForLens()
     {
-        string modelFileName = _currentLensStr == "4x" ? "yolov8n_4x.onnx" : "yolov8n_10x.onnx";
+        string defaultModelName = _currentLensStr == "4x" ? "yolov8n_4x.onnx" : "yolov8n_10x.onnx";
+        string customModelName = _currentLensStr == "4x" ? _customModelFileName4x : _customModelFileName10x;
+        string modelFileName = defaultModelName;
+
+        // Override with custom model if user selected one
+        if (!string.IsNullOrEmpty(customModelName) && customModelName != "Default Model" && customModelName != "No models found in fileonnx/")
+        {
+            modelFileName = customModelName;
+        }
+
         string modelPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fileonnx", modelFileName);
 
         lock (_lockObj)
@@ -274,7 +311,12 @@ public class VisionService : IVisionService
         }
     }
 
-    private bool _isAnalyzingContinuous = false;
+    private bool _isLiveAnalysisEnabled = false;
+    private bool _requestSnapshot = false;
+    private bool _isFrozen = false;
+    private string _customModelFileName4x = "";
+    private string _customModelFileName10x = "";
+    private int _snapshotFreezeDurationMs = 1500; // default 1.5s
     private ObjectTracker _tracker = new ObjectTracker();
     private System.Collections.Generic.HashSet<int> _ignoreList = new();
     private System.Collections.Generic.Dictionary<int, double> _sessionDroplets = new();
@@ -283,9 +325,40 @@ public class VisionService : IVisionService
     private Mat? _lastRawFrame = null;
     private Mat? _lastProcessedFrame = null;
 
+    public void SetLiveAnalysis(bool enabled)
+    {
+        lock (_lockObj)
+        {
+            _isLiveAnalysisEnabled = enabled;
+            // If turning off live analysis, unfreeze if it was frozen
+            if (!enabled)
+            {
+                _isFrozen = false;
+            }
+        }
+    }
+
     public void RequestAnalysis()
     {
-        _isAnalyzingContinuous = !_isAnalyzingContinuous; // Toggle Pause/Resume
+        lock (_lockObj)
+        {
+            // Trigger a single-frame analysis pass and save it to the session.
+            // Do NOT freeze the camera. It must stay live.
+            _requestSnapshot = true;
+        }
+    }
+
+    public void UnfreezeCamera()
+    {
+        lock (_lockObj)
+        {
+            _isFrozen = false;
+        }
+    }
+
+    public void SetSnapshotFreezeDuration(int milliseconds)
+    {
+        _snapshotFreezeDurationMs = Math.Clamp(milliseconds, 200, 10000);
     }
 
     public System.Collections.Generic.List<double> GetSessionDroplets()
@@ -353,7 +426,21 @@ public class VisionService : IVisionService
                 // Save raw frame clone safely
                 Mat currentRaw = frame.Clone();
 
-                if (_isAnalyzingContinuous)
+                bool triggerAI = false;
+                bool isLive = false;
+
+                lock (_lockObj)
+                {
+                    if (_requestSnapshot)
+                    {
+                        triggerAI = true;
+                        _requestSnapshot = false; // Consume the trigger signal
+                    }
+                    isLive = _isLiveAnalysisEnabled;
+                }
+
+                // AI Processing is triggered if snapshot requested OR if Live Analysis is on
+                if (triggerAI || isLive)
                 {
                     // AI
                     var inferenceResult = _inferenceService.RunInference(frame, _confThreshold);
@@ -370,13 +457,22 @@ public class VisionService : IVisionService
                     for (int i = 0; i < inferenceResult.DiametersPx.Count; i++)
                     {
                         double umDiameter = inferenceResult.DiametersPx[i] * ratio;
+                        var centroid = inferenceResult.Centroids[i];
+
+                        // Margin Exclusion (Vignette edge safe-zone): 40px padding
+                        int margin = 40;
+                        if (centroid.X < margin || centroid.X > (frame.Width - margin) ||
+                            centroid.Y < margin || centroid.Y > (frame.Height - margin))
+                        {
+                            continue; // Skip droplets touching the dark edge rings
+                        }
 
                         // WHO Recommendation / Logic: Filter out specks (<1 µm) and huge background blobs/streaks (>300 µm)
                         if (umDiameter >= 1.0 && umDiameter <= 300.0)
                         {
                             validUmDiameters.Add(umDiameter);
                             validContours.Add(inferenceResult.Contours[i]);
-                            validCentroids.Add(inferenceResult.Centroids[i]);
+                            validCentroids.Add(centroid);
                         }
                     }
 
@@ -385,6 +481,7 @@ public class VisionService : IVisionService
 
                     var finalUmDiameters = new System.Collections.Generic.List<double>();
                     var activeContours = new System.Collections.Generic.List<OpenCvSharp.Point[]>();
+                    var outOfBoundsContours = new System.Collections.Generic.List<OpenCvSharp.Point[]>();
 
                     using Mat overlay = frame.Clone();
 
@@ -394,53 +491,25 @@ public class VisionService : IVisionService
                         {
                             if (!_ignoreList.Contains(drop.Id))
                             {
-                                finalUmDiameters.Add(drop.DiameterUm);
-                                activeContours.Add(drop.Contour);
-
-                                // Absolute Freeze Logic: If droplet already exists, lock its dimension to the original value
+                                // Freeze logic: lock droplet size to first-seen value
                                 if (_sessionDroplets.TryGetValue(drop.Id, out double frozenUm))
-                                {
-                                    drop.DiameterUm = frozenUm; // Force current frame to match historic frozen value
-                                }
+                                    drop.DiameterUm = frozenUm;
                                 else
-                                {
-                                    _sessionDroplets[drop.Id] = drop.DiameterUm; // Save newly detected droplet permanently
-                                }
+                                    _sessionDroplets[drop.Id] = drop.DiameterUm;
 
-                                // Draw ID and Micron size in a blue badge
-                                string line1 = $"{drop.Id}:";
-                                string line2 = $"L={drop.DiameterUm:F2} µm";
+                                finalUmDiameters.Add(drop.DiameterUm);
 
-                                var size1 = Cv2.GetTextSize(line1, HersheyFonts.HersheySimplex, 0.4, 1, out int baseline1);
-                                var size2 = Cv2.GetTextSize(line2, HersheyFonts.HersheySimplex, 0.4, 1, out int baseline2);
-
-                                int boxWidth = Math.Max(size1.Width, size2.Width) + 10;
-                                int boxHeight = size1.Height + size2.Height + 15;
-
-                                var pt = new OpenCvSharp.Point((int)drop.Centroid.X + 20, (int)drop.Centroid.Y - 20);
-
-                                // Light Blue BGR: 219, 161, 52
-                                Scalar badgeColor = new Scalar(219, 161, 52);
-
-                                // Connect badge to centroid with a thin line
-                                Cv2.Line(frame, new OpenCvSharp.Point((int)drop.Centroid.X, (int)drop.Centroid.Y), new OpenCvSharp.Point(pt.X, pt.Y), badgeColor, 1, LineTypes.AntiAlias);
-
-                                // Draw Background Rect
-                                Cv2.Rectangle(frame, new OpenCvSharp.Rect(pt.X, pt.Y - size1.Height - 5, boxWidth, boxHeight), badgeColor, -1);
-
-                                // Draw Text
-                                Cv2.PutText(frame, line1, new OpenCvSharp.Point(pt.X + 5, pt.Y + 5), HersheyFonts.HersheySimplex, 0.4, new Scalar(255, 255, 255), 1, LineTypes.AntiAlias);
-                                Cv2.PutText(frame, line2, new OpenCvSharp.Point(pt.X + 5, pt.Y + size1.Height + 10), HersheyFonts.HersheySimplex, 0.4, new Scalar(255, 255, 255), 1, LineTypes.AntiAlias);
+                                bool isOobContour = drop.DiameterUm < 5.0 || drop.DiameterUm > 30.0;
+                                if (isOobContour) outOfBoundsContours.Add(drop.Contour);
+                                else activeContours.Add(drop.Contour);
                             }
                             else
                             {
-                                // Remove from session history if user clicked to ignore it
+                                // Ignored: remove from session and draw X label
                                 _sessionDroplets.Remove(drop.Id);
-
-                                // Draw ignored in red
                                 Cv2.DrawContours(frame, new[] { drop.Contour }, -1, new Scalar(0, 0, 255), 2);
-                                Cv2.PutText(frame, $"Ignored", new OpenCvSharp.Point((int)drop.Centroid.X + 10, (int)drop.Centroid.Y - 10),
-                                    HersheyFonts.HersheySimplex, 0.5, new Scalar(0, 0, 255), 1, LineTypes.AntiAlias);
+                                Cv2.PutText(frame, "X", new OpenCvSharp.Point((int)drop.Centroid.X - 5, (int)drop.Centroid.Y + 5),
+                                    HersheyFonts.HersheySimplex, 0.6, new Scalar(0, 0, 255), 2, LineTypes.AntiAlias);
                             }
                         }
                     }
@@ -457,19 +526,69 @@ public class VisionService : IVisionService
                         }
                     }
 
-                    // Draw Masks/Contours on frame for valid droplets
+                    // Draw contour fills FIRST so labels render on top
                     if (activeContours.Count > 0)
                     {
-                        // Use the same light blue instead of green
                         Cv2.DrawContours(overlay, activeContours, -1, new Scalar(219, 161, 52), -1);
-                        Cv2.AddWeighted(overlay, 0.2, frame, 0.8, 0, frame); // Make fill more transparent
+                        Cv2.AddWeighted(overlay, 0.2, frame, 0.8, 0, frame);
                         Cv2.DrawContours(frame, activeContours, -1, new Scalar(219, 161, 52), 1);
+                    }
+                    if (outOfBoundsContours.Count > 0)
+                    {
+                        using Mat redOverlay = frame.Clone();
+                        Cv2.DrawContours(redOverlay, outOfBoundsContours, -1, new Scalar(0, 0, 220), -1);
+                        Cv2.AddWeighted(redOverlay, 0.25, frame, 0.75, 0, frame);
+                        Cv2.DrawContours(frame, outOfBoundsContours, -1, new Scalar(0, 0, 220), 2);
+                    }
+
+                    // Draw badges (labels) AFTER fills so they are on top
+                    lock (_lockObj)
+                    {
+                        foreach (var drop in activeDroplets)
+                        {
+                            if (_ignoreList.Contains(drop.Id)) continue;
+
+                            bool isOutOfBounds = drop.DiameterUm < 5.0 || drop.DiameterUm > 30.0;
+                            Scalar badgeColor = isOutOfBounds
+                                ? new Scalar(0, 0, 200)
+                                : new Scalar(180, 120, 30);
+
+                            // Get bounding rect from contour
+                            var rect = Cv2.BoundingRect(drop.Contour);
+
+                            // Draw bounding rectangle
+                            Cv2.Rectangle(frame, rect, badgeColor, 1);
+
+                            string label = $"{drop.DiameterUm:F1} um";
+                            var textSize = Cv2.GetTextSize(label, HersheyFonts.HersheySimplex, 0.38, 1, out int baseline);
+
+                            int padX = 4, padY = 3;
+                            int bw = textSize.Width + padX * 2;
+                            int bh = textSize.Height + padY * 2;
+
+                            // Anchor badge just above bounding rect, clamped to frame
+                            int bx = Math.Clamp(rect.X, 0, frame.Width - bw - 1);
+                            int by = Math.Clamp(rect.Y - bh - 2, 0, frame.Height - bh - 1);
+
+                            Cv2.Rectangle(frame, new OpenCvSharp.Rect(bx, by, bw, bh), badgeColor, -1);
+                            Cv2.PutText(frame, label,
+                                new OpenCvSharp.Point(bx + padX, by + bh - padY - 1),
+                                HersheyFonts.HersheySimplex, 0.38,
+                                new Scalar(255, 255, 255), 1, LineTypes.AntiAlias);
+                        }
                     }
 
                     avaloniaBitmap = CreateWriteableBitmapFromMat(frame);
+
+                    if (triggerAI && !isLive)
+                    {
+                        // Post-snapshot freeze: hold the frame so user can see results
+                        Thread.Sleep(_snapshotFreezeDurationMs);
+                    }
                 }
                 else
                 {
+                    // Full Live View (No Analysis)
                     avaloniaBitmap = CreateWriteableBitmapFromMat(frame);
                 }
 
@@ -503,7 +622,10 @@ public class VisionService : IVisionService
                     string logDir = System.IO.Path.Combine(appDataPath, "DropDetect");
                     if (!System.IO.Directory.Exists(logDir)) System.IO.Directory.CreateDirectory(logDir);
                     string logFile = System.IO.Path.Combine(logDir, "analyze_debug.log");
-                    System.IO.File.AppendAllText(logFile, logMsg);
+                    lock (_logLock)
+                    {
+                        System.IO.File.AppendAllText(logFile, logMsg);
+                    }
                 }
                 catch { /* Failsafe, do nothing if logging fails */ }
                 Console.WriteLine($"Camera Loop Error: {ex.Message}");
