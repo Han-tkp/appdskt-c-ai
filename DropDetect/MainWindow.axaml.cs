@@ -11,7 +11,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        this.KeyDown += MainWindow_KeyDown;
+        this.AddHandler(InputElement.KeyDownEvent, MainWindow_KeyDown, Avalonia.Interactivity.RoutingStrategies.Tunnel);
         this.DataContextChanged += MainWindow_DataContextChanged;
         this.Closing += MainWindow_Closing;
     }
@@ -48,13 +48,15 @@ public partial class MainWindow : Window
     {
         if (DataContext is MainWindowViewModel vm)
         {
-            if (System.Enum.TryParse<Key>(vm.SnapshotHotkey, true, out var hotkey))
+            if (e.Key == vm.SnapshotHotkey)
             {
-                if (e.Key == hotkey && hotkey != Key.None)
-                {
-                    vm.TakeSnapshotCommand();
-                    e.Handled = true; // Prevent hotkey from scrolling or clicking focused buttons accidentally
-                }
+                vm.TakeSnapshotCommand();
+                e.Handled = true;
+            }
+            else if (e.Key == vm.LiveAiHotkey)
+            {
+                vm.AnalyzeCommand.Execute(null);
+                e.Handled = true;
             }
         }
     }

@@ -13,6 +13,11 @@
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1">
 
+    <Window.KeyBindings>
+        <KeyBinding Gesture="{Binding SnapshotHotkey}" Command="{Binding TakeSnapshotCommand}"/>
+        <KeyBinding Gesture="{Binding LiveAiHotkey}" Command="{Binding AnalyzeCommand}"/>
+    </Window.KeyBindings>
+
     <LayoutTransformControl>
         <LayoutTransformControl.LayoutTransform>
             <ScaleTransform ScaleX="{Binding LayoutFontScale}" ScaleY="{Binding LayoutFontScale}"/>
@@ -45,7 +50,7 @@
                 <Rectangle Grid.Column="1" Width="1" Fill="{DynamicResource ThemeBorderBrush}" Margin="8,2"/>
 
                 <!-- Slide Name -->
-                <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="6,0">
+                <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="12,0">
                     <TextBlock Text="{Binding CurrentSlideLabel}" Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="10"/>
                     <TextBlock Text="{Binding SelectedSlide.SlideName, FallbackValue='—'}" Foreground="{DynamicResource ThemeTextPrimaryBrush}" FontWeight="Bold" FontSize="14"/>
                 </StackPanel>
@@ -53,7 +58,7 @@
                 <Rectangle Grid.Column="3" Width="1" Fill="{DynamicResource ThemeBorderBrush}" Margin="8,2"/>
 
                 <!-- Slide Status (Add to report?) -->
-                <StackPanel Grid.Column="4" Orientation="Vertical" VerticalAlignment="Center" Margin="6,0">
+                <StackPanel Grid.Column="4" Orientation="Vertical" VerticalAlignment="Center" Margin="12,0">
                     <TextBlock Text="{Binding SlideStatusLabel}" Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="10"/>
                     <TextBlock Text="{Binding SelectedSlide.StatusText, FallbackValue='—'}" Foreground="{Binding SelectedSlide.StatusColor}" FontWeight="Bold" FontSize="13"/>
                 </StackPanel>
@@ -61,7 +66,7 @@
                 <Rectangle Grid.Column="5" Width="1" Fill="{DynamicResource ThemeBorderBrush}" Margin="8,2"/>
 
                 <!-- Target Sample Size -->
-                <StackPanel Grid.Column="6" Orientation="Vertical" VerticalAlignment="Center" Margin="6,0">
+                <StackPanel Grid.Column="6" Orientation="Vertical" VerticalAlignment="Center" Margin="12,0">
                     <TextBlock Text="{Binding TargetSizeLabel}" Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="10"/>
                     <TextBlock Text="{Binding TargetSampleSize}" Foreground="{DynamicResource ThemeAccentYellowBrush}" FontWeight="Bold" FontSize="14"/>
                 </StackPanel>
@@ -69,7 +74,7 @@
                 <Rectangle Grid.Column="7" Width="1" Fill="{DynamicResource ThemeBorderBrush}" Margin="8,2"/>
 
                 <!-- VMD -->
-                <StackPanel Grid.Column="8" Orientation="Vertical" VerticalAlignment="Center" Margin="6,0">
+                <StackPanel Grid.Column="8" Orientation="Vertical" VerticalAlignment="Center" Margin="12,0">
                     <TextBlock Text="{Binding VmdLabel}" Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="10"/>
                     <TextBlock Text="{Binding VmdText}" Foreground="{DynamicResource ThemeAccentBlueBrush}" FontWeight="Bold" FontSize="14"/>
                 </StackPanel>
@@ -77,7 +82,7 @@
                 <Rectangle Grid.Column="9" Width="1" Fill="{DynamicResource ThemeBorderBrush}" Margin="8,2"/>
 
                 <!-- In-Frame -->
-                <StackPanel Grid.Column="10" Orientation="Vertical" VerticalAlignment="Center" Margin="6,0">
+                <StackPanel Grid.Column="10" Orientation="Vertical" VerticalAlignment="Center" Margin="12,0">
                     <TextBlock Text="{Binding InFrameLabel}" Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="10"/>
                     <TextBlock Text="{Binding DropletCount}" Foreground="{DynamicResource ThemeTextPrimaryBrush}" FontWeight="Bold" FontSize="14"/>
                 </StackPanel>
@@ -85,7 +90,7 @@
                 <Rectangle Grid.Column="11" Width="1" Fill="{DynamicResource ThemeBorderBrush}" Margin="8,2"/>
 
                 <!-- Accumulated -->
-                <StackPanel Grid.Column="12" Orientation="Vertical" VerticalAlignment="Center" Margin="6,0">
+                <StackPanel Grid.Column="12" Orientation="Vertical" VerticalAlignment="Center" Margin="12,0">
                     <TextBlock Text="{Binding AccumulatedLabel}" Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="10"/>
                     <TextBlock Text="{Binding AccumulatedCount}" Foreground="{DynamicResource ThemeAccentGreenBrush}" FontWeight="Bold" FontSize="14"/>
                 </StackPanel>
@@ -93,7 +98,7 @@
                 <Rectangle Grid.Column="13" Width="1" Fill="{DynamicResource ThemeBorderBrush}" Margin="8,2"/>
 
                 <!-- SPAN -->
-                <StackPanel Grid.Column="14" Orientation="Vertical" VerticalAlignment="Center" Margin="6,0">
+                <StackPanel Grid.Column="14" Orientation="Vertical" VerticalAlignment="Center" Margin="12,0">
                     <TextBlock Text="{Binding SpanLabel}" Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="10"/>
                     <TextBlock Text="{Binding SpanText}" Foreground="#FAB387" FontWeight="Bold" FontSize="14"/>
                 </StackPanel>
@@ -101,7 +106,7 @@
                 <Rectangle Grid.Column="15" Width="1" Fill="{DynamicResource ThemeBorderBrush}" Margin="8,2"/>
 
                 <!-- Out-of-Bounds -->
-                <StackPanel Grid.Column="16" Orientation="Vertical" VerticalAlignment="Center" Margin="6,0">
+                <StackPanel Grid.Column="16" Orientation="Vertical" VerticalAlignment="Center" Margin="12,0">
                     <TextBlock Text="{Binding OutOfBoundsLabel}" Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontSize="10"/>
                     <TextBlock Text="{Binding OutOfBoundsCount}" Foreground="{DynamicResource ThemeAccentRedBrush}" FontWeight="Bold" FontSize="14"/>
                 </StackPanel>
@@ -136,40 +141,24 @@
                                 <ComboBox ItemsSource="{Binding AvailableLenses}" SelectedItem="{Binding LensSelection}" HorizontalAlignment="Stretch"/>
 
                                 <!-- Camera Start/Stop -->
-                                <Grid ColumnDefinitions="*,8,*" Margin="0,6,0,0">
+                                <Grid ColumnDefinitions="*,10,*" Margin="0,10,0,0">
                                     <Button Grid.Column="0" Content="▶ Start" Command="{Binding StartCameraCommand}"
                                             Background="{DynamicResource ThemeAccentGreenBrush}" Foreground="{DynamicResource ThemeActionTextBrush}"
-                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontWeight="Bold"/>
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontWeight="Bold" Padding="8"/>
                                     <Button Grid.Column="2" Content="⏹ Stop" Command="{Binding StopCameraCommand}"
                                             Background="{DynamicResource ThemeAccentRedBrush}" Foreground="{DynamicResource ThemeActionTextBrush}"
-                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontWeight="Bold"/>
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontWeight="Bold" Padding="8"/>
                                 </Grid>
 
-                                <!-- Analysis Mode -->
-                                <Border Background="{DynamicResource ThemeSubPanelBrush}" CornerRadius="6" Padding="8,6" Margin="0,6,0,0">
-                                    <StackPanel Spacing="5">
-                                        <TextBlock Text="{Binding LocAnalysisMode}" Foreground="{DynamicResource ThemeTextSecondaryBrush}" FontWeight="SemiBold" FontSize="12"/>
-                                        <RadioButton Content="📡 Live AI" IsChecked="{Binding IsLiveModeSelected}" Foreground="{DynamicResource ThemeTextPrimaryBrush}"/>
-                                        <RadioButton Content="📸 Snapshot" IsChecked="{Binding IsSnapshotModeSelected}" Foreground="{DynamicResource ThemeTextPrimaryBrush}"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Switch Camera (full width) -->
-                                <Button Content="🔄 Switch Camera" Command="{Binding CycleCameraCommand}"
-                                        Background="{DynamicResource ThemeAccentBlueBrush}" Foreground="{DynamicResource ThemeActionTextBrush}"
-                                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontWeight="Bold" Margin="0,4,0,0"/>
-
-                                <!-- Dynamic AI button -->
-                                <Panel>
+                                <!-- Dynamic Action Buttons -->
+                                <StackPanel Margin="0,10,0,0" Spacing="8">
                                     <Button Content="{Binding AnalyzeButtonText}" Command="{Binding AnalyzeCommand}"
-                                            IsVisible="{Binding IsLiveModeSelected}"
                                             Background="{DynamicResource ThemeAccentYellowBrush}" Foreground="{DynamicResource ThemeActionTextBrush}"
-                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontWeight="Bold"/>
-                                    <Button Content="📸 Take Snapshot" Command="{Binding TakeSnapshotUICommand}"
-                                            IsVisible="{Binding IsSnapshotModeSelected}"
-                                            Background="{DynamicResource ThemeAccentYellowBrush}" Foreground="{DynamicResource ThemeActionTextBrush}"
-                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontWeight="Bold"/>
-                                </Panel>
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontWeight="Bold" Padding="8"/>
+                                    <Button Content="{Binding SnapshotHotkeyDisplay, StringFormat='📸 Take Snapshot ({0})'}" Command="{Binding TakeSnapshotUICommand}"
+                                            Background="{DynamicResource ThemeAccentBlueBrush}" Foreground="{DynamicResource ThemeActionTextBrush}"
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" FontWeight="Bold" Padding="8"/>
+                                </StackPanel>
                             </StackPanel>
                             </ScrollViewer>
                         </TabItem>

@@ -14,300 +14,309 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 using Avalonia.Media;
+using Avalonia.Data.Converters;
 using System.Management;
+using System.Runtime.Versioning;
+using System.Collections.Generic;
+using System.IO;
+using System.Diagnostics;
+using OpenCvSharp;
 
 namespace DropDetect.ViewModels;
+
+public class HardwareDevice : ObservableObject
+{
+    public string Name { get; set; } = "";
+    public string Type { get; set; } = "";
+    public string Performance { get; set; } = "ปานกลาง";
+    public string PerformanceColor { get; set; } = "#FAB387";
+}
 
 public partial class MainWindowViewModel : ObservableObject
 {
     private readonly IVisionService _visionService;
     private readonly IExcelExportService _excelExportService;
     private readonly IAppSettingsService _settingsService;
+    private readonly ILocalizationService _localizationService;
+    private readonly IAnalysisService _analysisService;
+    private readonly DispatcherTimer _telemetryTimer;
 
-    [ObservableProperty]
-    private string _statusText = "Ready - Waiting to start camera";
+    [ObservableProperty] private bool _hasUnsavedChanges = false;
+    [ObservableProperty] private string _hotkeyConflictMessage = "";
 
-    [ObservableProperty]
-    private WriteableBitmap? _cameraImage;
+    [ObservableProperty] private string _statusText = "Ready - Waiting to start camera";
+    [ObservableProperty] private WriteableBitmap? _cameraImage;
+    [ObservableProperty] private ObservableCollection<string> _availableLenses = new() { "4x", "10x" };
+    [ObservableProperty] private string _lensSelection = "10x";
+    partial void OnLensSelectionChanged(string value) { HasUnsavedChanges = true; }
 
-    [ObservableProperty]
-    private ObservableCollection<string> _availableLenses = new() { "4x", "10x" };
+    [ObservableProperty] private bool _isSettingsOpen = false;
+    [ObservableProperty] private ObservableCollection<HardwareDevice> _hardwareDevices = new();
+    [ObservableProperty] private ObservableCollection<string> _availableHardware = new() { "CPU" };
+    [ObservableProperty] private string _selectedHardware = "CPU";
 
-    [ObservableProperty]
-    private string _lensSelection = "10x";
+    [ObservableProperty] private bool _isCameraRunning = false;
+    [ObservableProperty] private bool _isCameraLoading = false;
+    [ObservableProperty] private string _loadingMessage = "Loading...";
 
-    partial void OnLensSelectionChanged(string value) => SaveCurrentSettings();
+    public string CameraStatusColor => IsCameraLoading ? "#FAB387" : IsCameraRunning ? "#a6e3a1" : "#585b70";
+    public string CameraStatusLabel => IsCameraLoading ? "Loading…" : IsCameraRunning ? "LIVE" : "Offline";
 
-    [ObservableProperty]
-    private bool _isSettingsOpen = false;
+    partial void OnSelectedHardwareChanged(string value) { HasUnsavedChanges = true; }
 
-    [ObservableProperty]
-    private ObservableCollection<string> _availableHardware = new() { "CPU", "GPU (DirectML)" };
+    [ObservableProperty] private string _currentHardwareSpecs = "Loading...";
 
-    [ObservableProperty]
-    private string _selectedHardware = "CPU";
-
-    partial void OnSelectedHardwareChanged(string value)
-    {
-        if (_visionService != null)
-        {
-            _visionService.SetHardwareProvider(value);
-            StatusText = $"Hardware switched to: {value}";
-            SaveCurrentSettings();
-        }
-    }
-
-    [ObservableProperty]
-    private string _currentHardwareSpecs = "Loading hardware information...";
-
+    [SupportedOSPlatform("windows")]
     private async Task FetchHardwareSpecsAsync()
     {
-        try
-        {
-            var hardwareList = new System.Collections.Generic.List<string> { "CPU" };
-            string cpuName = "Unknown CPU";
+        var devices = new List<HardwareDevice>();
+        var providers = new List<string> { "CPU" };
 
-            await Task.Run(() =>
+        await Task.Run(() =>
+        {
+            try
             {
-                // Fetch CPU
-                try
+                using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_Processor");
+                foreach (var obj in searcher.Get())
                 {
-                    using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_Processor");
-                    foreach (var obj in searcher.Get())
-                    {
-                        cpuName = obj["Name"]?.ToString() ?? "Unknown CPU";
-                        break;
-                    }
-                }
-                catch { }
-
-                // Fetch GPU
-                try
-                {
-                    int gpuIndex = 0;
-                    using var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_VideoController");
-                    foreach (var obj in searcher.Get())
-                    {
-                        var name = obj["Name"]?.ToString() ?? "Unknown GPU";
-                        hardwareList.Add($"DirectML: {name} (DeviceId: {gpuIndex})");
-                        gpuIndex++;
-                    }
-                }
-                catch { }
-            });
-
-            Dispatcher.UIThread.Post(() =>
-            {
-                if (hardwareList.Count > 1)
-                {
-                    // hardwareList[0] is "CPU", the rest are GPUs
-                    string gpus = string.Join("\n", hardwareList.Skip(1));
-                    CurrentHardwareSpecs = $"CPU: {cpuName}\nGPU: {gpus}";
-                }
-                else
-                {
-                    CurrentHardwareSpecs = $"CPU: {cpuName}\nGPU: None (DirectML not detected)";
+                    string name = obj["Name"]?.ToString() ?? "Unknown CPU";
+                    devices.Add(new HardwareDevice { Name = name, Type = "CPU", Performance = "ดี", PerformanceColor = "#a6e3a1" });
+                    break;
                 }
 
-                AvailableHardware.Clear();
-                foreach (var hw in hardwareList)
+                using var gpuSearcher = new ManagementObjectSearcher("SELECT Name FROM Win32_VideoController");
+                int gpuIdx = 0;
+                foreach (var obj in gpuSearcher.Get())
                 {
-                    AvailableHardware.Add(hw);
-                }
+                    string name = obj["Name"]?.ToString() ?? "Unknown GPU";
+                    string perf = "ปานกลาง";
+                    string color = "#FAB387";
 
-                // Restore selected hardware if it exists in the list
-                if (!AvailableHardware.Contains(SelectedHardware))
-                {
-                    SelectedHardware = "CPU";
+                    if (name.Contains("RTX") || name.Contains("RX 6") || name.Contains("RX 7") || name.Contains("A7") || name.Contains("A5")) { perf = "ดีมาก"; color = "#a6e3a1"; }
+                    else if (name.Contains("GTX") || name.Contains("RX 5") || name.Contains("Iris") || name.Contains("Quadro")) { perf = "ดี"; color = "#89b4fa"; }
+
+                    devices.Add(new HardwareDevice { Name = name, Type = "GPU", Performance = perf, PerformanceColor = color });
+                    providers.Add($"DirectML: {name} ({gpuIdx})");
+                    gpuIdx++;
                 }
-            });
-        }
-        catch (Exception)
+            }
+            catch { }
+        });
+
+        Dispatcher.UIThread.Post(() =>
         {
-            CurrentHardwareSpecs = "Unable to fetch hardware details.";
-        }
+            HardwareDevices.Clear();
+            foreach (var d in devices) HardwareDevices.Add(d);
+            AvailableHardware.Clear();
+            foreach (var p in providers) AvailableHardware.Add(p);
+            CurrentHardwareSpecs = devices.Count > 0 ? $"{devices[0].Name}" : "N/A";
+        });
     }
 
-    [ObservableProperty]
-    private ObservableCollection<string> _availableModels = new() { "Default Model" };
+    [ObservableProperty] private ObservableCollection<string> _availableModels = new() { "yolov8n_4x.onnx", "yolov8n_10x.onnx" };
+    [ObservableProperty] private string _selectedModelPath4x = "yolov8n_4x.onnx";
+    [ObservableProperty] private string _selectedModelPath10x = "yolov8n_10x.onnx";
 
-    [ObservableProperty]
-    private string _selectedModelPath4x = "Default Model";
-
-    [ObservableProperty]
-    private string _selectedModelPath10x = "Default Model";
-
-    partial void OnSelectedModelPath4xChanged(string value)
-    {
-        if (_visionService != null)
-        {
-            _visionService.SetModelPaths(SelectedModelPath4x, SelectedModelPath10x);
-            if (LensSelection == "4x") StatusText = $"Model (4x) switched to: {value}";
-        }
-        SaveCurrentSettings();
-    }
-
-    partial void OnSelectedModelPath10xChanged(string value)
-    {
-        if (_visionService != null)
-        {
-            _visionService.SetModelPaths(SelectedModelPath4x, SelectedModelPath10x);
-            if (LensSelection == "10x") StatusText = $"Model (10x) switched to: {value}";
-        }
-        SaveCurrentSettings();
-    }
+    partial void OnSelectedModelPath4xChanged(string value) { HasUnsavedChanges = true; }
+    partial void OnSelectedModelPath10xChanged(string value) { HasUnsavedChanges = true; }
 
     private void RefreshModelList()
     {
-        try
+        string onnxFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fileonnx");
+        if (!Directory.Exists(onnxFolder)) Directory.CreateDirectory(onnxFolder);
+        var files = Directory.GetFiles(onnxFolder, "*.onnx");
+        Dispatcher.UIThread.Post(() =>
         {
-            string onnxFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fileonnx");
-            if (!System.IO.Directory.Exists(onnxFolder))
-            {
-                System.IO.Directory.CreateDirectory(onnxFolder);
-            }
-
-            var files = System.IO.Directory.GetFiles(onnxFolder, "*.onnx", System.IO.SearchOption.AllDirectories);
-
-            Dispatcher.UIThread.Post(() =>
-            {
-                AvailableModels.Clear();
-                if (files.Length == 0)
-                {
-                    AvailableModels.Add("No models found in fileonnx/");
-                    if (SelectedModelPath4x == "Default Model" || string.IsNullOrEmpty(SelectedModelPath4x)) SelectedModelPath4x = "No models found in fileonnx/";
-                    if (SelectedModelPath10x == "Default Model" || string.IsNullOrEmpty(SelectedModelPath10x)) SelectedModelPath10x = "No models found in fileonnx/";
-                }
-                else
-                {
-                    foreach (var file in files)
-                    {
-                        AvailableModels.Add(System.IO.Path.GetFileName(file));
-                    }
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error scanning models: {ex.Message}");
-        }
+            AvailableModels.Clear();
+            foreach (var f in files) AvailableModels.Add(Path.GetFileName(f));
+            
+            // Fallback selection if saved setting not found
+            if (!AvailableModels.Contains(SelectedModelPath4x) && AvailableModels.Contains("yolov8n_4x.onnx")) SelectedModelPath4x = "yolov8n_4x.onnx";
+            if (!AvailableModels.Contains(SelectedModelPath10x) && AvailableModels.Contains("yolov8n_10x.onnx")) SelectedModelPath10x = "yolov8n_10x.onnx";
+        });
     }
 
     [RelayCommand]
-    private void OpenModelsFolder()
+    private async Task ImportModel()
     {
-        try
+        var picker = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow?.StorageProvider;
+        if (picker == null) return;
+        var files = await picker.OpenFilePickerAsync(new FilePickerOpenOptions { Title = "Import ONNX Model", FileTypeFilter = new[] { new FilePickerFileType("ONNX Model") { Patterns = new[] { "*.onnx" } } } });
+        if (files.Count > 0)
         {
-            string onnxFolder = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fileonnx");
-            if (!System.IO.Directory.Exists(onnxFolder))
-            {
-                System.IO.Directory.CreateDirectory(onnxFolder);
-            }
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
-            {
-                FileName = onnxFolder,
-                UseShellExecute = true,
-                Verb = "open"
-            });
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error opening models folder: {ex.Message}");
+            string onnxFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fileonnx");
+            string dest = Path.Combine(onnxFolder, files[0].Name);
+            File.Copy(files[0].Path.LocalPath, dest, true);
+            RefreshModelList();
+            StatusText = $"Model imported: {files[0].Name}";
         }
     }
 
+    [RelayCommand] private void OpenModelsFolder() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fileonnx"), UseShellExecute = true });
+
+    [ObservableProperty] private ObservableCollection<string> _availableThemes = new() { "System", "Dark", "Light" };
+    [ObservableProperty] private string _selectedTheme = "System";
+    partial void OnSelectedThemeChanged(string value) { HasUnsavedChanges = true; }
+
+    [ObservableProperty] private double _layoutFontScale = 1.0;
+    partial void OnLayoutFontScaleChanged(double value) { HasUnsavedChanges = true; }
+
+    [ObservableProperty] private ObservableCollection<string> _availableFonts = new() { "Default System", "Google Sans", "THSarabunNew" };
+    [ObservableProperty] private string _selectedFont = "Default System";
+    partial void OnSelectedFontChanged(string value) { HasUnsavedChanges = true; }
+
+    [ObservableProperty] private ObservableCollection<string> _availableLanguages = new() { "English", "ภาษาไทย" };
+    [ObservableProperty] private string _selectedLanguage = "English";
+    partial void OnSelectedLanguageChanged(string value) { HasUnsavedChanges = true; }
+
+    // --- Commands ---
     [RelayCommand]
-    private void RefreshModels()
+    private async Task StartCamera()
+    {
+        IsCameraLoading = true; LoadingMessage = "Starting Camera...";
+        await Task.Run(() => _visionService.StartCamera(CameraIndex, LensSelection, SelectedCameraApi, CameraResolution));
+        IsCameraRunning = true; IsCameraLoading = false; StatusText = "Camera Live.";
+    }
+
+    [RelayCommand]
+    private async Task StopCamera()
+    {
+        IsCameraLoading = true; LoadingMessage = "Stopping Camera...";
+        await Task.Run(() => _visionService.StopCamera());
+        IsCameraRunning = false; IsCameraLoading = false; StatusText = "Camera Stopped.";
+    }
+
+    [RelayCommand]
+    private void Analyze()
+    {
+        if (!_isLiveAnalysisActive) { _visionService.SetLiveAnalysis(true); _isLiveAnalysisActive = true; AnalyzeButtonText = $"⏹ Stop Live AI ({LiveAiHotkeyDisplay})"; }
+        else { _visionService.SetLiveAnalysis(false); _isLiveAnalysisActive = false; AnalyzeButtonText = $"▶ Start Live AI ({LiveAiHotkeyDisplay})"; }
+    }
+
+    [RelayCommand]
+    private async Task ExportExcel()
+    {
+        if (ReportData.Count == 0) { StatusText = "No data to export."; return; }
+        var picker = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow?.StorageProvider;
+        if (picker == null) return;
+        var file = await picker.SaveFilePickerAsync(new FilePickerSaveOptions { Title = "Export Excel Report", SuggestedFileName = $"Report_{DateTime.Now:yyyyMMdd_HHmm}.xlsx", DefaultExtension = ".xlsx" });
+        if (file != null) { await _excelExportService.ExportAsync(ReportData.ToList(), file.Path.LocalPath); StatusText = "Excel exported successfully!"; }
+    }
+
+    [RelayCommand]
+    private async Task SelectDirectory()
+    {
+        var picker = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow?.StorageProvider;
+        if (picker == null) return;
+        var folders = await picker.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Select Output Directory" });
+        if (folders.Count > 0) OutputDirectory = folders[0].Path.LocalPath;
+    }
+
+    [RelayCommand] private void ToggleSettings()
     {
         RefreshModelList();
-        StatusText = "Model list refreshed";
+        if (OperatingSystem.IsWindows()) _ = FetchHardwareSpecsAsync();
+        LoadInitialSettings(); // Reset to saved state on open
+        HasUnsavedChanges = false;
+        HotkeyConflictMessage = "";
+        ShowSettingsRequested?.Invoke();
     }
+    
+    [RelayCommand] private void AskCloseSettings() { CloseSettingsRequested?.Invoke(); }
+    [RelayCommand] public void TakeSnapshotCommand() => _visionService.RequestAnalysis();
+    [RelayCommand] public void TakeSnapshotUICommand() => TakeSnapshotCommand();
+    [RelayCommand] private void UnfreezeCamera() => _visionService.UnfreezeCamera();
+    
+    [RelayCommand] private void StartListeningForSnapshotHotkey() { IsListeningForSnapshotHotkey = true; SnapshotHotkeyDisplay = "Press any key..."; HotkeyConflictMessage = ""; }
+    [RelayCommand] private void StartListeningForLiveAiHotkey() { IsListeningForLiveAiHotkey = true; LiveAiHotkeyDisplay = "Press any key..."; HotkeyConflictMessage = ""; }
 
-    [ObservableProperty]
-    private ObservableCollection<string> _availableCameraApis = new() { "Auto", "DirectShow", "Media Foundation" };
+    public Action? ShowSettingsRequested { get; set; }
+    public Action? CloseSettingsRequested { get; set; }
 
-    [ObservableProperty]
-    private string _selectedCameraApi = "Auto";
-
-    partial void OnSelectedCameraApiChanged(string value)
+    // --- Logic ---
+    public MainWindowViewModel(IVisionService visionService, IExcelExportService excelExportService, IAnalysisService analysisService, IAppSettingsService settingsService, ILocalizationService localizationService)
     {
-        SaveCurrentSettings();
-        if (IsCameraRunning)
-        {
-            _ = RestartCameraAsync();
-        }
-    }
-    [ObservableProperty]
-    private ObservableCollection<string> _availableThemes = new() { "System", "Dark", "Light" };
+        _visionService = visionService; _excelExportService = excelExportService; _analysisService = analysisService; _settingsService = settingsService; _localizationService = localizationService;
+        LoadInitialSettings();
+        ApplySettingsToSystem();
+        HasUnsavedChanges = false;
 
-    [ObservableProperty]
-    private string _selectedTheme = "System";
-
-    partial void OnSelectedThemeChanged(string value)
-    {
-        if (Application.Current != null)
-        {
-            Application.Current.RequestedThemeVariant = value switch
-            {
-                "Dark" => ThemeVariant.Dark,
-                "Light" => ThemeVariant.Light,
-                _ => ThemeVariant.Default
-            };
-        }
-        SaveCurrentSettings();
-    }
-
-    [ObservableProperty]
-    private float _confidenceThreshold = 0.25f;
-
-    partial void OnConfidenceThresholdChanged(float value) => SaveCurrentSettings();
-
-    // ---- Font & Language ----
-    [ObservableProperty]
-    private ObservableCollection<string> _availableFonts = new() { "Default System", "Google Sans", "THSarabunNew" };
-
-    [ObservableProperty]
-    private string _selectedFont = "Default System";
-
-    [ObservableProperty]
-    private double _layoutFontScale = 1.0;
-
-    partial void OnLayoutFontScaleChanged(double value) => SaveCurrentSettings();
-
-    partial void OnSelectedFontChanged(string value)
-    {
-        if (Application.Current != null)
-        {
-            if (value == "Google Sans")
-            {
-                Application.Current.Resources["AppFontFamily"] = Application.Current.Resources["GoogleSansFont"];
-            }
-            else if (value == "THSarabunNew")
-            {
-                Application.Current.Resources["AppFontFamily"] = Application.Current.Resources["THSarabunNewFont"];
-            }
-            else
-            {
-                Application.Current.Resources["AppFontFamily"] = FontFamily.Default;
-            }
-        }
-        SaveCurrentSettings();
-    }
-
-    [ObservableProperty]
-    private ObservableCollection<string> _availableLanguages = new() { "English", "ภาษาไทย" };
-
-    [ObservableProperty]
-    private string _selectedLanguage = "English";
-
-    partial void OnSelectedLanguageChanged(string value)
-    {
+        _visionService.OnFrameProcessed += OnFrameProcessed;
+        for (int i = 1; i <= 3; i++) SlideList.Add(new SlideItemViewModel { SlideName = $"Slide {i}" });
+        _telemetryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _telemetryTimer.Tick += UpdateTelemetry; _telemetryTimer.Start();
+        if (OperatingSystem.IsWindows()) _ = FetchHardwareSpecsAsync();
+        RefreshModelList();
         UpdateLocalizedStrings();
-        SaveCurrentSettings();
     }
 
-    // Localized Strings for Dashboard NavBar
-    [ObservableProperty] private string _vmdLabel = "VMD (Dv0.5)";
+    private void LoadInitialSettings()
+    {
+        var s = _settingsService.LoadSettings();
+        LensSelection = s.LensSelection; SelectedHardware = s.HardwareProvider; SelectedCameraApi = s.SelectedCameraApi;
+        SelectedTheme = s.SelectedTheme; SelectedFont = s.SelectedFont; LayoutFontScale = s.LayoutFontScale > 0 ? s.LayoutFontScale : 1.0;
+        SelectedLanguage = s.SelectedLanguage; ConfidenceThreshold = s.ConfidenceThreshold; TargetSampleSize = s.TargetSampleSize;
+        OutputDirectory = s.OutputDirectory; CameraResolution = s.CameraResolution; CameraIndex = s.CameraIndex;
+        SelectedModelPath4x = s.SelectedModelPath4x; SelectedModelPath10x = s.SelectedModelPath10x;
+        FilterMinUm = s.FilterMinUm; FilterMaxUm = s.FilterMaxUm;
+        if (Enum.TryParse<Avalonia.Input.Key>(s.SnapshotHotkey, out var k1)) SnapshotHotkey = k1;
+        if (Enum.TryParse<Avalonia.Input.Key>(s.LiveAiHotkey, out var k2)) LiveAiHotkey = k2;
+        SnapshotHotkeyDisplay = SnapshotHotkey.ToString();
+        LiveAiHotkeyDisplay = LiveAiHotkey.ToString();
+        AnalyzeButtonText = $"▶ Start Live AI ({LiveAiHotkeyDisplay})";
+    }
+
+    [RelayCommand]
+    private void ApplySettings()
+    {
+        var s = new AppSettings {
+            LensSelection = LensSelection, HardwareProvider = SelectedHardware, SelectedCameraApi = SelectedCameraApi,
+            SelectedTheme = SelectedTheme, SelectedFont = SelectedFont, LayoutFontScale = LayoutFontScale,
+            SelectedLanguage = SelectedLanguage, ConfidenceThreshold = ConfidenceThreshold, TargetSampleSize = TargetSampleSize ?? 200,
+            OutputDirectory = OutputDirectory, SnapshotHotkey = SnapshotHotkey.ToString(), LiveAiHotkey = LiveAiHotkey.ToString(), CameraResolution = CameraResolution,
+            CameraIndex = CameraIndex, SelectedModelPath4x = SelectedModelPath4x, SelectedModelPath10x = SelectedModelPath10x,
+            FilterMinUm = FilterMinUm, FilterMaxUm = FilterMaxUm
+        };
+        _settingsService.SaveSettings(s);
+        ApplySettingsToSystem();
+        HasUnsavedChanges = false;
+        StatusText = "Settings applied.";
+    }
+
+    private void ApplySettingsToSystem()
+    {
+        _visionService?.SetModelPaths(SelectedModelPath4x, SelectedModelPath10x);
+        _visionService?.SetHardwareProvider(SelectedHardware);
+        _visionService?.SetLens(LensSelection);
+        _visionService?.SetThreshold(ConfidenceThreshold);
+        _visionService?.SetSnapshotFreezeDuration(SnapshotFreezeDurationMs);
+        
+        if (Application.Current != null) {
+            Application.Current.RequestedThemeVariant = SelectedTheme switch { "Dark" => ThemeVariant.Dark, "Light" => ThemeVariant.Light, _ => ThemeVariant.Default };
+            if (SelectedFont == "Google Sans") Application.Current.Resources["AppFontFamily"] = Application.Current.Resources["GoogleSansFont"];
+            else if (SelectedFont == "THSarabunNew") Application.Current.Resources["AppFontFamily"] = Application.Current.Resources["THSarabunNewFont"];
+            else Application.Current.Resources["AppFontFamily"] = FontFamily.Default;
+        }
+        UpdateLocalizedStrings();
+        AnalyzeButtonText = _isLiveAnalysisActive ? $"⏹ Stop Live AI ({LiveAiHotkeyDisplay})" : $"▶ Start Live AI ({LiveAiHotkeyDisplay})";
+        if (IsCameraRunning) _ = RestartCameraAsync();
+    }
+
+    [RelayCommand]
+    private void RestoreDefaults()
+    {
+        var s = new AppSettings();
+        LensSelection = s.LensSelection; SelectedHardware = s.HardwareProvider; SelectedCameraApi = s.SelectedCameraApi;
+        SelectedTheme = s.SelectedTheme; SelectedFont = s.SelectedFont; LayoutFontScale = s.LayoutFontScale;
+        SelectedLanguage = s.SelectedLanguage; ConfidenceThreshold = s.ConfidenceThreshold; TargetSampleSize = s.TargetSampleSize;
+        CameraResolution = s.CameraResolution; SnapshotHotkey = Avalonia.Input.Key.Space; LiveAiHotkey = Avalonia.Input.Key.F5;
+        SnapshotHotkeyDisplay = SnapshotHotkey.ToString(); LiveAiHotkeyDisplay = LiveAiHotkey.ToString();
+        SelectedModelPath4x = "yolov8n_4x.onnx"; SelectedModelPath10x = "yolov8n_10x.onnx";
+        FilterMinUm = 5.0; FilterMaxUm = 30.0;
+        HasUnsavedChanges = true;
+    }
+
+    [ObservableProperty] private string _vmdLabel = "VMD";
     [ObservableProperty] private string _inFrameLabel = "In-Frame";
     [ObservableProperty] private string _accumulatedLabel = "Accumulated";
     [ObservableProperty] private string _spanLabel = "SPAN";
@@ -315,26 +324,24 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private string _currentSlideLabel = "Current Slide";
     [ObservableProperty] private string _slideStatusLabel = "Slide Status";
     [ObservableProperty] private string _targetSizeLabel = "Target Size";
-
-    // Additional System-wide Localized Strings
     [ObservableProperty] private string _locTabAnalyze = "🔬 Analyze";
     [ObservableProperty] private string _locTabReport = "📊 Report";
     [ObservableProperty] private string _locFileStoragePath = "File Storage Path";
     [ObservableProperty] private string _locCurrentOutputDir = "Current Output Directory:";
     [ObservableProperty] private string _locBtnChangeOutputDir = "📁 Change Output Directory";
     [ObservableProperty] private string _locBtnSaveSnapshot = "📷 Save Manual Snapshot";
-    [ObservableProperty] private string _locHardwareAcceleration = "Hardware Acceleration & Engine";
+    [ObservableProperty] private string _locHardwareAcceleration = "Hardware Acceleration";
     [ObservableProperty] private string _locExecutionProvider = "Execution Provider:";
     [ObservableProperty] private string _locCameraBackendApi = "Camera Backend API:";
     [ObservableProperty] private string _locCameraResolution = "Camera Resolution:";
     [ObservableProperty] private string _locSystemHardwareInfo = "System Hardware Information:";
     [ObservableProperty] private string _locAiConfidenceThreshold = "AI Confidence Threshold:";
-    [ObservableProperty] private string _locSnapshotHotkey = "Snapshot Hotkey:";
+    [ObservableProperty] private string _locSnapshotHotkeyLabel = "Snapshot Hotkey:";
+    [ObservableProperty] private string _locLiveAiHotkeyLabel = "Live AI Toggle Hotkey:";
     [ObservableProperty] private string _locSnapshotHoldDuration = "Snapshot Hold Duration:";
     [ObservableProperty] private string _locAppearanceSettings = "Appearance Settings";
     [ObservableProperty] private string _locColorTheme = "Color Theme:";
     [ObservableProperty] private string _locObjLens = "Objective Lens:";
-    [ObservableProperty] private string _locAnalysisMode = "Analysis Mode";
     [ObservableProperty] private string _locFilterSizeUm = "🔍 Filter Size µm";
     [ObservableProperty] private string _locSlideWorkflowTracker = "Slide Workflow Tracker:";
     [ObservableProperty] private string _locItemsInReport = "Items in Report:";
@@ -345,849 +352,196 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void UpdateLocalizedStrings()
     {
-        if (SelectedLanguage == "ภาษาไทย")
-        {
-            VmdLabel = "VMD (เฉลี่ยหยดน้ำ)";
-            InFrameLabel = "หยดในภาพ";
-            AccumulatedLabel = "หยดสะสมรวม";
-            SpanLabel = "การกระจาย";
-            OutOfBoundsLabel = "เกินระยะคำนวณ";
-            CurrentSlideLabel = "สไลด์ปัจจุบัน";
-            SlideStatusLabel = "สถานะสไลด์";
-            TargetSizeLabel = "จำนวนที่ต้องการ";
-
-            LocTabAnalyze = "🔬 วิเคราะห์";
-            LocTabReport = "📊 รายงาน";
-            LocFileStoragePath = "เส้นทางจัดเก็บไฟล์ข้อมูล";
-            LocCurrentOutputDir = "ไดเรกทอรีปัจจุบันที่บันทึก:";
-            LocBtnChangeOutputDir = "📁 เปลี่ยนโฟลเดอร์สำหรับบันทึกผล";
-            LocBtnSaveSnapshot = "📷 บันทึกภาพหน้าจอแบบแมนนวล";
-            LocHardwareAcceleration = "การเร่งฮาร์ดแวร์และเครื่องยนต์ AI";
-            LocExecutionProvider = "ตัวประมวลผล (Execution Provider):";
-            LocCameraBackendApi = "ระบบเชื่อมต่อกล้อง (API):";
-            LocCameraResolution = "ความละเอียดกล้อง (Resolution):";
-            LocSystemHardwareInfo = "ข้อมูลฮาร์ดแวร์ของระบบ:";
-            LocAiConfidenceThreshold = "ความมั่นใจของ AI (Confidence Threshold):";
-            LocSnapshotHotkey = "ปุ่มลัดสำหรับถ่าย Snapshot:";
-            LocSnapshotHoldDuration = "ระยะเวลาค้างหน้าจอ Snapshot:";
-            LocAppearanceSettings = "การตั้งค่ารูปลักษณ์โปรแกรม";
-            LocColorTheme = "ธีมสีโปรแกรม (Theme):";
-            LocObjLens = "กำลังขยายเลนส์ (Lens):";
-            LocAnalysisMode = "โหมดวิเคราะห์ (Mode):";
-            LocFilterSizeUm = "🔍 กรองขนาดไมครอน (Filter µm)";
-            LocSlideWorkflowTracker = "ระบบติดตามสไลด์งาน:";
-            LocItemsInReport = "จำนวนข้อมูลในรายงาน:";
-            LocLocNameData = "ข้อมูลสถานที่หรือชื่อสไลด์:";
-            LocBtnAddData = "➕ เพิ่มเข้าตารางรายงาน Excel";
-            LocTotalDropletsRecorded = "ละอองทั้งหมดในสไลด์";
-            LocBtnExportExcel = "💾 สร้างไฟล์ Excel ส่งออก";
-        }
-        else
-        {
-            VmdLabel = "VMD (Dv0.5)";
-            InFrameLabel = "In-Frame";
-            AccumulatedLabel = "Accumulated";
-            SpanLabel = "SPAN";
-            OutOfBoundsLabel = "Out-of-Bounds";
-            CurrentSlideLabel = "Current Slide";
-            SlideStatusLabel = "Slide Status";
-            TargetSizeLabel = "Target Size";
-
-            LocTabAnalyze = "🔬 Analyze";
-            LocTabReport = "📊 Report";
-            LocFileStoragePath = "File Storage Path";
-            LocCurrentOutputDir = "Current Output Directory:";
-            LocBtnChangeOutputDir = "📁 Change Output Directory";
-            LocBtnSaveSnapshot = "📷 Save Manual Snapshot";
-            LocHardwareAcceleration = "Hardware Acceleration & Engine";
-            LocExecutionProvider = "Execution Provider:";
-            LocCameraBackendApi = "Camera Backend API:";
-            LocCameraResolution = "Camera Resolution:";
-            LocSystemHardwareInfo = "System Hardware Information:";
-            LocAiConfidenceThreshold = "AI Confidence Threshold:";
-            LocSnapshotHotkey = "Snapshot Hotkey:";
-            LocSnapshotHoldDuration = "Snapshot Hold Duration:";
-            LocAppearanceSettings = "Appearance Settings";
-            LocColorTheme = "Color Theme:";
-            LocObjLens = "Objective Lens:";
-            LocAnalysisMode = "Analysis Mode";
-            LocFilterSizeUm = "🔍 Filter Size µm";
-            LocSlideWorkflowTracker = "Slide Workflow Tracker:";
-            LocItemsInReport = "Items in Report:";
-            LocLocNameData = "Location Name Data:";
-            LocBtnAddData = "➕ Add data to Excel Report";
-            LocTotalDropletsRecorded = "Total Droplets Recorded";
-            LocBtnExportExcel = "💾 Export to Excel";
+        if (SelectedLanguage == "ภาษาไทย") {
+            VmdLabel = "VMD (เฉลี่ย)"; InFrameLabel = "ในภาพ"; AccumulatedLabel = "สะสม"; SpanLabel = "SPAN";
+            OutOfBoundsLabel = "เกินระยะ"; CurrentSlideLabel = "สไลด์"; SlideStatusLabel = "สถานะ"; TargetSizeLabel = "จำนวนเป้าหมาย";
+            LocTabAnalyze = "🔬 วิเคราะห์"; LocTabReport = "📊 รายงาน"; LocFileStoragePath = "จัดเก็บไฟล์";
+            LocCurrentOutputDir = "ไดเรกทอรีบันทึก:"; LocBtnChangeOutputDir = "📁 เปลี่ยนโฟลเดอร์";
+            LocBtnSaveSnapshot = "📷 บันทึกภาพ"; LocHardwareAcceleration = "การเร่งความเร็วฮาร์ดแวร์";
+            LocExecutionProvider = "ตัวประมวลผล:"; LocCameraBackendApi = "Camera API:"; LocCameraResolution = "ความละเอียด:";
+            LocSystemHardwareInfo = "ข้อมูลฮาร์ดแวร์:"; LocAiConfidenceThreshold = "ความแม่นยำ AI:";
+            LocSnapshotHotkeyLabel = "ปุ่มลัด Snapshot:"; LocLiveAiHotkeyLabel = "ปุ่มลัดเปิด/ปิด Live AI:"; LocSnapshotHoldDuration = "เวลาค้างภาพ:";
+            LocAppearanceSettings = "รูปลักษณ์"; LocColorTheme = "ธีมสี:"; LocObjLens = "เลนส์:";
+            LocFilterSizeUm = "🔍 กรองขนาด µm"; LocSlideWorkflowTracker = "ระบบติดตามสไลด์:";
+            LocItemsInReport = "ข้อมูลในรายงาน:"; LocLocNameData = "ชื่อสถานที่/สไลด์:";
+            LocBtnAddData = "➕ เพิ่มเข้าตาราง"; LocTotalDropletsRecorded = "ละอองทั้งหมด"; LocBtnExportExcel = "💾 ส่งออก Excel";
         }
     }
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(OutputDirectoryColor))]
-    private string _outputDirectory = string.Empty;
-
-    partial void OnOutputDirectoryChanged(string value) => SaveCurrentSettings();
-
+    [ObservableProperty] [NotifyPropertyChangedFor(nameof(OutputDirectoryColor))] private string _outputDirectory = "";
     public string OutputDirectoryColor => string.IsNullOrWhiteSpace(OutputDirectory) ? "#F38BA8" : "#A6E3A1";
-
-    // Metrics
-    [ObservableProperty]
-    private int _dropletCount = 0;
-
-    [ObservableProperty]
-    private string _vmdText = "0.00";
-
-    [ObservableProperty]
-    private string _spanText = "0.00";
-
-    [ObservableProperty]
-    private string _evaluationStatus = "N/A";
-
-    [ObservableProperty]
-    private bool _isWarningVisible = false;
-
-    // ---- µm Range Filter ----
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(FilterRangeLabel))]
-    private double _filterMinUm = 5.0;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(FilterRangeLabel))]
-    private double _filterMaxUm = 30.0;
-
-    public string FilterRangeLabel => $"{FilterMinUm:F1} – {FilterMaxUm:F1} um";
-
-    // String wrappers for plain TextBox input (no spinner arrows)
-    private string _filterMinText = "5.0";
-    public string FilterMinText
-    {
-        get => _filterMinText;
-        set
-        {
-            if (_filterMinText == value) return;
-            _filterMinText = value;
-            OnPropertyChanged();
-            if (double.TryParse(value, System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture, out double d) && d >= 0)
-            {
-                FilterMinUm = d;
-            }
-        }
-    }
-
-    private string _filterMaxText = "30.0";
-    public string FilterMaxText
-    {
-        get => _filterMaxText;
-        set
-        {
-            if (_filterMaxText == value) return;
-            _filterMaxText = value;
-            OnPropertyChanged();
-            if (double.TryParse(value, System.Globalization.NumberStyles.Any,
-                System.Globalization.CultureInfo.InvariantCulture, out double d) && d > 0)
-            {
-                FilterMaxUm = d;
-            }
-        }
-    }
-
-    partial void OnFilterMinUmChanged(double value)
-    {
-        if (value > FilterMaxUm) FilterMaxUm = value;
-        RefreshDashboard();
-    }
-    partial void OnFilterMaxUmChanged(double value)
-    {
-        if (value < FilterMinUm) FilterMinUm = value;
-        RefreshDashboard();
-    }
-
-    // ---- Computed Dashboard Properties ----
-    [ObservableProperty]
-    private string _whoPassText = "— N/A —";
-
-    [ObservableProperty]
-    private string _whoPassColor = "#44475a"; // neutral gray when N/A
-
-    [ObservableProperty]
-    private double _vmdProgressValue = 0;
-
-    [ObservableProperty]
-    private string _inRangePercent = "0.0%";
-
-    [ObservableProperty]
-    private string _outOfBoundsCount = "0";
-
-    [ObservableProperty]
-    private string _inRangeCountText = "0 / 0";
-
-
-    // Camera State
-    [ObservableProperty]
-    private int _cameraIndex = 0;
-
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor("StartCameraCommand")]
-    [NotifyCanExecuteChangedFor("StopCameraCommand")]
-    [NotifyCanExecuteChangedFor("AnalyzeCommand")]
-    [NotifyPropertyChangedFor(nameof(CameraStatusColor))]
-    [NotifyPropertyChangedFor(nameof(CameraStatusLabel))]
-    private bool _isCameraRunning = false;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(CameraStatusColor))]
-    [NotifyPropertyChangedFor(nameof(CameraStatusLabel))]
-    private bool _isCameraLoading = false;
-
-    /// <summary>Color of the camera status indicator dot.</summary>
-    public string CameraStatusColor =>
-        IsCameraLoading ? "#FAB387" :   // orange = loading
-        IsCameraRunning ? "#a6e3a1" :   // green  = live
-        "#585b70";                       // gray   = offline
-
-    /// <summary>Short camera state label next to the dot.</summary>
-    public string CameraStatusLabel =>
-        IsCameraLoading ? "Loading…" :
-        IsCameraRunning ? "LIVE" :
-        "Offline";
-
-    [ObservableProperty]
-    private string _loadingMessage = "Loading...";
-
-    [ObservableProperty]
-    private ObservableCollection<SlideItemViewModel> _slideList = new();
-
-    [ObservableProperty]
-    private SlideItemViewModel? _selectedSlide;
-
-    [ObservableProperty]
-    private int _targetSampleSize = 200;
-
-    partial void OnTargetSampleSizeChanged(int value) => SaveCurrentSettings();
-
-    [ObservableProperty]
-    private string _snapshotHotkey = "Space";
-
-    partial void OnSnapshotHotkeyChanged(string value) => SaveCurrentSettings();
-
-    [ObservableProperty]
-    private ObservableCollection<string> _availableHotkeys = new() { "Space", "Enter", "Return", "S", "H", "C", "A" };
-
-    // Snapshot freeze duration (how long to hold the analysed frame on screen)
-    [ObservableProperty]
-    private int _snapshotFreezeDurationMs = 1500;
-
-    partial void OnSnapshotFreezeDurationMsChanged(int value)
-    {
-        _visionService?.SetSnapshotFreezeDuration(value);
-        SaveCurrentSettings();
-    }
-
-    [ObservableProperty]
-    private ObservableCollection<string> _availableResolutions = new() { "1600x1200", "1280x960", "800x600" };
-
-    [ObservableProperty]
-    private string _cameraResolution = "1280x960";
-
-    partial void OnCameraResolutionChanged(string value)
-    {
-        SaveCurrentSettings();
-        if (IsCameraRunning)
-        {
-            _ = RestartCameraAsync();
-        }
-    }
-
-    private async Task RestartCameraAsync()
-    {
-        try
-        {
-            // Detach entirely from the current UI context to prevent deadlocks
-            await Task.Run(async () =>
-            {
-                // Force Stop
-                _visionService.StopCamera();
-                await Task.Delay(500); // Give hardware half a second to release the lens
-            });
-
-            // Start again
-            await StartCamera();
-        }
-        catch (Exception ex)
-        {
-            StatusText = $"Restart failed: {ex.Message}";
-        }
-    }
-
-    [ObservableProperty]
-    private int _accumulatedCount = 0;
-
-    [ObservableProperty]
-    private int _reportItemCount = 0;
-
-    public ObservableCollection<AnalysisReportItem> ReportData { get; } = new();
-
-    private AnalysisResult? _lastAnalysisResult;
-
-    private readonly IAnalysisService _analysisService;
-    private readonly DispatcherTimer _telemetryTimer;
-    private double _lastInferenceTimeMs = 0;
-
-    [ObservableProperty]
-    private string _telemetryText = "System Metrics: RAM 0 MB | 0.0 ms Inference | CPU";
-
-    public MainWindowViewModel(IVisionService visionService, IExcelExportService excelExportService, IAnalysisService analysisService, IAppSettingsService settingsService)
-    {
-        _visionService = visionService;
-        _excelExportService = excelExportService;
-        _analysisService = analysisService;
-        _settingsService = settingsService;
-
-        LoadInitialSettings();
-
-        _visionService.OnFrameProcessed += OnFrameProcessed;
-
-        for (int i = 1; i <= 3; i++)
-        {
-            SlideList.Add(new SlideItemViewModel { SlideName = $"Slide {i}" });
-        }
-        if (SlideList.Count > 0) SelectedSlide = SlideList[0];
-
-        _telemetryTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-        _telemetryTimer.Tick += UpdateTelemetry;
-        _telemetryTimer.Start();
-
-        _ = FetchHardwareSpecsAsync();
-        RefreshModelList();
-
-        // Push initial model paths to vision service
-        _visionService.SetModelPaths(SelectedModelPath4x, SelectedModelPath10x);
-    }
-
-    private void LoadInitialSettings()
-    {
-        var settings = _settingsService.LoadSettings();
-
-        // Initial value assignment bypassing normal setters if possible, or letting them run to trigger effects
-        LensSelection = settings.LensSelection;
-        SelectedHardware = settings.HardwareProvider;
-        SelectedCameraApi = settings.SelectedCameraApi;
-        SelectedTheme = settings.SelectedTheme;
-        SelectedFont = settings.SelectedFont;
-        LayoutFontScale = settings.LayoutFontScale > 0 ? settings.LayoutFontScale : 1.0;
-        SelectedLanguage = settings.SelectedLanguage;
-        ConfidenceThreshold = settings.ConfidenceThreshold;
-        TargetSampleSize = settings.TargetSampleSize;
-        OutputDirectory = settings.OutputDirectory;
-        SnapshotHotkey = settings.SnapshotHotkey;
-        CameraResolution = settings.CameraResolution;
-        SnapshotFreezeDurationMs = settings.SnapshotFreezeDurationMs;
-        SelectedModelPath4x = string.IsNullOrEmpty(settings.SelectedModelPath4x) ? "Default Model" : settings.SelectedModelPath4x;
-        SelectedModelPath10x = string.IsNullOrEmpty(settings.SelectedModelPath10x) ? "Default Model" : settings.SelectedModelPath10x;
-    }
-
-    private void SaveCurrentSettings()
-    {
-        if (_settingsService == null) return; // Prevent saving before Ctor finishes
-
-        var settings = new AppSettings
-        {
-            LensSelection = this.LensSelection,
-            HardwareProvider = this.SelectedHardware,
-            SelectedCameraApi = this.SelectedCameraApi,
-            SelectedTheme = this.SelectedTheme,
-            SelectedFont = this.SelectedFont,
-            LayoutFontScale = this.LayoutFontScale,
-            SelectedLanguage = this.SelectedLanguage,
-            ConfidenceThreshold = this.ConfidenceThreshold,
-            TargetSampleSize = this.TargetSampleSize,
-            OutputDirectory = this.OutputDirectory,
-            SnapshotHotkey = this.SnapshotHotkey,
-            CameraResolution = this.CameraResolution,
-            SnapshotFreezeDurationMs = this.SnapshotFreezeDurationMs,
-            SelectedModelPath4x = this.SelectedModelPath4x,
-            SelectedModelPath10x = this.SelectedModelPath10x
-        };
-        _settingsService.SaveSettings(settings);
-    }
-
-    private int _framesProcessedThisSecond = 0;
-
-    private void UpdateTelemetry(object? sender, EventArgs e)
-    {
-        using (var proc = System.Diagnostics.Process.GetCurrentProcess())
-        {
-            long ramMb = proc.WorkingSet64 / (1024 * 1024);
-            string hardware = SelectedHardware;
-            int fps = Interlocked.Exchange(ref _framesProcessedThisSecond, 0);
-
-            TelemetryText = $"System Metrics: RAM {ramMb} MB | {fps} FPS | {_lastInferenceTimeMs:F1} ms Inference | {hardware}";
-        }
-    }
-
-    [RelayCommand(CanExecute = nameof(CanStartCamera))]
-    private async Task StartCamera()
-    {
-        try
-        {
-            StatusText = $"Initializing Camera {CameraIndex} and connecting AI... Please wait.";
-            LoadingMessage = "กำลังเปิดกล้อง และเตรียมความพร้อม AI...";
-            IsCameraRunning = true; // Disable start button early
-            IsCameraLoading = true; // Show loading overlay
-
-            _visionService.SetLens(LensSelection);
-            _visionService.SetThreshold(ConfidenceThreshold);
-
-            await Task.Run(() =>
-            {
-                _visionService.StartCamera(CameraIndex, LensSelection, SelectedCameraApi, CameraResolution);
-            });
-
-            IsCameraLoading = false; // Hide loading overlay
-            StatusText = $"Camera {CameraIndex} Live - Adjust focus, then press Analyze.";
-        }
-        catch (Exception ex)
-        {
-            IsCameraLoading = false;
-            IsCameraRunning = false;
-            StatusText = $"Camera Error: {ex.Message}";
-        }
-    }
-    private bool CanStartCamera() => !IsCameraRunning;
-
-    [RelayCommand(CanExecute = nameof(CanStopCamera))]
-    private async Task StopCamera()
-    {
-        try
-        {
-            StatusText = "Stopping camera and releasing resources... Please wait.";
-            LoadingMessage = "กำลังปิดกล้อง...";
-            IsCameraLoading = true;
-
-            await Task.Run(() =>
-            {
-                _visionService.StopCamera();
-            });
-
-            IsCameraRunning = false;
-            IsCameraLoading = false;
-            CameraImage = null; // Clear image specifically to indicate stopped state
-            StatusText = "Camera Stopped";
-        }
-        catch (Exception ex)
-        {
-            IsCameraLoading = false;
-            StatusText = $"Camera Stop Error: {ex.Message}";
-        }
-    }
-    private bool CanStopCamera() => IsCameraRunning;
-
-    [RelayCommand]
-    private async Task CycleCamera()
-    {
-        CameraIndex++;
-        if (CameraIndex > 5) CameraIndex = 0; // Loop between 0 and 5
-
-        if (IsCameraRunning)
-        {
-            await StopCamera();
-            await StartCamera();
-        }
-        else
-        {
-            StatusText = $"Ready - Selected Camera {CameraIndex}. Press Start.";
-        }
-    }
-
-    [ObservableProperty]
-    private string _analyzeButtonText = "▶ Start Live AI";
-
-    private bool _isLiveAnalysisActive = false;
-
-    // Explicit Dual Mode Selection
-    [ObservableProperty]
-    private bool _isLiveModeSelected = true;
-
-    [ObservableProperty]
-    private bool _isSnapshotModeSelected = false;
-
-    partial void OnIsLiveModeSelectedChanged(bool value)
-    {
-        // If the user switches away from Live Mode while the AI is running, auto-stop it.
-        if (!value && _isLiveAnalysisActive)
-        {
-            Analyze(); // Call the toggle to properly cleanly stop the live loop and reset UI
-        }
-    }
-
-    [RelayCommand(CanExecute = nameof(CanAnalyze))]
-    private void Analyze()
-    {
-        _isLiveAnalysisActive = !_isLiveAnalysisActive;
-
-        if (_isLiveAnalysisActive)
-        {
-            AnalyzeButtonText = "⏸ Stop Live AI";
-            StatusText = "Live Analysis Mode Active.";
-            _visionService.SetLiveAnalysis(true);
-        }
-        else
-        {
-            AnalyzeButtonText = "▶ Start Live AI";
-            StatusText = "Live Analysis Stopped.";
-            _visionService.SetLiveAnalysis(false);
-        }
-    }
-    private bool CanAnalyze() => IsCameraRunning;
-
-    [RelayCommand]
-    public void TakeSnapshotCommand() // Keyboard Hotkey Access
-    {
-        if (!IsCameraRunning)
-        {
-            StatusText = "Camera is not running. Cannot take snapshot.";
-            return;
-        }
-
-        // Always request a single-frame AI analysis regardless of current mode
-        StatusText = "📸 Snapshot taken — analysing frame...";
-        _visionService.RequestAnalysis();
-    }
-
-    [RelayCommand]
-    public void TakeSnapshotUICommand() // Mouse Button Access
-    {
-        TakeSnapshotCommand(); // Forward to the central hotkey logic
-    }
-
-    private void ShowSnapshotResult(string imagePath, AnalysisResult result)
-    {
-        // Logic to display the snapshot result, e.g., in a separate window or overlay
-        // For now, just update status text
-        StatusText = $"Snapshot taken. Detected {result.Count} droplets.";
-    }
-
-    private bool CanAddToReport() => SelectedSlide != null && !string.IsNullOrWhiteSpace(SelectedSlide.SlideName);
+    partial void OnOutputDirectoryChanged(string value) { HasUnsavedChanges = true; }
 
     [RelayCommand]
     private void RetakeSlide(SlideItemViewModel slide)
     {
         if (slide == null) return;
-
-        slide.CapturedDroplets.Clear();
+        slide.CapturedDroplets = new System.Collections.Generic.List<double>();
         slide.DropletsCaptured = 0;
         slide.IsAnalyzed = false;
         slide.StatusText = "⏳ Pending";
-
         var existingReport = ReportData.FirstOrDefault(r => r.LocationName == slide.SlideName);
         if (existingReport != null)
         {
             ReportData.Remove(existingReport);
             ReportItemCount = ReportData.Count;
         }
-
-        StatusText = $"{slide.SlideName} cleared. Ready to retake.";
+        StatusText = $"{slide.SlideName} cleared.";
     }
 
-    [RelayCommand]
-    private void AddToReport()
+    [ObservableProperty] private int _dropletCount = 0;
+    [ObservableProperty] private int _accumulatedCount = 0;
+    [ObservableProperty] private string _vmdText = "0.00";
+    [ObservableProperty] private string _spanText = "0.00";
+    [ObservableProperty] private string _evaluationStatus = "N/A";
+    [ObservableProperty] private bool _isWarningVisible = false;
+    
+    [ObservableProperty] private double _filterMinUm = 5.0;
+    partial void OnFilterMinUmChanged(double value) { HasUnsavedChanges = true; }
+    [ObservableProperty] private double _filterMaxUm = 30.0;
+    partial void OnFilterMaxUmChanged(double value) { HasUnsavedChanges = true; }
+
+    public string FilterRangeLabel => $"{FilterMinUm:F1} - {FilterMaxUm:F1} µm";
+    [ObservableProperty] private string _filterMinText = "5.0";
+    [ObservableProperty] private string _filterMaxText = "30.0";
+    [ObservableProperty] private string _whoPassText = "N/A";
+    [ObservableProperty] private string _whoPassColor = "Gray";
+    [ObservableProperty] private double _vmdProgressValue = 0;
+    [ObservableProperty] private string _inRangePercent = "0%";
+    [ObservableProperty] private string _outOfBoundsCount = "0";
+    [ObservableProperty] private string _inRangeCountText = "0/0";
+    [ObservableProperty] private int _cameraIndex = 0;
+    
+    [ObservableProperty] private string _cameraResolution = "1280x960";
+    partial void OnCameraResolutionChanged(string value) { HasUnsavedChanges = true; }
+    
+    [ObservableProperty] private string _selectedCameraApi = "Auto";
+    partial void OnSelectedCameraApiChanged(string value) { HasUnsavedChanges = true; }
+
+    [ObservableProperty] private ObservableCollection<string> _availableCameraApis = new() { "Auto", "DirectShow", "Media Foundation" };
+    [ObservableProperty] private ObservableCollection<string> _availableResolutions = new() { "1600x1200", "1280x960", "800x600" };
+    [ObservableProperty] private ObservableCollection<SlideItemViewModel> _slideList = new();
+    [ObservableProperty] private SlideItemViewModel? _selectedSlide;
+    
+    [ObservableProperty] private int? _targetSampleSize = 200;
+    partial void OnTargetSampleSizeChanged(int? value) { HasUnsavedChanges = true; }
+
+    [ObservableProperty] private Avalonia.Input.Key _snapshotHotkey = Avalonia.Input.Key.Space;
+    [ObservableProperty] private string _snapshotHotkeyDisplay = "Space";
+    [ObservableProperty] private bool _isListeningForSnapshotHotkey = false;
+
+    [ObservableProperty] private Avalonia.Input.Key _liveAiHotkey = Avalonia.Input.Key.F5;
+    [ObservableProperty] private string _liveAiHotkeyDisplay = "F5";
+    [ObservableProperty] private bool _isListeningForLiveAiHotkey = false;
+
+    public static FuncValueConverter<bool, IBrush> HotkeyButtonBrushConverter { get; } =
+        new(isListening => isListening ? Brushes.Red : Brushes.Gray);
+
+    [ObservableProperty] private int _snapshotFreezeDurationMs = 1500;
+    partial void OnSnapshotFreezeDurationMsChanged(int value)
     {
-        var rawSessionDroplets = _visionService.GetSessionDroplets();
-
-        if (rawSessionDroplets.Count == 0)
-        {
-            StatusText = "No valid analysis to add. Please scan the slide first.";
-            return;
-        }
-        if (SelectedSlide == null || string.IsNullOrWhiteSpace(SelectedSlide.SlideName))
-        {
-            StatusText = "Please select a Slide before adding.";
-            return;
-        }
-
-        var downsampled = _analysisService.DownsampleDroplets(rawSessionDroplets, TargetSampleSize);
-
-        var finalResult = _analysisService.CalculateStatistics(downsampled);
-        finalResult.TotalAccumulatedCount = rawSessionDroplets.Count;
-
-        SelectedSlide.CapturedDroplets = new System.Collections.Generic.List<double>(downsampled);
-        SelectedSlide.DropletsCaptured = downsampled.Count;
-        SelectedSlide.IsAnalyzed = true;
-        SelectedSlide.StatusText = $"✅ Analyzed ({downsampled.Count})";
-
-        var existingReport = ReportData.FirstOrDefault(r => r.LocationName == SelectedSlide.SlideName);
-        if (existingReport != null)
-        {
-            ReportData.Remove(existingReport);
-        }
-
-        var item = new AnalysisReportItem
-        {
-            LocationName = SelectedSlide.SlideName,
-            Timestamp = DateTime.Now,
-            Result = finalResult
-        };
-
-        ReportData.Add(item);
-        ReportItemCount = ReportData.Count;
-
-        _visionService.ClearSession();
-        _visionService.UnfreezeCamera(); // Auto-Resume Workflow!
-        AccumulatedCount = 0;
-
-        StatusText = $"Added {SelectedSlide.SlideName} to Report ({finalResult.Count} drops sampled).";
-
-        if (!string.IsNullOrWhiteSpace(OutputDirectory))
-        {
-            SaveSnapshot();
-        }
-
-        int currentIndex = SlideList.IndexOf(SelectedSlide);
-        if (currentIndex >= 0 && currentIndex < SlideList.Count - 1)
-        {
-            SelectedSlide = SlideList[currentIndex + 1];
-        }
+        HasUnsavedChanges = true;
+        var sec = value / 1000.0;
+        if (Math.Abs((_snapshotFreezeDurationSeconds ?? 1.5) - sec) > 0.01) SnapshotFreezeDurationSeconds = sec;
     }
-
-    public Action? ShowSettingsRequested { get; set; }
-    public Action? CloseSettingsRequested { get; set; }
-
-    [RelayCommand]
-    private void ToggleSettings()
+    
+    [ObservableProperty] private double? _snapshotFreezeDurationSeconds = 1.5;
+    partial void OnSnapshotFreezeDurationSecondsChanged(double? value)
     {
-        ShowSettingsRequested?.Invoke();
+        if (!value.HasValue) return;
+        int ms = (int)Math.Round(value.Value * 1000);
+        if (SnapshotFreezeDurationMs != ms) SnapshotFreezeDurationMs = ms;
     }
 
-    [RelayCommand]
-    private void CloseSettings()
-    {
-        CloseSettingsRequested?.Invoke();
-    }
+    [ObservableProperty] private string _telemetryText = "";
+    [ObservableProperty] private string _analyzeButtonText = "▶ Start Live AI";
+    private bool _isLiveAnalysisActive = false;
+    
+    [ObservableProperty] private float _confidenceThreshold = 0.25f;
+    partial void OnConfidenceThresholdChanged(float value) { HasUnsavedChanges = true; }
 
-    [RelayCommand]
-    private async Task SelectDirectory()
-    {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow != null)
-        {
-            var storageProvider = desktop.MainWindow.StorageProvider;
-            var result = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
-            {
-                Title = "Select Output Directory for Snapshots",
-                AllowMultiple = false
-            });
-
-            if (result != null && result.Count > 0)
-            {
-                // Use LocalPath if supported, but .Path.AbsolutePath or TryGetLocalPath is Avalonia safe.
-                OutputDirectory = result[0].Path.LocalPath;
-                StatusText = $"Output directory set to: {OutputDirectory}";
-            }
-        }
-    }
-
-    [RelayCommand]
-    private void SaveSnapshot()
-    {
-        if (string.IsNullOrWhiteSpace(OutputDirectory))
-        {
-            StatusText = "Please select an Output Directory first.";
-            return;
-        }
-
-        var (raw, processed) = _visionService.GetLatestFrames();
-
-        if (raw == null && processed == null)
-        {
-            StatusText = "No frames available to save. Please scan the slide first.";
-            return;
-        }
-
-        try
-        {
-            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string locName = SelectedSlide == null || string.IsNullOrWhiteSpace(SelectedSlide.SlideName) ? "Snapshot" : SelectedSlide.SlideName;
-
-            if (raw != null)
-            {
-                string rawPath = System.IO.Path.Combine(OutputDirectory, $"{locName}_Raw_{timestamp}.jpg");
-                OpenCvSharp.Cv2.ImWrite(rawPath, raw);
-                raw.Dispose();
-            }
-
-            if (processed != null)
-            {
-                string procPath = System.IO.Path.Combine(OutputDirectory, $"{locName}_Processed_{timestamp}.jpg");
-                OpenCvSharp.Cv2.ImWrite(procPath, processed);
-                processed.Dispose();
-            }
-
-            StatusText = $"Snapshots saved successfully to Output Directory.";
-        }
-        catch (Exception ex)
-        {
-            StatusText = $"Error saving snapshots: {ex.Message}";
-        }
-    }
-
-    [RelayCommand]
-    private async Task ExportExcel()
-    {
-        if (ReportData.Count == 0)
-        {
-            StatusText = "Report is empty. Please add items first.";
-            return;
-        }
-
-        try
-        {
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow != null)
-            {
-                var storageProvider = desktop.MainWindow.StorageProvider;
-                var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
-                {
-                    Title = "Export WHO DropDetect Report",
-                    DefaultExtension = "xlsx",
-                    SuggestedFileName = $"DropletReport_{DateTime.Now:yyyyMMdd_HHmm}.xlsx",
-                    FileTypeChoices = new[] {
-                        new FilePickerFileType("Excel Workbook") { Patterns = new[] { "*.xlsx" } }
-                    }
-                });
-
-                if (file != null)
-                {
-                    StatusText = "Saving Excel Export...";
-                    // Use file.TryGetLocalPath() if LocalPath isn't directly exposed safely. Or AbsolutePath.
-                    string _path = file.Path.LocalPath;
-                    await _excelExportService.ExportAsync(ReportData, _path);
-                    StatusText = $"Export saved successfully to {file.Name}.";
-                }
-                else
-                {
-                    StatusText = "Export cancelled.";
-                }
-            }
-            else
-            {
-                StatusText = "Export error: Storage Provider unavailable.";
-            }
-        }
-        catch (Exception ex)
-        {
-            StatusText = $"Export error: {ex.Message}";
-        }
-    }
-
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-        if (e.PropertyName == nameof(LensSelection))
-        {
-            _visionService.SetLens(LensSelection);
-        }
-        if (e.PropertyName == nameof(ConfidenceThreshold))
-        {
-            _visionService.SetThreshold(ConfidenceThreshold);
-        }
-    }
+    [ObservableProperty] private int _reportItemCount = 0;
+    public ObservableCollection<AnalysisReportItem> ReportData { get; } = new();
 
     private void OnFrameProcessed(object? sender, VisionEventArgs e)
     {
-        Interlocked.Increment(ref _framesProcessedThisSecond);
-
-        Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            CameraImage = e.ProcessedBitmap;
-
-            if (e.Analysis != null)
-            {
-                _lastInferenceTimeMs = e.Analysis.InferenceTimeMs;
-                _lastAnalysisResult = e.Analysis;
-
+        Dispatcher.UIThread.InvokeAsync(() => {
+            if (e.ProcessedBitmap != null) CameraImage = e.ProcessedBitmap;
+            if (e.Analysis != null) {
                 DropletCount = e.Analysis.Count;
                 AccumulatedCount = e.Analysis.TotalAccumulatedCount;
-                IsWarningVisible = AccumulatedCount < TargetSampleSize;
-
-                // Apply µm filter to build filtered stats
-                var allDroplets = _visionService.GetSessionDroplets();
-                var filtered = allDroplets
-                    .Where(d => d >= FilterMinUm && d <= FilterMaxUm)
-                    .ToList();
-
-                int totalCount = allDroplets.Count;
-                int inRange = filtered.Count;
-                int oob = totalCount - inRange;
-
-                InRangeCountText = $"{inRange} / {totalCount}";
-                InRangePercent = totalCount > 0 ? $"{(inRange * 100.0 / totalCount):F1}%" : "0.0%";
-                OutOfBoundsCount = oob.ToString();
-
-                // Use filtered set for VMD/Span if available, else fall back to full
-                AnalysisResult? displayResult = null;
-                if (filtered.Count >= 3)
-                    displayResult = _analysisService.CalculateStatistics(filtered);
-                else
-                    displayResult = e.Analysis;
-
-                if (displayResult != null)
-                {
-                    double vmd = displayResult.Dv05_VMD;
-                    VmdText = $"{vmd:F2}";
-                    SpanText = displayResult.Span.ToString("F2");
-                    EvaluationStatus = displayResult.IsPassed ? "PASS" : "FAIL";
-
-                    // WHO badge
-                    bool pass = vmd >= 10.0 && vmd <= 30.0;
-                    WhoPassText = pass ? "✅ PASS" : "❌ FAIL";
-                    WhoPassColor = pass ? "#a6e3a1" : "#f38ba8";
-
-                    // VMD bar: 0–50 µm scale
-                    VmdProgressValue = Math.Clamp(vmd / 50.0 * 100.0, 0, 100);
-                }
-
-                if (DropletCount == 0 && AccumulatedCount == 0)
-                    StatusText = "Scanning... 0 in view.";
-                else
-                    StatusText = $"Scanning... {DropletCount} in view. Accumulated: {AccumulatedCount}";
+                VmdText = e.Analysis.Dv05_VMD.ToString("F2");
+                SpanText = e.Analysis.Span.ToString("F2");
+                bool pass = e.Analysis.Dv05_VMD >= 10 && e.Analysis.Dv05_VMD <= 30;
+                WhoPassText = pass ? "✅ PASS" : "❌ FAIL";
+                WhoPassColor = pass ? "#a6e3a1" : "#f38ba8";
             }
         });
     }
 
-    private void RefreshDashboard()
+    private int _framesProcessedThisSecond = 0;
+    private void UpdateTelemetry(object? sender, EventArgs e) 
     {
-        // Trigger a dashboard recalculation using the last known analysis
-        if (_lastAnalysisResult == null) return;
+        using var proc = Process.GetCurrentProcess();
+        long ramMb = proc.WorkingSet64 / (1024 * 1024);
+        int fps = Interlocked.Exchange(ref _framesProcessedThisSecond, 0);
+        TelemetryText = $"System Metrics: RAM {ramMb} MB | {fps} FPS | {SelectedHardware}";
+    }
 
-        var allDroplets = _visionService.GetSessionDroplets();
-        var filtered = allDroplets.Where(d => d >= FilterMinUm && d <= FilterMaxUm).ToList();
-
-        int totalCount = allDroplets.Count;
-        int inRange = filtered.Count;
-        int oob = totalCount - inRange;
-
-        InRangeCountText = $"{inRange} / {totalCount}";
-        InRangePercent = totalCount > 0 ? $"{(inRange * 100.0 / totalCount):F1}%" : "0.0%";
-        OutOfBoundsCount = oob.ToString();
-
-        AnalysisResult? displayResult = filtered.Count >= 3
-            ? _analysisService.CalculateStatistics(filtered)
-            : _lastAnalysisResult;
-
-        if (displayResult != null)
+    public void UpdateHotkey(Avalonia.Input.Key key) 
+    { 
+        if (IsListeningForSnapshotHotkey)
         {
-            double vmd = displayResult.Dv05_VMD;
-            VmdText = $"{vmd:F2}";
-            SpanText = displayResult.Span.ToString("F2");
-            EvaluationStatus = displayResult.IsPassed ? "PASS" : "FAIL";
-
-            bool pass = vmd >= 10.0 && vmd <= 30.0;
-            WhoPassText = pass ? "✅ PASS" : "❌ FAIL";
-            WhoPassColor = pass ? "#a6e3a1" : "#f38ba8";
-            VmdProgressValue = Math.Clamp(vmd / 50.0 * 100.0, 0, 100);
+            if (key == LiveAiHotkey) { HotkeyConflictMessage = "⚠️ Key is already used for Live AI."; IsListeningForSnapshotHotkey = false; SnapshotHotkeyDisplay = SnapshotHotkey.ToString(); return; }
+            SnapshotHotkey = key; SnapshotHotkeyDisplay = key.ToString(); IsListeningForSnapshotHotkey = false; HasUnsavedChanges = true; HotkeyConflictMessage = "";
+        }
+        else if (IsListeningForLiveAiHotkey)
+        {
+            if (key == SnapshotHotkey) { HotkeyConflictMessage = "⚠️ Key is already used for Snapshot."; IsListeningForLiveAiHotkey = false; LiveAiHotkeyDisplay = LiveAiHotkey.ToString(); return; }
+            LiveAiHotkey = key; LiveAiHotkeyDisplay = key.ToString(); IsListeningForLiveAiHotkey = false; HasUnsavedChanges = true; HotkeyConflictMessage = "";
         }
     }
 
-    public void ToggleIgnoreDroplet(double x, double y)
+    public void ToggleIgnoreDroplet(double x, double y) => _visionService.ToggleIgnoreDroplet(x, y);
+
+    [RelayCommand]
+    private void AddToReport()
     {
-        _visionService.ToggleIgnoreDroplet(x, y);
+        var raw = _visionService.GetSessionDroplets();
+        if (raw.Count == 0 || SelectedSlide == null) return;
+        if (SelectedSlide.CapturedDroplets == null) SelectedSlide.CapturedDroplets = new();
+        SelectedSlide.CapturedDroplets.AddRange(raw);
+        SelectedSlide.DropletsCaptured = SelectedSlide.CapturedDroplets.Count;
+        SelectedSlide.IsAnalyzed = true;
+        SelectedSlide.StatusText = $"✅ Accumulated ({SelectedSlide.DropletsCaptured})";
+        
+        var downsampled = _analysisService.DownsampleDroplets(SelectedSlide.CapturedDroplets, TargetSampleSize ?? 200);
+        var result = _analysisService.CalculateStatistics(downsampled);
+        result.TotalAccumulatedCount = SelectedSlide.DropletsCaptured;
+        
+        var existing = ReportData.FirstOrDefault(r => r.LocationName == SelectedSlide.SlideName);
+        if (existing != null) ReportData[ReportData.IndexOf(existing)] = new AnalysisReportItem { LocationName = SelectedSlide.SlideName, Timestamp = DateTime.Now, Result = result };
+        else ReportData.Add(new AnalysisReportItem { LocationName = SelectedSlide.SlideName, Timestamp = DateTime.Now, Result = result });
+        
+        ReportItemCount = ReportData.Count;
+        _visionService.ClearSession();
+        _visionService.UnfreezeCamera();
+        AccumulatedCount = 0;
+        if (!string.IsNullOrWhiteSpace(OutputDirectory)) SaveSnapshot();
+    }
+
+    [RelayCommand] private void CycleCamera() { CameraIndex++; if (CameraIndex > 5) CameraIndex = 0; if (IsCameraRunning) _ = RestartCameraAsync(); }
+    private async Task RestartCameraAsync() { await StopCamera(); await StartCamera(); }
+
+    [RelayCommand]
+    private void SaveSnapshot()
+    {
+        if (string.IsNullOrWhiteSpace(OutputDirectory)) return;
+        var (raw, processed) = _visionService.GetLatestFrames();
+        if (raw == null && processed == null) return;
+        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        string locName = SelectedSlide?.SlideName ?? "Snapshot";
+        if (raw != null) { Cv2.ImWrite(Path.Combine(OutputDirectory, $"{locName}_Raw_{timestamp}.jpg"), raw); raw.Dispose(); }
+        if (processed != null) { Cv2.ImWrite(Path.Combine(OutputDirectory, $"{locName}_Processed_{timestamp}.jpg"), processed); processed.Dispose(); }
     }
 }

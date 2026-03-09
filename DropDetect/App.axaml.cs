@@ -44,6 +44,7 @@ public partial class App : Application
         services.AddSingleton<IInferenceService, InferenceService>();
         services.AddSingleton<IVisionService, VisionService>();
         services.AddSingleton<IExcelExportService, ExcelExportService>();
+        services.AddSingleton<ILocalizationService, LocalizationService>();
 
         // ViewModels
         services.AddTransient<MainWindowViewModel>();
