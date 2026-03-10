@@ -12,7 +12,9 @@ public partial class SettingsWindow : Window
     {
         InitializeComponent();
         this.Closing += SettingsWindow_Closing;
+        // ดักจับ KeyDown + KeyUp ระดับ Tunnel เพื่อกันปุ่มที่ focused รับ key ไปก่อน
         this.AddHandler(InputElement.KeyDownEvent, SettingsWindow_OnKeyDown, Avalonia.Interactivity.RoutingStrategies.Tunnel);
+        this.AddHandler(InputElement.KeyUpEvent, SettingsWindow_OnKeyUp, Avalonia.Interactivity.RoutingStrategies.Tunnel);
     }
 
     private async void SettingsWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -26,7 +28,8 @@ public partial class SettingsWindow : Window
             var dialog = new Window()
             {
                 Title = "Unsaved Changes",
-                Width = 350, Height = 150,
+                Width = 350,
+                Height = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 CanResize = false
             };
@@ -35,10 +38,10 @@ public partial class SettingsWindow : Window
             panel.Children.Add(new TextBlock { Text = "You have unsaved settings.\nDo you want to save them before closing?", TextWrapping = Avalonia.Media.TextWrapping.Wrap, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center, TextAlignment = Avalonia.Media.TextAlignment.Center });
 
             var btnPanel = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center, Spacing = 15 };
-            
+
             var btnSave = new Button { Content = "Save", Width = 80, HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center, Classes = { "accent" } };
             btnSave.Click += (s, args) => { vm.ApplySettingsCommand.Execute(null); _forceClose = true; dialog.Close(); this.Close(); };
-            
+
             var btnDiscard = new Button { Content = "Discard", Width = 80, HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center };
             btnDiscard.Click += (s, args) => { _forceClose = true; dialog.Close(); this.Close(); };
 
@@ -57,13 +60,25 @@ public partial class SettingsWindow : Window
 
     private void SettingsWindow_OnKeyDown(object? sender, KeyEventArgs e)
     {
-        if (DataContext is MainWindowViewModel vm)
+        if (DataContext is not MainWindowViewModel vm) return;
+
+        if (vm.IsListeningForSnapshotHotkey || vm.IsListeningForLiveAiHotkey)
         {
-            if (vm.IsListeningForSnapshotHotkey || vm.IsListeningForLiveAiHotkey)
-            {
-                vm.UpdateHotkey(e.Key);
-                e.Handled = true;
-            }
+            // กิน event ทันที ไม่ให้ปุ่มที่ focused รับไป
+            e.Handled = true;
+            vm.UpdateHotkey(e.Key);
+
+            // คืน focus ให้ Window หลังบันทึก key เพื่อป้องกัน Button ยัง active อยู่
+            this.Focus();
         }
+    }
+
+    private void SettingsWindow_OnKeyUp(object? sender, KeyEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm) return;
+
+        // ขณะกำลัง listen ให้กิน KeyUp ทั้งหมด ป้องกัน Button activate
+        if (vm.IsListeningForSnapshotHotkey || vm.IsListeningForLiveAiHotkey)
+            e.Handled = true;
     }
 }

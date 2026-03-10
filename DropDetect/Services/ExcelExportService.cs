@@ -133,8 +133,10 @@ public class ExcelExportService : IExcelExportService
 
     private void CreateDetailedSheet(XLWorkbook workbook, AnalysisReportItem item)
     {
+        string rawName = string.IsNullOrWhiteSpace(item.LocationName) ? "Unknown" : item.LocationName;
         // 1. Sanitize location name (Remove invalid Excel sheet characters: \ / ? * [ ] : )
-        string sanitizedName = System.Text.RegularExpressions.Regex.Replace(item.LocationName, @"[\\/?*[\]:]", "_");
+        string sanitizedName = System.Text.RegularExpressions.Regex.Replace(rawName, @"[\\/?*[\]:]", "_");
+        if (string.IsNullOrWhiteSpace(sanitizedName)) sanitizedName = "Sheet";
 
         // 2. Sheet name max length is 31, ensure valid name
         string safeSheetName = new string(sanitizedName.Take(25).ToArray());

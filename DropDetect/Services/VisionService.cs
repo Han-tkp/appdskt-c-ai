@@ -13,6 +13,8 @@ public class VisionEventArgs : EventArgs
 {
     public WriteableBitmap? ProcessedBitmap { get; set; }
     public AnalysisResult? Analysis { get; set; }
+    /// <summary>true = frame นี้คือผลจากการกด Snapshot (ไม่ใช่ live frame ทั่วไป)</summary>
+    public bool IsSnapshot { get; set; }
 }
 
 public interface IVisionService : IDisposable
@@ -705,18 +707,15 @@ public class VisionService : IVisionService
                     }
 
                     avaloniaBitmap = CreateWriteableBitmapFromMat(frame);
-
-                    if (triggerAI && !isLive)
-                    {
-                        // Post-snapshot freeze: hold the frame so user can see results
-                        Thread.Sleep(_snapshotFreezeDurationMs);
-                    }
                 }
                 else
                 {
                     // Full Live View (No Analysis)
                     avaloniaBitmap = CreateWriteableBitmapFromMat(frame);
                 }
+
+                // isSnapshotFrame: true เมื่อ user กด Snapshot (ไม่ใช่ live mode)
+                bool isSnapshotFrame = triggerAI && !isLive;
 
                 // Update last frames securely for UI to fetch
                 lock (_lockObj)
@@ -732,7 +731,8 @@ public class VisionService : IVisionService
                 OnFrameProcessed?.Invoke(this, new VisionEventArgs
                 {
                     ProcessedBitmap = avaloniaBitmap,
-                    Analysis = stats
+                    Analysis = stats,
+                    IsSnapshot = isSnapshotFrame
                 });
 
                 // Throttle slightly to simulate ~30fps

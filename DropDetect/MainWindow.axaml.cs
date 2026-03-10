@@ -11,7 +11,10 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        // Tunnel = intercept BEFORE child controls (e.g. Button) receive the event
         this.AddHandler(InputElement.KeyDownEvent, MainWindow_KeyDown, Avalonia.Interactivity.RoutingStrategies.Tunnel);
+        // ⚠️ Avalonia Button activate บน KeyUp ไม่ใช่ KeyDown → ต้องกัน KeyUp ด้วย
+        this.AddHandler(InputElement.KeyUpEvent, MainWindow_KeyUp, Avalonia.Interactivity.RoutingStrategies.Tunnel);
         this.DataContextChanged += MainWindow_DataContextChanged;
         this.Closing += MainWindow_Closing;
     }
@@ -46,19 +49,38 @@ public partial class MainWindow : Window
 
     private void MainWindow_KeyDown(object? sender, KeyEventArgs e)
     {
-        if (DataContext is MainWindowViewModel vm)
+        if (DataContext is not MainWindowViewModel vm) return;
+
+        bool isSnapshotKey = e.Key == vm.SnapshotHotkey;
+        bool isLiveAiKey = e.Key == vm.LiveAiHotkey;
+
+        // ถ้าคีย์ตรงกับ hotkey ใดๆ → กิน event ทันที ไม่ให้กระเด็นไปกดปุ่มที่ focused
+        if (isSnapshotKey || isLiveAiKey)
         {
-            if (e.Key == vm.SnapshotHotkey)
-            {
+            e.Handled = true;
+
+            // ไม่ execute action ถ้า: Settings เปิดอยู่ หรือ กำลัง assign hotkey ใหม่
+            if (_settingsWindow != null) return;
+            if (vm.IsListeningForSnapshotHotkey || vm.IsListeningForLiveAiHotkey) return;
+
+            if (isSnapshotKey)
                 vm.TakeSnapshotCommand();
-                e.Handled = true;
-            }
-            else if (e.Key == vm.LiveAiHotkey)
-            {
+            else
                 vm.AnalyzeCommand.Execute(null);
-                e.Handled = true;
-            }
         }
+    }
+
+    /// <summary>
+    /// กัน KeyUp ของ hotkey ด้วย เพราะ Avalonia Button activate ผ่าน KeyUp ไม่ใช่ KeyDown
+    /// </summary>
+    private void MainWindow_KeyUp(object? sender, KeyEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm) return;
+
+        // กิน KeyUp ของ hotkey เพื่อป้องกัน Button ที่ focused ถูกกระตุ้น
+        // ไม่ execute action ใดๆ ที่นี่ — action ถูก fire ไปแล้วใน KeyDown
+        if (e.Key == vm.SnapshotHotkey || e.Key == vm.LiveAiHotkey)
+            e.Handled = true;
     }
 
     private async void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)

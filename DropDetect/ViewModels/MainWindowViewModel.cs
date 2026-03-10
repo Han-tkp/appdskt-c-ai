@@ -217,8 +217,37 @@ public partial class MainWindowViewModel : ObservableObject
         if (ReportData.Count == 0) { StatusText = "No data to export."; return; }
         var picker = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow?.StorageProvider;
         if (picker == null) return;
-        var file = await picker.SaveFilePickerAsync(new FilePickerSaveOptions { Title = "Export Excel Report", SuggestedFileName = $"Report_{DateTime.Now:yyyyMMdd_HHmm}.xlsx", DefaultExtension = ".xlsx" });
-        if (file != null) { await _excelExportService.ExportAsync(ReportData.ToList(), file.Path.LocalPath); StatusText = "Excel exported successfully!"; }
+
+        try
+        {
+            var file = await picker.SaveFilePickerAsync(new FilePickerSaveOptions
+            {
+                Title = "Export Excel Report",
+                SuggestedFileName = $"Report_{DateTime.Now:yyyyMMdd_HHmm}.xlsx",
+                DefaultExtension = ".xlsx",
+                FileTypeChoices = new[]
+                {
+                    new Avalonia.Platform.Storage.FilePickerFileType("Excel Workbook")
+                    {
+                        Patterns = new[] { "*.xlsx" },
+                        MimeTypes = new[] { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
+                    }
+                }
+            });
+            if (file != null)
+            {
+                StatusText = "Exporting Excel...";
+                string path = file.TryGetLocalPath() ?? file.Path.LocalPath;
+                await _excelExportService.ExportAsync(ReportData.ToList(), path);
+                StatusText = "Excel exported successfully!";
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Excel export failed: {ex.Message}";
+            // Log to console for debugging
+            Console.WriteLine($"[ExportError] {ex}");
+        }
     }
 
     [RelayCommand]
@@ -242,7 +271,39 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [RelayCommand] private void AskCloseSettings() { CloseSettingsRequested?.Invoke(); }
-    [RelayCommand] public void TakeSnapshotCommand() => _visionService.RequestAnalysis();
+
+    // --- Snapshot: Debounce guard ---
+    private DateTime _lastSnapshotTime = DateTime.MinValue;
+    private DispatcherTimer? _snapshotLabelTimer;
+
+    [ObservableProperty] private bool _isSnapshotResultVisible = false;
+
+    [RelayCommand]
+    public void TakeSnapshotCommand()
+    {
+        if (!IsCameraRunning) return; // ไม่ทำงานถ้ากล้องยังไม่เปิด
+
+        // Debounce: ป้องกัน double-trigger ภายใน 1 วินาที
+        var now = DateTime.UtcNow;
+        if ((now - _lastSnapshotTime).TotalSeconds < 1.0) return;
+        _lastSnapshotTime = now;
+
+        _visionService.RequestAnalysis();
+
+        // แสดง label overlay เป็นเวลา SnapshotFreezeDurationMs แล้วซ่อนเอง
+        IsSnapshotResultVisible = true;
+        _snapshotLabelTimer?.Stop();
+        _snapshotLabelTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(Math.Max(SnapshotFreezeDurationMs, 500))
+        };
+        _snapshotLabelTimer.Tick += (_, _) =>
+        {
+            IsSnapshotResultVisible = false;
+            _snapshotLabelTimer?.Stop();
+        };
+        _snapshotLabelTimer.Start();
+    }
     [RelayCommand] public void TakeSnapshotUICommand() => TakeSnapshotCommand();
     [RelayCommand] private void UnfreezeCamera() => _visionService.UnfreezeCamera();
 
@@ -288,6 +349,11 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void ApplySettings()
     {
+        // --- จดจำค่า Camera settings ก่อนที่จะ save ---
+        var prevCameraApi = _settingsService.LoadSettings().SelectedCameraApi;
+        var prevCameraResolution = _settingsService.LoadSettings().CameraResolution;
+        var prevCameraIndex = _settingsService.LoadSettings().CameraIndex;
+
         var s = new AppSettings
         {
             LensSelection = LensSelection,
@@ -310,12 +376,18 @@ public partial class MainWindowViewModel : ObservableObject
             FilterMaxUm = FilterMaxUm
         };
         _settingsService.SaveSettings(s);
-        ApplySettingsToSystem();
+
+        // --- ตรวจสอบว่า Camera settings เปลี่ยนหรือไม่ ---
+        bool cameraChanged = prevCameraApi != SelectedCameraApi
+                          || prevCameraResolution != CameraResolution
+                          || prevCameraIndex != CameraIndex;
+
+        ApplySettingsToSystem(cameraSettingsChanged: cameraChanged);
         HasUnsavedChanges = false;
-        StatusText = "Settings applied.";
+        StatusText = cameraChanged ? "Settings applied. Restarting camera..." : "Settings applied.";
     }
 
-    private void ApplySettingsToSystem()
+    private void ApplySettingsToSystem(bool cameraSettingsChanged = false)
     {
         _visionService?.SetModelPaths(SelectedModelPath4x, SelectedModelPath10x);
         _visionService?.SetHardwareProvider(SelectedHardware);
@@ -332,7 +404,9 @@ public partial class MainWindowViewModel : ObservableObject
         }
         UpdateLocalizedStrings();
         AnalyzeButtonText = _isLiveAnalysisActive ? $"⏹ Stop Live AI ({LiveAiHotkeyDisplay})" : $"▶ Start Live AI ({LiveAiHotkeyDisplay})";
-        if (IsCameraRunning) _ = RestartCameraAsync();
+
+        // ⚠️ รีสตาร์ทกล้องเฉพาะเมื่อ Camera Settings (Index / API / Resolution) เปลี่ยนจริงๆ เท่านั้น
+        if (cameraSettingsChanged && IsCameraRunning) _ = RestartCameraAsync();
     }
 
     [RelayCommand]
@@ -497,6 +571,10 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private int _reportItemCount = 0;
     public ObservableCollection<AnalysisReportItem> ReportData { get; } = new();
 
+    // Snapshot overlay: bitmap ที่แสดงผล snapshot ค้างไว้บนภาพ live
+    [ObservableProperty] private WriteableBitmap? _snapshotOverlayBitmap;
+    private DispatcherTimer? _overlayTimer;
+
     private void OnFrameProcessed(object? sender, VisionEventArgs e)
     {
         Interlocked.Increment(ref _framesProcessedThisSecond);
@@ -506,7 +584,33 @@ public partial class MainWindowViewModel : ObservableObject
         {
             if (e.ProcessedBitmap != null)
             {
-                CameraImage = e.ProcessedBitmap;
+                if (e.IsSnapshot)
+                {
+                    // เก็บ bitmap ที่มี label box ค้างไว้เป็น overlay
+                    SnapshotOverlayBitmap = e.ProcessedBitmap;
+
+                    // ตั้ง timer ซ่อน overlay หลังจาก SnapshotFreezeDurationMs
+                    _overlayTimer?.Stop();
+                    _overlayTimer = new DispatcherTimer
+                    {
+                        Interval = TimeSpan.FromMilliseconds(Math.Max(SnapshotFreezeDurationMs, 500))
+                    };
+                    _overlayTimer.Tick += (_, _) =>
+                    {
+                        SnapshotOverlayBitmap = null;
+                        IsSnapshotResultVisible = false;
+                        _overlayTimer?.Stop();
+                    };
+                    _overlayTimer.Start();
+
+                    IsSnapshotResultVisible = true;
+                    // ไม่อัพเดต CameraImage จาก snapshot frame
+                }
+                else
+                {
+                    // live frame - แสดงปกติ
+                    CameraImage = e.ProcessedBitmap;
+                }
             }
 
             if (e.Analysis != null)
