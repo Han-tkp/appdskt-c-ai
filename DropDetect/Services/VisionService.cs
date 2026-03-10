@@ -257,14 +257,29 @@ public class VisionService : IVisionService
 
             try
             {
+                Console.WriteLine($"[VisionService] Configuring Camera Index {cameraIndex}...");
+
+                // Set resolution first without forcing FourCC
+                // Many generic USB microscopes fail and return black frames if FourCC is explicitly set to MJPG when they only support YUY2
                 Console.WriteLine($"[VisionService] Setting resolution to {width}x{height}");
-                // Ensure we don't freeze on external cameras that reject unlisted resolutions
                 _capture.Set(VideoCaptureProperties.FrameWidth, width);
                 _capture.Set(VideoCaptureProperties.FrameHeight, height);
+
+                // Give the driver a moment to apply changes
+                Thread.Sleep(500);
+
+                // Verify if settings applied, otherwise try a safer resolution
+                if (_capture.Get(VideoCaptureProperties.FrameWidth) == 0)
+                {
+                    Console.WriteLine("[VisionService] WARNING: Resolution set failed. Falling back to 640x480...");
+                    _capture.Set(VideoCaptureProperties.FrameWidth, 640);
+                    _capture.Set(VideoCaptureProperties.FrameHeight, 480);
+                    Thread.Sleep(500);
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[VisionService] Warning: Could not set explicit resolution {width}x{height} - {ex.Message}");
+                Console.WriteLine($"[VisionService] Warning: Could not set camera properties - {ex.Message}");
             }
 
             // Warm-up grab to ensure the camera is actually producing frames.
@@ -299,9 +314,23 @@ public class VisionService : IVisionService
     {
         _isRunning = false;
         _cancellationTokenSource?.Cancel();
-        _cameraTask?.Wait(2000); // Wait 2s max
-        _capture?.Dispose();
-        _capture = null;
+
+        // Wait for task to finish properly
+        if (_cameraTask != null)
+        {
+            _cameraTask.Wait(1000);
+            _cameraTask = null;
+        }
+
+        if (_capture != null)
+        {
+            _capture.Release(); // Explicitly release camera handle
+            _capture.Dispose();
+            _capture = null;
+        }
+
+        // Brief pause to allow Windows/DirectShow to release hardware lock
+        Thread.Sleep(200);
     }
 
     public void SetThreshold(float threshold) => _confThreshold = threshold;
@@ -456,15 +485,25 @@ public class VisionService : IVisionService
             {
                 if (!_capture.Read(frame) || frame.Empty())
                 {
-                    if (!readFailureStopwatch.IsRunning || readFailureStopwatch.ElapsedMilliseconds > 5000)
+                    if (!readFailureStopwatch.IsRunning) readFailureStopwatch.Restart();
+
+                    if (readFailureStopwatch.ElapsedMilliseconds > 5000)
                     {
-                        Console.WriteLine("[VisionService] Warning: VideoCapture.Read(frame) failed or frame is empty.");
-                        readFailureStopwatch.Restart();
+                        Console.WriteLine("[VisionService] ERROR: Camera stopped sending frames. Shutting down service.");
+                        _isRunning = false;
+                        break;
                     }
                     Thread.Sleep(10);
                     continue;
                 }
                 readFailureStopwatch.Reset();
+
+                // Detect if the frame is completely black (driver/exposure issue)
+                var meanColor = Cv2.Mean(frame);
+                if (meanColor.Val0 < 1.0 && meanColor.Val1 < 1.0 && meanColor.Val2 < 1.0)
+                {
+                    Console.WriteLine("[VisionService] WARNING: Frame is completely black (Mean < 1.0). Driver issue or lens is blocked.");
+                }
 
                 AnalysisResult? stats = null;
                 WriteableBitmap avaloniaBitmap;
@@ -703,9 +742,9 @@ public class VisionService : IVisionService
             catch (Exception ex)
             {
                 // Ensure currentRaw is disposed in case of error mid-loop
-                frame.Dispose(); 
+                frame.Dispose();
                 // We'll let the next loop iteration re-initialize frame
-                
+
                 string logMsg = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Camera Loop Error: {ex.Message}\n{ex.StackTrace}\n";
                 try
                 {
@@ -732,15 +771,24 @@ public class VisionService : IVisionService
         var bitmapOutput = new WriteableBitmap(
             new PixelSize(bgraMat.Width, bgraMat.Height),
             new Vector(96, 96),
-            PixelFormat.Bgra8888
+            PixelFormat.Bgra8888,
+            AlphaFormat.Premul
         );
 
         using (var buf = bitmapOutput.Lock())
         {
-            int size = bgraMat.Width * bgraMat.Height * bgraMat.ElemSize();
             unsafe
             {
-                Buffer.MemoryCopy((void*)bgraMat.Data, (void*)buf.Address, buf.RowBytes * bgraMat.Height, size);
+                byte* pSrc = (byte*)bgraMat.Data;
+                byte* pDest = (byte*)buf.Address;
+
+                int rowBytesSrc = bgraMat.Width * 4;
+                int rowBytesDest = buf.RowBytes;
+
+                for (int y = 0; y < bgraMat.Height; y++)
+                {
+                    Buffer.MemoryCopy(pSrc + (y * rowBytesSrc), pDest + (y * rowBytesDest), rowBytesDest, rowBytesSrc);
+                }
             }
         }
         return bitmapOutput;

@@ -56,7 +56,19 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private string _selectedHardware = "CPU";
 
     [ObservableProperty] private bool _isCameraRunning = false;
+    partial void OnIsCameraRunningChanged(bool value)
+    {
+        OnPropertyChanged(nameof(CameraStatusColor));
+        OnPropertyChanged(nameof(CameraStatusLabel));
+    }
+
     [ObservableProperty] private bool _isCameraLoading = false;
+    partial void OnIsCameraLoadingChanged(bool value)
+    {
+        OnPropertyChanged(nameof(CameraStatusColor));
+        OnPropertyChanged(nameof(CameraStatusLabel));
+    }
+
     [ObservableProperty] private string _loadingMessage = "Loading...";
 
     public string CameraStatusColor => IsCameraLoading ? "#FAB387" : IsCameraRunning ? "#a6e3a1" : "#585b70";
@@ -129,7 +141,7 @@ public partial class MainWindowViewModel : ObservableObject
         {
             AvailableModels.Clear();
             foreach (var f in files) AvailableModels.Add(Path.GetFileName(f));
-            
+
             // Fallback selection if saved setting not found
             if (!AvailableModels.Contains(SelectedModelPath4x) && AvailableModels.Contains("yolov8n_4x.onnx")) SelectedModelPath4x = "yolov8n_4x.onnx";
             if (!AvailableModels.Contains(SelectedModelPath10x) && AvailableModels.Contains("yolov8n_10x.onnx")) SelectedModelPath10x = "yolov8n_10x.onnx";
@@ -175,7 +187,13 @@ public partial class MainWindowViewModel : ObservableObject
     {
         IsCameraLoading = true; LoadingMessage = "Starting Camera...";
         await Task.Run(() => _visionService.StartCamera(CameraIndex, LensSelection, SelectedCameraApi, CameraResolution));
-        IsCameraRunning = true; IsCameraLoading = false; StatusText = "Camera Live.";
+
+        // Sync state with actual hardware status
+        IsCameraRunning = _visionService.IsRunning;
+        IsCameraLoading = false;
+
+        if (IsCameraRunning) StatusText = "Camera Live.";
+        else StatusText = "Failed to open camera. Try another Index or API.";
     }
 
     [RelayCommand]
@@ -212,7 +230,8 @@ public partial class MainWindowViewModel : ObservableObject
         if (folders.Count > 0) OutputDirectory = folders[0].Path.LocalPath;
     }
 
-    [RelayCommand] private void ToggleSettings()
+    [RelayCommand]
+    private void ToggleSettings()
     {
         RefreshModelList();
         if (OperatingSystem.IsWindows()) _ = FetchHardwareSpecsAsync();
@@ -221,12 +240,12 @@ public partial class MainWindowViewModel : ObservableObject
         HotkeyConflictMessage = "";
         ShowSettingsRequested?.Invoke();
     }
-    
+
     [RelayCommand] private void AskCloseSettings() { CloseSettingsRequested?.Invoke(); }
     [RelayCommand] public void TakeSnapshotCommand() => _visionService.RequestAnalysis();
     [RelayCommand] public void TakeSnapshotUICommand() => TakeSnapshotCommand();
     [RelayCommand] private void UnfreezeCamera() => _visionService.UnfreezeCamera();
-    
+
     [RelayCommand] private void StartListeningForSnapshotHotkey() { IsListeningForSnapshotHotkey = true; SnapshotHotkeyDisplay = "Press any key..."; HotkeyConflictMessage = ""; }
     [RelayCommand] private void StartListeningForLiveAiHotkey() { IsListeningForLiveAiHotkey = true; LiveAiHotkeyDisplay = "Press any key..."; HotkeyConflictMessage = ""; }
 
@@ -269,13 +288,26 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void ApplySettings()
     {
-        var s = new AppSettings {
-            LensSelection = LensSelection, HardwareProvider = SelectedHardware, SelectedCameraApi = SelectedCameraApi,
-            SelectedTheme = SelectedTheme, SelectedFont = SelectedFont, LayoutFontScale = LayoutFontScale,
-            SelectedLanguage = SelectedLanguage, ConfidenceThreshold = ConfidenceThreshold, TargetSampleSize = TargetSampleSize ?? 200,
-            OutputDirectory = OutputDirectory, SnapshotHotkey = SnapshotHotkey.ToString(), LiveAiHotkey = LiveAiHotkey.ToString(), CameraResolution = CameraResolution,
-            CameraIndex = CameraIndex, SelectedModelPath4x = SelectedModelPath4x, SelectedModelPath10x = SelectedModelPath10x,
-            FilterMinUm = FilterMinUm, FilterMaxUm = FilterMaxUm
+        var s = new AppSettings
+        {
+            LensSelection = LensSelection,
+            HardwareProvider = SelectedHardware,
+            SelectedCameraApi = SelectedCameraApi,
+            SelectedTheme = SelectedTheme,
+            SelectedFont = SelectedFont,
+            LayoutFontScale = LayoutFontScale,
+            SelectedLanguage = SelectedLanguage,
+            ConfidenceThreshold = ConfidenceThreshold,
+            TargetSampleSize = TargetSampleSize ?? 200,
+            OutputDirectory = OutputDirectory,
+            SnapshotHotkey = SnapshotHotkey.ToString(),
+            LiveAiHotkey = LiveAiHotkey.ToString(),
+            CameraResolution = CameraResolution,
+            CameraIndex = CameraIndex,
+            SelectedModelPath4x = SelectedModelPath4x,
+            SelectedModelPath10x = SelectedModelPath10x,
+            FilterMinUm = FilterMinUm,
+            FilterMaxUm = FilterMaxUm
         };
         _settingsService.SaveSettings(s);
         ApplySettingsToSystem();
@@ -290,8 +322,9 @@ public partial class MainWindowViewModel : ObservableObject
         _visionService?.SetLens(LensSelection);
         _visionService?.SetThreshold(ConfidenceThreshold);
         _visionService?.SetSnapshotFreezeDuration(SnapshotFreezeDurationMs);
-        
-        if (Application.Current != null) {
+
+        if (Application.Current != null)
+        {
             Application.Current.RequestedThemeVariant = SelectedTheme switch { "Dark" => ThemeVariant.Dark, "Light" => ThemeVariant.Light, _ => ThemeVariant.Default };
             if (SelectedFont == "Google Sans") Application.Current.Resources["AppFontFamily"] = Application.Current.Resources["GoogleSansFont"];
             else if (SelectedFont == "THSarabunNew") Application.Current.Resources["AppFontFamily"] = Application.Current.Resources["THSarabunNewFont"];
@@ -352,7 +385,8 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void UpdateLocalizedStrings()
     {
-        if (SelectedLanguage == "ภาษาไทย") {
+        if (SelectedLanguage == "ภาษาไทย")
+        {
             VmdLabel = "VMD (เฉลี่ย)"; InFrameLabel = "ในภาพ"; AccumulatedLabel = "สะสม"; SpanLabel = "SPAN";
             OutOfBoundsLabel = "เกินระยะ"; CurrentSlideLabel = "สไลด์"; SlideStatusLabel = "สถานะ"; TargetSizeLabel = "จำนวนเป้าหมาย";
             LocTabAnalyze = "🔬 วิเคราะห์"; LocTabReport = "📊 รายงาน"; LocFileStoragePath = "จัดเก็บไฟล์";
@@ -368,7 +402,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    [ObservableProperty] [NotifyPropertyChangedFor(nameof(OutputDirectoryColor))] private string _outputDirectory = "";
+    [ObservableProperty][NotifyPropertyChangedFor(nameof(OutputDirectoryColor))] private string _outputDirectory = "";
     public string OutputDirectoryColor => string.IsNullOrWhiteSpace(OutputDirectory) ? "#F38BA8" : "#A6E3A1";
     partial void OnOutputDirectoryChanged(string value) { HasUnsavedChanges = true; }
 
@@ -395,7 +429,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private string _spanText = "0.00";
     [ObservableProperty] private string _evaluationStatus = "N/A";
     [ObservableProperty] private bool _isWarningVisible = false;
-    
+
     [ObservableProperty] private double _filterMinUm = 5.0;
     partial void OnFilterMinUmChanged(double value) { HasUnsavedChanges = true; }
     [ObservableProperty] private double _filterMaxUm = 30.0;
@@ -411,10 +445,10 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private string _outOfBoundsCount = "0";
     [ObservableProperty] private string _inRangeCountText = "0/0";
     [ObservableProperty] private int _cameraIndex = 0;
-    
+
     [ObservableProperty] private string _cameraResolution = "1280x960";
     partial void OnCameraResolutionChanged(string value) { HasUnsavedChanges = true; }
-    
+
     [ObservableProperty] private string _selectedCameraApi = "Auto";
     partial void OnSelectedCameraApiChanged(string value) { HasUnsavedChanges = true; }
 
@@ -422,7 +456,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<string> _availableResolutions = new() { "1600x1200", "1280x960", "800x600" };
     [ObservableProperty] private ObservableCollection<SlideItemViewModel> _slideList = new();
     [ObservableProperty] private SlideItemViewModel? _selectedSlide;
-    
+
     [ObservableProperty] private int? _targetSampleSize = 200;
     partial void OnTargetSampleSizeChanged(int? value) { HasUnsavedChanges = true; }
 
@@ -444,7 +478,7 @@ public partial class MainWindowViewModel : ObservableObject
         var sec = value / 1000.0;
         if (Math.Abs((_snapshotFreezeDurationSeconds ?? 1.5) - sec) > 0.01) SnapshotFreezeDurationSeconds = sec;
     }
-    
+
     [ObservableProperty] private double? _snapshotFreezeDurationSeconds = 1.5;
     partial void OnSnapshotFreezeDurationSecondsChanged(double? value)
     {
@@ -456,7 +490,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private string _telemetryText = "";
     [ObservableProperty] private string _analyzeButtonText = "▶ Start Live AI";
     private bool _isLiveAnalysisActive = false;
-    
+
     [ObservableProperty] private float _confidenceThreshold = 0.25f;
     partial void OnConfidenceThresholdChanged(float value) { HasUnsavedChanges = true; }
 
@@ -465,9 +499,18 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void OnFrameProcessed(object? sender, VisionEventArgs e)
     {
-        Dispatcher.UIThread.InvokeAsync(() => {
-            if (e.ProcessedBitmap != null) CameraImage = e.ProcessedBitmap;
-            if (e.Analysis != null) {
+        Interlocked.Increment(ref _framesProcessedThisSecond);
+
+        // Use Post instead of InvokeAsync to avoid blocking the vision thread
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (e.ProcessedBitmap != null)
+            {
+                CameraImage = e.ProcessedBitmap;
+            }
+
+            if (e.Analysis != null)
+            {
                 DropletCount = e.Analysis.Count;
                 AccumulatedCount = e.Analysis.TotalAccumulatedCount;
                 VmdText = e.Analysis.Dv05_VMD.ToString("F2");
@@ -476,11 +519,11 @@ public partial class MainWindowViewModel : ObservableObject
                 WhoPassText = pass ? "✅ PASS" : "❌ FAIL";
                 WhoPassColor = pass ? "#a6e3a1" : "#f38ba8";
             }
-        });
+        }, DispatcherPriority.Render);
     }
 
     private int _framesProcessedThisSecond = 0;
-    private void UpdateTelemetry(object? sender, EventArgs e) 
+    private void UpdateTelemetry(object? sender, EventArgs e)
     {
         using var proc = Process.GetCurrentProcess();
         long ramMb = proc.WorkingSet64 / (1024 * 1024);
@@ -488,8 +531,8 @@ public partial class MainWindowViewModel : ObservableObject
         TelemetryText = $"System Metrics: RAM {ramMb} MB | {fps} FPS | {SelectedHardware}";
     }
 
-    public void UpdateHotkey(Avalonia.Input.Key key) 
-    { 
+    public void UpdateHotkey(Avalonia.Input.Key key)
+    {
         if (IsListeningForSnapshotHotkey)
         {
             if (key == LiveAiHotkey) { HotkeyConflictMessage = "⚠️ Key is already used for Live AI."; IsListeningForSnapshotHotkey = false; SnapshotHotkeyDisplay = SnapshotHotkey.ToString(); return; }
@@ -514,15 +557,15 @@ public partial class MainWindowViewModel : ObservableObject
         SelectedSlide.DropletsCaptured = SelectedSlide.CapturedDroplets.Count;
         SelectedSlide.IsAnalyzed = true;
         SelectedSlide.StatusText = $"✅ Accumulated ({SelectedSlide.DropletsCaptured})";
-        
+
         var downsampled = _analysisService.DownsampleDroplets(SelectedSlide.CapturedDroplets, TargetSampleSize ?? 200);
         var result = _analysisService.CalculateStatistics(downsampled);
         result.TotalAccumulatedCount = SelectedSlide.DropletsCaptured;
-        
+
         var existing = ReportData.FirstOrDefault(r => r.LocationName == SelectedSlide.SlideName);
         if (existing != null) ReportData[ReportData.IndexOf(existing)] = new AnalysisReportItem { LocationName = SelectedSlide.SlideName, Timestamp = DateTime.Now, Result = result };
         else ReportData.Add(new AnalysisReportItem { LocationName = SelectedSlide.SlideName, Timestamp = DateTime.Now, Result = result });
-        
+
         ReportItemCount = ReportData.Count;
         _visionService.ClearSession();
         _visionService.UnfreezeCamera();
@@ -530,7 +573,22 @@ public partial class MainWindowViewModel : ObservableObject
         if (!string.IsNullOrWhiteSpace(OutputDirectory)) SaveSnapshot();
     }
 
-    [RelayCommand] private void CycleCamera() { CameraIndex++; if (CameraIndex > 5) CameraIndex = 0; if (IsCameraRunning) _ = RestartCameraAsync(); }
+    [RelayCommand]
+    private void CycleCamera()
+    {
+        try
+        {
+            CameraIndex++;
+            if (CameraIndex > 5) CameraIndex = 0; // Cycle through 0, 1, 2, 3, 4, 5
+
+            StatusText = $"Switching to Camera Index: {CameraIndex}...";
+            if (IsCameraRunning) _ = RestartCameraAsync();
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Error switching camera: {ex.Message}";
+        }
+    }
     private async Task RestartCameraAsync() { await StopCamera(); await StartCamera(); }
 
     [RelayCommand]

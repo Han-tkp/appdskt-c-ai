@@ -1,7 +1,7 @@
 ; Script generated for DropDetect - Optimized for Production
 #define MyAppName "DropDetect"
 #define MyAppVersion "1.2.2"
-#define MyAppPublisher "VBDC Team"
+#define MyAppPublisher "DropDetect Solo Project"
 #define MyAppExeName "Detectvbdc12.2.exe"
 #define MyAppAssocName "DropDetect Analysis File"
 #define MyAppAssocExt ".ddp"

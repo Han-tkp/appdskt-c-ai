@@ -35,5 +35,5 @@
 *   **Visual C++ Redistributable:** โดยปกติจะมีอยู่ใน Windows Update หากไม่มี โปรแกรมอาจแจ้งให้ติดตั้งเพิ่มเติมเพื่อรันโมเดล AI (ONNX Runtime)
 
 ---
-*จัดทำโดย: ระบบวิเคราะห์ DropDetect (VBDC Team)*
+*จัดทำโดย: โครงการพัฒนา DropDetect (Solo Developer)*
 *วันที่ปรับปรุงล่าสุด: 10 มีนาคม 2569*
