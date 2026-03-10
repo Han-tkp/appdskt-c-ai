@@ -36,12 +36,30 @@ public partial class MainWindowViewModel : ObservableObject
 {
     private readonly IVisionService _visionService;
     private readonly IExcelExportService _excelExportService;
-    private readonly IAppSettingsService _settingsService;
+    private readonly AppStateManager _appStateManager;
     private readonly ILocalizationService _localizationService;
     private readonly IAnalysisService _analysisService;
+    private readonly IProjectManagerService _projectManagerService;
+    private readonly IAutoSaveService _autoSaveService;
+    public IAutoSaveService AutoSaveService => _autoSaveService;
     private readonly DispatcherTimer _telemetryTimer;
 
+    private readonly string _workspaceImagesFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DropDetect", "Workspace", "images");
+
+    [ObservableProperty] private string _currentProjectPath = string.Empty;
+    partial void OnCurrentProjectPathChanged(string value) => OnPropertyChanged(nameof(ProjectTitleDisplay));
+
     [ObservableProperty] private bool _hasUnsavedChanges = false;
+    partial void OnHasUnsavedChangesChanged(bool value) 
+    {
+        OnPropertyChanged(nameof(ProjectTitleDisplay));
+        if (value) _autoSaveService?.TriggerAutoSave();
+    }
+
+    public string ProjectTitleDisplay => string.IsNullOrEmpty(CurrentProjectPath)
+        ? "Untitled Project" + (HasUnsavedChanges ? "*" : "")
+        : Path.GetFileNameWithoutExtension(CurrentProjectPath) + (HasUnsavedChanges ? "*" : "");
+
     [ObservableProperty] private string _hotkeyConflictMessage = "";
 
     [ObservableProperty] private string _statusText = "Ready - Waiting to start camera";
@@ -70,6 +88,8 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     [ObservableProperty] private string _loadingMessage = "Loading...";
+
+    [ObservableProperty] private string _analyzeButtonBackground = "#fae3b0"; // Default Yellow
 
     public string CameraStatusColor => IsCameraLoading ? "#FAB387" : IsCameraRunning ? "#a6e3a1" : "#585b70";
     public string CameraStatusLabel => IsCameraLoading ? "Loading…" : IsCameraRunning ? "LIVE" : "Offline";
@@ -207,8 +227,38 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void Analyze()
     {
-        if (!_isLiveAnalysisActive) { _visionService.SetLiveAnalysis(true); _isLiveAnalysisActive = true; AnalyzeButtonText = $"⏹ Stop Live AI ({LiveAiHotkeyDisplay})"; }
-        else { _visionService.SetLiveAnalysis(false); _isLiveAnalysisActive = false; AnalyzeButtonText = $"▶ Start Live AI ({LiveAiHotkeyDisplay})"; }
+        if (!_isLiveAnalysisActive) 
+        { 
+            _visionService.SetLiveAnalysis(true); 
+            _isLiveAnalysisActive = true; 
+            AnalyzeButtonText = $"⏹ Stop Live AI ({LiveAiHotkeyDisplay})"; 
+            AnalyzeButtonBackground = "#F38BA8"; // Red when active
+        }
+        else 
+        { 
+            _visionService.SetLiveAnalysis(false); 
+            _isLiveAnalysisActive = false; 
+            AnalyzeButtonText = $"▶ Start Live AI ({LiveAiHotkeyDisplay})"; 
+            AnalyzeButtonBackground = "#fae3b0"; // Default yellow
+        }
+    }
+
+    [RelayCommand]
+    private void NewProject()
+    {
+        // Warn if HasUnsavedChanges? Could add dialog later.
+        CurrentProjectPath = string.Empty;
+        ReportData.Clear();
+        foreach (var slide in SlideList)
+        {
+            slide.CapturedDroplets.Clear();
+            slide.DropletsCaptured = 0;
+            slide.IsAnalyzed = false;
+            slide.StatusText = "⏳ Pending";
+        }
+        ReportItemCount = 0;
+        HasUnsavedChanges = false;
+        StatusText = "New Project created.";
     }
 
     [RelayCommand]
@@ -245,8 +295,230 @@ public partial class MainWindowViewModel : ObservableObject
         catch (Exception ex)
         {
             StatusText = $"Excel export failed: {ex.Message}";
-            // Log to console for debugging
-            Console.WriteLine($"[ExportError] {ex}");
+        }
+    }
+
+    private DropletProject CreateProjectData()
+    {
+        var proj = new DropletProject
+        {
+            SchemaVersion = "1.0",
+            CreatedAt = DateTime.Now,
+            Settings = new ProjectSettings
+            {
+                LensSelection = LensSelection,
+                AnalysisThreshold = ConfidenceThreshold * 100.0,
+                TargetSampleSize = TargetSampleSize ?? 200
+            }
+        };
+
+        foreach (var item in ReportData)
+        {
+            var slide = SlideList.FirstOrDefault(s => s.SlideName == item.LocationName);
+            proj.Sessions.Add(new SlideSession
+            {
+                LocationName = item.LocationName,
+                Timestamp = item.Timestamp,
+                Result = item.Result,
+                // Assuming images are already in _workspaceImagesFolderPath if tracked
+                RawImagePath = item.RawImageName,
+                ProcessedImagePath = item.ProcessedImageName,
+                RawDiameters = slide?.CapturedDroplets ?? new List<double>()
+            });
+        }
+        return proj;
+    }
+
+    [RelayCommand]
+    private async Task SaveProjectAs()
+    {
+        var picker = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow?.StorageProvider;
+        if (picker == null) return;
+
+        var file = await picker.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save Project As",
+            SuggestedFileName = $"Project_{DateTime.Now:yyyyMMdd}.dropproj",
+            DefaultExtension = ".dropproj",
+            FileTypeChoices = new[]
+            {
+                new Avalonia.Platform.Storage.FilePickerFileType("DropDetect Project") { Patterns = new[] { "*.dropproj" } }
+            }
+        });
+
+        if (file != null)
+        {
+            CurrentProjectPath = file.TryGetLocalPath() ?? file.Path.LocalPath;
+            await SaveProjectWorker();
+        }
+    }
+
+    [RelayCommand]
+    private async Task SaveProject()
+    {
+        if (string.IsNullOrEmpty(CurrentProjectPath))
+        {
+            await SaveProjectAs();
+            return;
+        }
+        await SaveProjectWorker();
+    }
+
+    private async Task SaveProjectWorker()
+    {
+        try
+        {
+            StatusText = "Saving Project...";
+            var proj = CreateProjectData();
+            await _projectManagerService.ExportProjectAsync(proj, CurrentProjectPath, _workspaceImagesFolderPath);
+            HasUnsavedChanges = false;
+            _autoSaveService?.ClearAutoSave();
+            StatusText = "Project saved successfully.";
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Save failed: {ex.Message}";
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenProject()
+    {
+        var picker = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow?.StorageProvider;
+        if (picker == null) return;
+
+        var files = await picker.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Open Project",
+            FileTypeFilter = new[] { new Avalonia.Platform.Storage.FilePickerFileType("DropDetect Project") { Patterns = new[] { "*.dropproj" } } },
+            AllowMultiple = false
+        });
+
+        if (files.Count > 0)
+        {
+            try
+            {
+                StatusText = "Loading Project...";
+                string path = files[0].TryGetLocalPath() ?? files[0].Path.LocalPath;
+                var proj = await _projectManagerService.ImportProjectAsync(path, _workspaceImagesFolderPath);
+
+                // Reconstruct ReportData and Workspace
+                ReportData.Clear();
+
+                // Reset SlideList state first
+                foreach (var slide in SlideList)
+                {
+                    slide.CapturedDroplets.Clear();
+                    slide.DropletsCaptured = 0;
+                    slide.IsAnalyzed = false;
+                    slide.StatusText = "⏳ Pending";
+                }
+
+                foreach (var s in proj.Sessions)
+                {
+                    ReportData.Add(new AnalysisReportItem
+                    {
+                        LocationName = s.LocationName,
+                        Timestamp = s.Timestamp,
+                        Result = s.Result,
+                        RawImageName = s.RawImagePath,
+                        ProcessedImageName = s.ProcessedImagePath
+                    });
+
+                    // Restore Slide state
+                    var slide = SlideList.FirstOrDefault(x => x.SlideName == s.LocationName);
+                    if (slide != null)
+                    {
+                        if (s.RawDiameters != null)
+                        {
+                            slide.CapturedDroplets = new List<double>(s.RawDiameters);
+                            slide.DropletsCaptured = slide.CapturedDroplets.Count;
+                        }
+                        else
+                        {
+                            // fallback for old project versions
+                            slide.CapturedDroplets = new List<double>();
+                            slide.DropletsCaptured = s.Result.TotalAccumulatedCount; 
+                        }
+                        slide.IsAnalyzed = true;
+                        slide.StatusText = $"✅ Accumulated ({slide.DropletsCaptured})";
+                    }
+                }
+                ReportItemCount = ReportData.Count;
+
+                LensSelection = proj.Settings.LensSelection;
+                ConfidenceThreshold = (float)(proj.Settings.AnalysisThreshold / 100.0);
+                TargetSampleSize = proj.Settings.TargetSampleSize;
+                CurrentProjectPath = path;
+                HasUnsavedChanges = false;
+                StatusText = "Project loaded successfully.";
+            }
+            catch (Exception ex)
+            {
+                StatusText = $"Load failed: {ex.Message}";
+            }
+        }
+    }
+
+    public async Task RecoverAutoSaveAsync()
+    {
+        var path = _autoSaveService.GetLastAutoSaveFilePath();
+        if (string.IsNullOrEmpty(path)) return;
+
+        try
+        {
+            StatusText = "Recovering Auto-save...";
+            var proj = await _projectManagerService.ImportProjectAsync(path, _workspaceImagesFolderPath);
+
+            ReportData.Clear();
+            foreach (var slide in SlideList)
+            {
+                slide.CapturedDroplets.Clear();
+                slide.DropletsCaptured = 0;
+                slide.IsAnalyzed = false;
+                slide.StatusText = "⏳ Pending";
+            }
+
+            foreach (var s in proj.Sessions)
+            {
+                ReportData.Add(new AnalysisReportItem
+                {
+                    LocationName = s.LocationName,
+                    Timestamp = s.Timestamp,
+                    Result = s.Result,
+                    RawImageName = s.RawImagePath,
+                    ProcessedImageName = s.ProcessedImagePath
+                });
+
+                var slide = SlideList.FirstOrDefault(x => x.SlideName == s.LocationName);
+                if (slide != null)
+                {
+                    if (s.RawDiameters != null)
+                    {
+                        slide.CapturedDroplets = new List<double>(s.RawDiameters);
+                        slide.DropletsCaptured = slide.CapturedDroplets.Count;
+                    }
+                    else
+                    {
+                        slide.CapturedDroplets = new List<double>();
+                        slide.DropletsCaptured = s.Result.TotalAccumulatedCount;
+                    }
+                    slide.IsAnalyzed = true;
+                    slide.StatusText = $"✅ Accumulated ({slide.DropletsCaptured})";
+                }
+            }
+            ReportItemCount = ReportData.Count;
+
+            LensSelection = proj.Settings.LensSelection;
+            ConfidenceThreshold = (float)(proj.Settings.AnalysisThreshold / 100.0);
+            TargetSampleSize = proj.Settings.TargetSampleSize;
+            HasUnsavedChanges = true;
+            CurrentProjectPath = ""; // Since it's recovered, it's unsaved to a specific file
+            StatusText = "Session recovered successfully.";
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Recovery failed: {ex.Message}";
         }
     }
 
@@ -314,9 +586,16 @@ public partial class MainWindowViewModel : ObservableObject
     public Action? CloseSettingsRequested { get; set; }
 
     // --- Logic ---
-    public MainWindowViewModel(IVisionService visionService, IExcelExportService excelExportService, IAnalysisService analysisService, IAppSettingsService settingsService, ILocalizationService localizationService)
+    public MainWindowViewModel(IVisionService visionService, IExcelExportService excelExportService, IAnalysisService analysisService, AppStateManager appStateManager, ILocalizationService localizationService, IProjectManagerService projectManagerService, IAutoSaveService autoSaveService)
     {
-        _visionService = visionService; _excelExportService = excelExportService; _analysisService = analysisService; _settingsService = settingsService; _localizationService = localizationService;
+        _visionService = visionService; _excelExportService = excelExportService; _analysisService = analysisService; _appStateManager = appStateManager; _localizationService = localizationService; _projectManagerService = projectManagerService; _autoSaveService = autoSaveService;
+
+        _autoSaveService.SetCurrentProjectContextProvider(CreateProjectData);
+        _autoSaveService.OnAutoSaveFailed += (s, e) => { Dispatcher.UIThread.Post(() => StatusText = e); };
+
+        if (!Directory.Exists(_workspaceImagesFolderPath))
+            Directory.CreateDirectory(_workspaceImagesFolderPath);
+
         LoadInitialSettings();
         ApplySettingsToSystem();
         HasUnsavedChanges = false;
@@ -332,59 +611,89 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void LoadInitialSettings()
     {
-        var s = _settingsService.LoadSettings();
-        LensSelection = s.LensSelection; SelectedHardware = s.HardwareProvider; SelectedCameraApi = s.SelectedCameraApi;
-        SelectedTheme = s.SelectedTheme; SelectedFont = s.SelectedFont; LayoutFontScale = s.LayoutFontScale > 0 ? s.LayoutFontScale : 1.0;
-        SelectedLanguage = s.SelectedLanguage; ConfidenceThreshold = s.ConfidenceThreshold; TargetSampleSize = s.TargetSampleSize;
-        OutputDirectory = s.OutputDirectory; CameraResolution = s.CameraResolution; CameraIndex = s.CameraIndex;
-        SelectedModelPath4x = s.SelectedModelPath4x; SelectedModelPath10x = s.SelectedModelPath10x;
-        FilterMinUm = s.FilterMinUm; FilterMaxUm = s.FilterMaxUm;
-        if (Enum.TryParse<Avalonia.Input.Key>(s.SnapshotHotkey, out var k1)) SnapshotHotkey = k1;
-        if (Enum.TryParse<Avalonia.Input.Key>(s.LiveAiHotkey, out var k2)) LiveAiHotkey = k2;
+        var s = _appStateManager.CurrentSettings;
+
+        // Appearance
+        SelectedTheme = s.SelectedTheme;
+        SelectedFont = s.SelectedFont;
+        LayoutFontScale = s.LayoutFontScale > 0 ? s.LayoutFontScale : 1.0;
+        SelectedLanguage = s.SelectedLanguage;
+
+        // Output
+        OutputDirectory = s.OutputDirectory;
+
+        // Hardware & Camera
+        SelectedHardware = s.HardwareProvider;
+        SelectedCameraApi = s.SelectedCameraApi;
+        CameraResolution = s.CameraResolution;
+        LensSelection = "10x"; // Always default to 10x on startup
+        CameraIndex = s.LastSelectedApiIndex;
+
+        // Analysis
+        ConfidenceThreshold = (float)(s.AnalysisThreshold / 100.0);
+        TargetSampleSize = s.TargetSampleSize;
+        FilterMinUm = s.FilterMinUm;
+        FilterMaxUm = s.FilterMaxUm;
+        SelectedModelPath4x = s.SelectedModelPath4x;
+        SelectedModelPath10x = s.SelectedModelPath10x;
+        SnapshotFreezeDurationMs = s.SnapshotFreezeDurationMs;
+
+        // Hotkeys
+        SnapshotHotkey = (Avalonia.Input.Key)s.SnapshotHotkeyInt;
+        LiveAiHotkey = (Avalonia.Input.Key)s.LiveAiHotkeyInt;
+
         SnapshotHotkeyDisplay = SnapshotHotkey.ToString();
         LiveAiHotkeyDisplay = LiveAiHotkey.ToString();
         AnalyzeButtonText = $"▶ Start Live AI ({LiveAiHotkeyDisplay})";
     }
 
     [RelayCommand]
-    private void ApplySettings()
+    private async Task ApplySettings()
     {
         // --- จดจำค่า Camera settings ก่อนที่จะ save ---
-        var prevCameraApi = _settingsService.LoadSettings().SelectedCameraApi;
-        var prevCameraResolution = _settingsService.LoadSettings().CameraResolution;
-        var prevCameraIndex = _settingsService.LoadSettings().CameraIndex;
+        var prevCameraIndex = _appStateManager.CurrentSettings.LastSelectedApiIndex;
+        var prevCameraResolution = _appStateManager.CurrentSettings.CameraResolution;
 
-        var s = new AppSettings
-        {
-            LensSelection = LensSelection,
-            HardwareProvider = SelectedHardware,
-            SelectedCameraApi = SelectedCameraApi,
-            SelectedTheme = SelectedTheme,
-            SelectedFont = SelectedFont,
-            LayoutFontScale = LayoutFontScale,
-            SelectedLanguage = SelectedLanguage,
-            ConfidenceThreshold = ConfidenceThreshold,
-            TargetSampleSize = TargetSampleSize ?? 200,
-            OutputDirectory = OutputDirectory,
-            SnapshotHotkey = SnapshotHotkey.ToString(),
-            LiveAiHotkey = LiveAiHotkey.ToString(),
-            CameraResolution = CameraResolution,
-            CameraIndex = CameraIndex,
-            SelectedModelPath4x = SelectedModelPath4x,
-            SelectedModelPath10x = SelectedModelPath10x,
-            FilterMinUm = FilterMinUm,
-            FilterMaxUm = FilterMaxUm
-        };
-        _settingsService.SaveSettings(s);
+        var s = _appStateManager.CurrentSettings;
+        s.SelectedTheme = SelectedTheme;
+        s.SelectedFont = SelectedFont;
+        s.LayoutFontScale = LayoutFontScale;
+        s.SelectedLanguage = SelectedLanguage;
+        s.OutputDirectory = OutputDirectory;
+
+        s.HardwareProvider = SelectedHardware;
+        s.SelectedCameraApi = SelectedCameraApi;
+        s.CameraResolution = CameraResolution;
+        s.LastSelectedLensIndex = LensSelection == "4x" ? 0 : 1;
+        s.LastSelectedApiIndex = CameraIndex;
+
+        s.AnalysisThreshold = ConfidenceThreshold * 100.0;
+        s.TargetSampleSize = TargetSampleSize ?? 200;
+        s.FilterMinUm = FilterMinUm;
+        s.FilterMaxUm = FilterMaxUm;
+        s.SelectedModelPath4x = SelectedModelPath4x;
+        s.SelectedModelPath10x = SelectedModelPath10x;
+        s.SnapshotFreezeDurationMs = SnapshotFreezeDurationMs;
+
+        s.SnapshotHotkeyInt = (int)SnapshotHotkey;
+        s.LiveAiHotkeyInt = (int)LiveAiHotkey;
+
+        await _appStateManager.SaveSettingsAsync();
 
         // --- ตรวจสอบว่า Camera settings เปลี่ยนหรือไม่ ---
-        bool cameraChanged = prevCameraApi != SelectedCameraApi
-                          || prevCameraResolution != CameraResolution
-                          || prevCameraIndex != CameraIndex;
+        bool cameraChanged = prevCameraResolution != s.CameraResolution
+                          || prevCameraIndex != s.LastSelectedApiIndex;
 
         ApplySettingsToSystem(cameraSettingsChanged: cameraChanged);
         HasUnsavedChanges = false;
-        StatusText = cameraChanged ? "Settings applied. Restarting camera..." : "Settings applied.";
+        StatusText = cameraChanged ? "Settings saved. Restarting camera..." : "Settings saved.";
+    }
+
+    [RelayCommand]
+    private async Task SaveAndCloseSettings()
+    {
+        await ApplySettings();
+        CloseSettingsRequested?.Invoke();
     }
 
     private void ApplySettingsToSystem(bool cameraSettingsChanged = false)
@@ -404,23 +713,33 @@ public partial class MainWindowViewModel : ObservableObject
         }
         UpdateLocalizedStrings();
         AnalyzeButtonText = _isLiveAnalysisActive ? $"⏹ Stop Live AI ({LiveAiHotkeyDisplay})" : $"▶ Start Live AI ({LiveAiHotkeyDisplay})";
+        AnalyzeButtonBackground = _isLiveAnalysisActive ? "#F38BA8" : "#fae3b0";
 
         // ⚠️ รีสตาร์ทกล้องเฉพาะเมื่อ Camera Settings (Index / API / Resolution) เปลี่ยนจริงๆ เท่านั้น
         if (cameraSettingsChanged && IsCameraRunning) _ = RestartCameraAsync();
     }
 
     [RelayCommand]
-    private void RestoreDefaults()
+    private async Task RestoreDefaults()
     {
         var s = new AppSettings();
-        LensSelection = s.LensSelection; SelectedHardware = s.HardwareProvider; SelectedCameraApi = s.SelectedCameraApi;
-        SelectedTheme = s.SelectedTheme; SelectedFont = s.SelectedFont; LayoutFontScale = s.LayoutFontScale;
-        SelectedLanguage = s.SelectedLanguage; ConfidenceThreshold = s.ConfidenceThreshold; TargetSampleSize = s.TargetSampleSize;
-        CameraResolution = s.CameraResolution; SnapshotHotkey = Avalonia.Input.Key.Space; LiveAiHotkey = Avalonia.Input.Key.F5;
-        SnapshotHotkeyDisplay = SnapshotHotkey.ToString(); LiveAiHotkeyDisplay = LiveAiHotkey.ToString();
-        SelectedModelPath4x = "yolov8n_4x.onnx"; SelectedModelPath10x = "yolov8n_10x.onnx";
+        LensSelection = s.LastSelectedLensIndex == 0 ? "4x" : "10x";
+        CameraIndex = s.LastSelectedApiIndex;
+        ConfidenceThreshold = (float)(s.AnalysisThreshold / 100.0);
+        TargetSampleSize = s.TargetSampleSize;
+        CameraResolution = s.LastSelectedResolutionIndex == 0 ? "1280x960" : "1600x1200";
+        SnapshotFreezeDurationMs = s.SnapshotFreezeDurationMs;
+        SnapshotHotkey = (Avalonia.Input.Key)s.SnapshotHotkeyInt;
+        LiveAiHotkey = (Avalonia.Input.Key)s.LiveAiHotkeyInt;
+        SnapshotHotkeyDisplay = SnapshotHotkey.ToString();
+        LiveAiHotkeyDisplay = LiveAiHotkey.ToString();
+
+        SelectedModelPath4x = "yolov8n_4x.onnx";
+        SelectedModelPath10x = "yolov8n_10x.onnx";
         FilterMinUm = 5.0; FilterMaxUm = 30.0;
+
         HasUnsavedChanges = true;
+        await ApplySettings();
     }
 
     [ObservableProperty] private string _vmdLabel = "VMD";
@@ -666,15 +985,59 @@ public partial class MainWindowViewModel : ObservableObject
         var result = _analysisService.CalculateStatistics(downsampled);
         result.TotalAccumulatedCount = SelectedSlide.DropletsCaptured;
 
-        var existing = ReportData.FirstOrDefault(r => r.LocationName == SelectedSlide.SlideName);
-        if (existing != null) ReportData[ReportData.IndexOf(existing)] = new AnalysisReportItem { LocationName = SelectedSlide.SlideName, Timestamp = DateTime.Now, Result = result };
-        else ReportData.Add(new AnalysisReportItem { LocationName = SelectedSlide.SlideName, Timestamp = DateTime.Now, Result = result });
+        // Capture snapshot for project
+        string? rawImgPath = null;
+        string? procImgPath = null;
+        var (rawFrame, processedFrame) = _visionService.GetLatestFrames();
+        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+        string locName = SelectedSlide.SlideName;
+
+        if (rawFrame != null || processedFrame != null)
+        {
+            if (!Directory.Exists(_workspaceImagesFolderPath)) Directory.CreateDirectory(_workspaceImagesFolderPath);
+
+            if (rawFrame != null && !rawFrame.IsDisposed)
+            {
+                rawImgPath = $"{locName}_Raw_{timestamp}.jpg";
+                try { Cv2.ImWrite(Path.Combine(_workspaceImagesFolderPath, rawImgPath), rawFrame); } catch { /* Ignore locked errors */ }
+
+                if (!string.IsNullOrWhiteSpace(OutputDirectory) && Directory.Exists(OutputDirectory))
+                {
+                    try { Cv2.ImWrite(Path.Combine(OutputDirectory, rawImgPath), rawFrame); } catch { }
+                }
+                rawFrame.Dispose();
+            }
+            if (processedFrame != null && !processedFrame.IsDisposed)
+            {
+                procImgPath = $"{locName}_Processed_{timestamp}.jpg";
+                try { Cv2.ImWrite(Path.Combine(_workspaceImagesFolderPath, procImgPath), processedFrame); } catch { }
+
+                if (!string.IsNullOrWhiteSpace(OutputDirectory) && Directory.Exists(OutputDirectory))
+                {
+                    try { Cv2.ImWrite(Path.Combine(OutputDirectory, procImgPath), processedFrame); } catch { }
+                }
+                processedFrame.Dispose();
+            }
+        }
+
+        var reportItem = new AnalysisReportItem
+        {
+            LocationName = locName,
+            Timestamp = DateTime.Now,
+            Result = result,
+            RawImageName = rawImgPath,
+            ProcessedImageName = procImgPath
+        };
+
+        var existing = ReportData.FirstOrDefault(r => r.LocationName == locName);
+        if (existing != null) ReportData[ReportData.IndexOf(existing)] = reportItem;
+        else ReportData.Add(reportItem);
 
         ReportItemCount = ReportData.Count;
         _visionService.ClearSession();
         _visionService.UnfreezeCamera();
         AccumulatedCount = 0;
-        if (!string.IsNullOrWhiteSpace(OutputDirectory)) SaveSnapshot();
+        HasUnsavedChanges = true;
     }
 
     [RelayCommand]

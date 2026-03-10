@@ -33,3 +33,18 @@ packages/
 *.exe
 *.pdb
 *.cache
+
+# --- DropDetect Specific ---
+# ONNX Models (Large files - host on Cloudflare / CDN)
+*.onnx
+DropDetect/fileonnx/
+
+# Workspace & User Data
+*.dropproj
+.autosave/
+DropDetect/Workspace/
+DropDetect/images/
+DropDetect/Output/
+appsettings.json
+recovery.json
+*.tmp

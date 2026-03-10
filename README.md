@@ -55,20 +55,20 @@ graph TD
     Camera((Microscope / USB Camera)) -->|Frames Video| Vision[VisionService <br/> OpenCV Camera Control]
     
     %% AI Engine & Processing
-    subgraph AI Engine (Inference Layer)
+    subgraph "AI Engine (Inference Layer)"
         Vision -->|Image Mat| Inference[InferenceService <br/> ONNX Runtime]
         Model[(YOLOv8 .onnx <br/> Trained: Google Colab <br/> Dataset: Roboflow)] -.->|Loads Weights| Inference
         Inference -->|Raw Bounding Boxes| Analysis[AnalysisService <br/> Geometric Math]
     end
 
     %% Business Logic
-    subgraph Core Business Logic
+    subgraph "Core Business Logic"
         Analysis -->|Pixel Data| Calibration[CalibrationService <br/> Pixel-to-Micron Ratio]
         Calibration -->|Micron Data µm| Stats[Stat Calculation <br/> VMD Dv0.5, SPAN]
     end
 
     %% Presentation / UI
-    subgraph Presentation Layer (MVVM)
+    subgraph "Presentation Layer (MVVM)"
         Stats -->|Data Binding| ViewModel[MainWindowViewModel <br/> Slide Tracking]
         ViewModel <--> UI[Avalonia UI <br/> MainWindow / SettingsWindow]
         Settings[(AppSettingsService <br/> %APPDATA% JSON)] <--> ViewModel
@@ -114,6 +114,27 @@ dotnet run
 dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true
 ```
 *(ไฟล์แอปพลิเคชันจะอยู่ใน `/bin/Release/net8.0/win-x64/publish/DropDetect.exe` พร้อมเปิดงานได้ทันทีโดยไม่ต้องลงโปรแกรมต่อพ่วงเพิ่มเติม)*
+
+---
+
+## ☁️ แผนการจัดจำหน่ายและการทำ CI/CD (Cloudflare Deployment Plan)
+เพื่อให้ผู้ใช้งานดาวน์โหลดตัวติดตั้งและโมเดลได้อย่างรวดเร็วและประหยัดแบนด์วิดท์ โปรเจกต์นี้มีแผนรองรับระบบทำ **CI/CD** ร่วมกับ **Cloudflare** ในอนาคต โดยจะแบ่งสถาปัตยกรรมการแจกจ่ายออกเป็น 2 ส่วนหลัก:
+
+### 1. ระบบจัดการเว็บและหน้าดาวน์โหลด (Cloudflare Pages)
+* สร้าง Landing Page ขนาดเล็กด้วย HTML/React หรือ Markdown (เช่น Astro/Docusaurus) 
+* โฮสต์เว็บนี้ผ่าน **Cloudflare Pages** ฟรี ซึ่งต่อ CI/CD เข้ากับ GitHub Branch `main` โดยตรง 
+* ผู้ใช้งานจะเข้าเว็บไซต์เพื่อดูเวอร์ชันล่าสุด และกดดาวน์โหลดโปรแกรมจากที่นี่
+
+### 2. แหล่งเก็บไฟล์ขนาดใหญ่ (Cloudflare R2 Object Storage)
+เนื่องจากไฟล์โมเดล AI (`.onnx`) มีขนาดค่อนข้างใหญ่ (~10-50MB) และตัวโปรแกรมแบบ Standalone (.exe) มีขนาดใหญ่เช่นกัน จึงจำเป็นต้องแยกเก็บใน **Cloudflare R2** (S3-compatible) แทนที่จะยัดลง Git หรือ Pages หลักโดยตรง
+* **Part A: Core Application (.exe):** 
+  ใช้ **GitHub Actions** ผูก Event `on: release` ดำเนินการคำสั่ง `dotnet publish` แบบ Single File อัตโนมัติ จากนั้นส่งไฟล์ `.exe` ทะลุเข้า Cloudflare R2 Bucket หรือแนบใน GitHub Releases (ซึ่งทำ Link โยงมารอไว้ในเว็บ)
+* **Part B: AI ONNX Models:** 
+  อัปโหลดไฟล์ `yolov8n_4x.onnx` และ `yolov8n_10x.onnx` เข้าไปฝากคลื่นเสถียรไว้ที่ Cloudflare R2 ล่วงหน้า (แยกอิสระจาก Source Code โค้ด)
+  
+**Workflow การดาวน์โหลดของผู้ใช้งาน:**
+1. ดาวน์โหลดไฟล์ `DropDetect.exe` (Standalone) พื้นฐานที่มีขนาดเบา 
+2. เมื่อเปิดหน้าต่างการตั้งค่าหรือเปิดโปรแกรมครั้งแรก โปรแกรมจะดึงลิงก์จาก Cloudflare R2 โหลดไฟล์ `.onnx` มาเก็บในเครื่องผู้ใช้โฟลเดอร์ `fileonnx/` อัตโนมัติ (หรือให้ผู้ใช้โหลดไฟล์ ZIP แยกลงไปวาง)
 
 ---
 

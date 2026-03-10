@@ -16,7 +16,61 @@ public partial class MainWindow : Window
         // ⚠️ Avalonia Button activate บน KeyUp ไม่ใช่ KeyDown → ต้องกัน KeyUp ด้วย
         this.AddHandler(InputElement.KeyUpEvent, MainWindow_KeyUp, Avalonia.Interactivity.RoutingStrategies.Tunnel);
         this.DataContextChanged += MainWindow_DataContextChanged;
+        this.Loaded += MainWindow_Loaded;
         this.Closing += MainWindow_Closing;
+    }
+
+    private async void MainWindow_Loaded(object? sender, global::Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+        {
+            if (vm.AutoSaveService.GetLastAutoSaveFilePath() != null)
+            {
+                var dialog = new Window()
+                {
+                    Title = "Auto-Save Recovery",
+                    Width = 450,
+                    Height = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Background = Avalonia.Media.Brushes.DarkSlateBlue,
+                    CanResize = false
+                };
+
+                var panel = new StackPanel { Spacing = 20, Margin = new Avalonia.Thickness(20) };
+                panel.Children.Add(new TextBlock
+                {
+                    Text = "An unsaved session was found from a previous run.\nWould you like to recover it?",
+                    Foreground = Avalonia.Media.Brushes.White,
+                    TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                    FontWeight = Avalonia.Media.FontWeight.Bold,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                    TextAlignment = Avalonia.Media.TextAlignment.Center
+                });
+
+                var btnPanel = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center, Spacing = 20 };
+
+                var btnYes = new Button { Content = "Yes, Recover", Width = 120, HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center, Background = Avalonia.Media.Brushes.Green, Foreground = Avalonia.Media.Brushes.White };
+                btnYes.Click += async (s, args) =>
+                {
+                    dialog.Close();
+                    await vm.RecoverAutoSaveAsync();
+                };
+
+                var btnNo = new Button { Content = "No, Delete it", Width = 120, HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center };
+                btnNo.Click += (s, args) =>
+                {
+                    vm.AutoSaveService.ClearAutoSave();
+                    dialog.Close();
+                };
+
+                btnPanel.Children.Add(btnYes);
+                btnPanel.Children.Add(btnNo);
+                panel.Children.Add(btnPanel);
+
+                dialog.Content = panel;
+                await dialog.ShowDialog(this);
+            }
+        }
     }
 
     private void MainWindow_DataContextChanged(object? sender, System.EventArgs e)
@@ -85,9 +139,11 @@ public partial class MainWindow : Window
 
     private async void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
     {
-        if (DataContext is MainWindowViewModel vm && vm.ReportData.Count > 0 && !_isConfirmedExit)
+        if (DataContext is MainWindowViewModel vm)
         {
-            e.Cancel = true; // Stop the window from closing immediately
+            if (vm.ReportData.Count > 0 && !_isConfirmedExit && vm.HasUnsavedChanges)
+            {
+                e.Cancel = true; // Stop the window from closing immediately
 
             var dialog = new Window()
             {
@@ -130,7 +186,13 @@ public partial class MainWindow : Window
             dialog.Content = panel;
             await dialog.ShowDialog(this);
         }
+        else
+        {
+            // Clean exit or confirmed exit
+            vm.AutoSaveService.ClearAutoSave();
+        }
     }
+}
 
     private bool _isConfirmedExit = false;
 
@@ -171,5 +233,9 @@ public partial class MainWindow : Window
                 vm.ToggleIgnoreDroplet(imageX, imageY);
             }
         }
+    }
+    private void ExitApp_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        this.Close();
     }
 }

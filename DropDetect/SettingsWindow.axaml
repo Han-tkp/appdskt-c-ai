@@ -21,7 +21,7 @@
         
         <Grid RowDefinitions="35,*,Auto">
             <!-- Custom Title Bar -->
-            <Border Grid.Row="0" Background="{DynamicResource ThemePanelBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="0,0,0,1">
+            <Border Grid.Row="0" Background="{DynamicResource ThemePanelBrush}" BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="0,0,0,1" IsHitTestVisible="False">
                 <TextBlock Text="⚙️ DropDetect System Configuration" Margin="15,0" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="13"/>
             </Border>
 
@@ -172,9 +172,9 @@
                 <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
                     <Button Grid.Column="0" Content="Restore Defaults" Command="{Binding RestoreDefaultsCommand}" Background="Transparent" Foreground="{DynamicResource ThemeAccentRedBrush}"/>
                     <TextBlock Grid.Column="1" Text="⚠️ You have unsaved changes" Foreground="{DynamicResource ThemeAccentYellowBrush}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,15,0" IsVisible="{Binding HasUnsavedChanges}"/>
-                    <Button Grid.Column="2" Content="Cancel" Command="{Binding AskCloseSettingsCommand}" Background="Transparent" Margin="0,0,10,0"/>
-                    <Button Grid.Column="3" Content="Apply" Command="{Binding ApplySettingsCommand}" Background="{DynamicResource ThemeSubPanelBrush}" Margin="0,0,10,0" IsEnabled="{Binding HasUnsavedChanges}"/>
-                    <Button Grid.Column="4" Content="Save &amp; Close" Command="{Binding ApplySettingsCommand}" Classes="accent" IsEnabled="{Binding HasUnsavedChanges}">
+                    <Button Grid.Column="2" Content="Apply" Command="{Binding ApplySettingsCommand}" Background="Transparent" Margin="0,0,10,0" IsEnabled="{Binding HasUnsavedChanges}"/>
+                    <Button Grid.Column="3" Content="Close" Command="{Binding AskCloseSettingsCommand}" Background="{DynamicResource ThemeSubPanelBrush}" Margin="0,0,10,0"/>
+                    <Button Grid.Column="4" Content="Save" Command="{Binding SaveAndCloseSettingsCommand}" Classes="accent" IsEnabled="{Binding HasUnsavedChanges}">
                         <Button.Flyout>
                             <!-- We can use a flyout or rely on the View Model closing logic -->
                         </Button.Flyout>

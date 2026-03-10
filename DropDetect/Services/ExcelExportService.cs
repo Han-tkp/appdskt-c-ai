@@ -11,6 +11,8 @@ public class AnalysisReportItem
     public string LocationName { get; set; } = string.Empty;
     public DateTime Timestamp { get; set; } = DateTime.Now;
     public AnalysisResult Result { get; set; } = new();
+    public string? RawImageName { get; set; }
+    public string? ProcessedImageName { get; set; }
 }
 
 public interface IExcelExportService
